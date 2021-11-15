@@ -31,113 +31,6 @@ type
     color: Color
 
 proc updatePlayer(player: var Player, envItems: openArray[EnvItem],
-    delta: float32)
-proc updateCameraCenter(camera: var Camera2D, player: Player,
-                        envItems: openArray[EnvItem], delta: float32,
-                        width: int32, height: int32)
-proc updateCameraCenterInsideMap(camera: var Camera2D, player: Player,
-                                 envItems: openArray[EnvItem],
-                                 delta: float32, width: int32, height: int32)
-proc updateCameraCenterSmoothFollow(camera: var Camera2D, player: Player,
-                                    envItems: openArray[EnvItem],
-                                    delta: float32, width: int32, height: int32)
-proc updateCameraEvenOutOnLanding(camera: var Camera2D, player: Player,
-                                  envItems: openArray[EnvItem],
-                                  delta: float32, width: int32, height: int32)
-proc updateCameraPlayerBoundsPush(camera: var Camera2D, player: Player,
-                                  envItems: openArray[EnvItem],
-                                  delta: float32, width: int32, height: int32)
-# Initialization
-# --------------------------------------------------------------------------------------
-let screenWidth = 800'i32
-let screenHeight = 450'i32
-initWindow(screenWidth, screenHeight, "raylib [core] example - 2d camera")
-var player = Player(
-  position: Vector2(x: 400, y: 280),
-  speed: 0,
-  canJump: false
-)
-let envItems = [
-  EnvItem(rect: Rectangle(x: 0, y: 0, width: 1000, height: 400), blocking: false,
-      color: Lightgray),
-  EnvItem(rect: Rectangle(x: 0, y: 400, width: 1000, height: 200),
-      blocking: true, color: Gray),
-  EnvItem(rect: Rectangle(x: 300, y: 200, width: 400, height: 10),
-      blocking: true, color: Gray),
-  EnvItem(rect: Rectangle(x: 250, y: 300, width: 100, height: 10),
-      blocking: true, color: Gray),
-  EnvItem(rect: Rectangle(x: 650, y: 300, width: 100, height: 10),
-      blocking: true, color: Gray),
-]
-var camera = Camera2D(
-  target: player.position,
-  offset: Vector2(x: screenWidth / 2'f32, y: screenHeight / 2'f32),
-  rotation: 0,
-  zoom: 1
-)
-# Store multiple update camera functions
-let cameraUpdaters = [
-  updateCameraCenter,
-  updateCameraCenterInsideMap,
-  updateCameraCenterSmoothFollow,
-  updateCameraEvenOutOnLanding,
-  updateCameraPlayerBoundsPush,
-]
-var cameraOption = 0
-let cameraDescriptions = ["Follow player center", "Follow player center, but clamp to map edges",
-                          "Follow player center; smoothed",
-                          "Follow player center horizontally; updateplayer center vertically after landing",
-                          "Player push camera on getting too close to screen edge"]
-setTargetFPS(60)
-# -------------------------------------------------------------------------------------
-# Main game loop
-while not windowShouldClose():
-  # Update
-  # ----------------------------------------------------------------------------------
-  let deltaTime = getFrameTime()
-  updatePlayer(player, envItems, deltaTime)
-  camera.zoom += getMouseWheelMove() * 0.05
-  if camera.zoom > 3:
-    camera.zoom = 3.0
-  elif camera.zoom < 0.25:
-    camera.zoom = 0.25
-  if isKeyPressed(R):
-    camera.zoom = 1.0
-    player.position = Vector2(x: 400, y: 280)
-  if isKeyPressed(C):
-    cameraOption = (cameraOption + 1) mod cameraUpdaters.len
-  cameraUpdaters[cameraOption](camera, player, envItems,
-                               deltaTime, screenWidth,
-                               screenHeight)
-  # ---------------------------------------------------------------------------------
-  # Draw
-  # ---------------------------------------------------------------------------------
-  beginDrawing()
-  clearBackground(Lightgray)
-  beginMode2D(camera)
-  for i in 0 ..< envItems.len:
-    drawRectangleRec(envItems[i].rect, envItems[i].color)
-  let playerRect = Rectangle(x: player.position.x - 20, y: player.position.y - 40,
-      width: 40, height: 40)
-  drawRectangleRec(playerRect, Red)
-  endMode2D()
-  drawText("Controls:", 20, 20, 10, Black)
-  drawText("- Right/Left to move", 40, 40, 10, Darkgray)
-  drawText("- Space to jump", 40, 60, 10, Darkgray)
-  drawText("- Mouse Wheel to Zoom in-out, R to reset zoom", 40, 80, 10, Darkgray)
-  drawText("- C to change camera mode", 40, 100, 10, Darkgray)
-  drawText("Current camera mode:", 20, 120, 10, Black)
-  drawText(cameraDescriptions[cameraOption].cstring, 40, 140, 10, Darkgray)
-  endDrawing()
-
-# ---------------------------------------------------------------------------------
-# De-Initialization
-# -------------------------------------------------------------------------------------
-closeWindow()
-# Close window and OpenGL context
-# -------------------------------------------------------------------------------------
-
-proc updatePlayer(player: var Player, envItems: openArray[EnvItem],
     delta: float32) =
   if isKeyDown(Left):
     player.position.x -= PlayerHorSpd * delta
@@ -257,3 +150,96 @@ proc updateCameraPlayerBoundsPush(camera: var Camera2D, player: Player,
     camera.target.x = bboxWorldMin.x + (player.position.x - bboxWorldMax.x)
   if player.position.y > bboxWorldMax.y:
     camera.target.y = bboxWorldMin.y + (player.position.y - bboxWorldMax.y)
+
+proc main =
+  # Initialization
+  # --------------------------------------------------------------------------------------
+  let screenWidth = 800'i32
+  let screenHeight = 450'i32
+  initWindow(screenWidth, screenHeight, "raylib [core] example - 2d camera")
+  var player = Player(
+    position: Vector2(x: 400, y: 280),
+    speed: 0,
+    canJump: false
+  )
+  let envItems = [
+    EnvItem(rect: Rectangle(x: 0, y: 0, width: 1000, height: 400), blocking: false,
+        color: Lightgray),
+    EnvItem(rect: Rectangle(x: 0, y: 400, width: 1000, height: 200),
+        blocking: true, color: Gray),
+    EnvItem(rect: Rectangle(x: 300, y: 200, width: 400, height: 10),
+        blocking: true, color: Gray),
+    EnvItem(rect: Rectangle(x: 250, y: 300, width: 100, height: 10),
+        blocking: true, color: Gray),
+    EnvItem(rect: Rectangle(x: 650, y: 300, width: 100, height: 10),
+        blocking: true, color: Gray),
+  ]
+  var camera = Camera2D(
+    target: player.position,
+    offset: Vector2(x: screenWidth / 2'f32, y: screenHeight / 2'f32),
+    rotation: 0,
+    zoom: 1
+  )
+  # Store multiple update camera functions
+  let cameraUpdaters = [
+    updateCameraCenter,
+    updateCameraCenterInsideMap,
+    updateCameraCenterSmoothFollow,
+    updateCameraEvenOutOnLanding,
+    updateCameraPlayerBoundsPush,
+  ]
+  var cameraOption = 0
+  let cameraDescriptions = ["Follow player center", "Follow player center, but clamp to map edges",
+                            "Follow player center; smoothed",
+                            "Follow player center horizontally; updateplayer center vertically after landing",
+                            "Player push camera on getting too close to screen edge"]
+  setTargetFPS(60)
+  # -------------------------------------------------------------------------------------
+  # Main game loop
+  while not windowShouldClose():
+    # Update
+    # ----------------------------------------------------------------------------------
+    let deltaTime = getFrameTime()
+    updatePlayer(player, envItems, deltaTime)
+    camera.zoom += getMouseWheelMove() * 0.05'f32
+    if camera.zoom > 3:
+      camera.zoom = 3.0
+    elif camera.zoom < 0.25:
+      camera.zoom = 0.25
+    if isKeyPressed(R):
+      camera.zoom = 1.0
+      player.position = Vector2(x: 400, y: 280)
+    if isKeyPressed(C):
+      cameraOption = (cameraOption + 1) mod cameraUpdaters.len
+    cameraUpdaters[cameraOption](camera, player, envItems,
+                                deltaTime, screenWidth,
+                                screenHeight)
+    # ---------------------------------------------------------------------------------
+    # Draw
+    # ---------------------------------------------------------------------------------
+    beginDrawing()
+    clearBackground(Lightgray)
+    beginMode2D(camera)
+    for i in 0 ..< envItems.len:
+      drawRectangleRec(envItems[i].rect, envItems[i].color)
+    let playerRect = Rectangle(x: player.position.x - 20, y: player.position.y - 40,
+        width: 40, height: 40)
+    drawRectangleRec(playerRect, Red)
+    endMode2D()
+    drawText("Controls:", 20, 20, 10, Black)
+    drawText("- Right/Left to move", 40, 40, 10, Darkgray)
+    drawText("- Space to jump", 40, 60, 10, Darkgray)
+    drawText("- Mouse Wheel to Zoom in-out, R to reset zoom", 40, 80, 10, Darkgray)
+    drawText("- C to change camera mode", 40, 100, 10, Darkgray)
+    drawText("Current camera mode:", 20, 120, 10, Black)
+    drawText(cameraDescriptions[cameraOption].cstring, 40, 140, 10, Darkgray)
+    endDrawing()
+
+  # ---------------------------------------------------------------------------------
+  # De-Initialization
+  # -------------------------------------------------------------------------------------
+  closeWindow()
+  # Close window and OpenGL context
+  # -------------------------------------------------------------------------------------
+
+main()
