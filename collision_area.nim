@@ -20,15 +20,15 @@ proc main =
   # Box A: Moving box
   var boxA = Rectangle(
     x: 10,
-    y: getScreenHeight().float32 / 2 - 50,
+    y: getScreenHeight() / 2'f32 - 50,
     width: 200,
     height: 100
   )
   var boxASpeedX = 4'i32
   # Box B: Mouse moved box
   var boxB = Rectangle(
-    x: getScreenWidth().float32 / 2 - 30,
-    y: getScreenHeight().float32 / 2 - 30,
+    x: getScreenWidth() / 2'f32 - 30,
+    y: getScreenHeight() / 2'f32 - 30,
     width: 60,
     height: 60
   )

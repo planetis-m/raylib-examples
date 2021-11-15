@@ -71,7 +71,7 @@ let envItems = [
 ]
 var camera = Camera2D(
   target: player.position,
-  offset: Vector2(x: screenWidth.float32 / 2, y: screenHeight.float32 / 2),
+  offset: Vector2(x: screenWidth / 2'f32, y: screenHeight / 2'f32),
   rotation: 0,
   zoom: 1
 )
@@ -165,14 +165,14 @@ proc updatePlayer(player: var Player, envItems: openArray[EnvItem],
 proc updateCameraCenter(camera: var Camera2D, player: Player,
                         envItems: openArray[EnvItem], delta: float32,
                         width: int32, height: int32) =
-  camera.offset = Vector2(x: width.float32 / 2, y: height.float32 / 2)
+  camera.offset = Vector2(x: width / 2'f32, y: height / 2'f32)
   camera.target = player.position
 
 proc updateCameraCenterInsideMap(camera: var Camera2D, player: Player,
                                  envItems: openArray[EnvItem],
                                  delta: float32, width: int32, height: int32) =
   camera.target = player.position
-  camera.offset = Vector2(x: width.float32 / 2, y: height.float32 / 2)
+  camera.offset = Vector2(x: width / 2'f32, y: height / 2'f32)
   var
     minX = 1000'f32
     minY = 1000'f32
@@ -188,13 +188,13 @@ proc updateCameraCenterInsideMap(camera: var Camera2D, player: Player,
     maxV = getWorldToScreen2D(Vector2(x: maxX, y: maxY), camera)
     minV = getWorldToScreen2D(Vector2(x: minX, y: minY), camera)
   if maxV.x < width:
-    camera.offset.x = width - (maxV.x - width.float32 / 2)
+    camera.offset.x = width - (maxV.x - width / 2'f32)
   if maxV.y < height:
-    camera.offset.y = height - (maxV.y - height.float32 / 2)
+    camera.offset.y = height - (maxV.y - height / 2'f32)
   if minV.x > 0:
-    camera.offset.x = width.float32 / 2 - minV.x
+    camera.offset.x = width / 2'f32 - minV.x
   if minV.y > 0:
-    camera.offset.y = height.float32 / 2 - minV.y
+    camera.offset.y = height / 2'f32 - minV.y
 
 proc updateCameraCenterSmoothFollow(camera: var Camera2D, player: Player,
                                     envItems: openArray[EnvItem],
@@ -202,7 +202,7 @@ proc updateCameraCenterSmoothFollow(camera: var Camera2D, player: Player,
   let minSpeed = 30'f32
   let minEffectLength = 10'f32
   let fractionSpeed = 0.8'f32
-  camera.offset = Vector2(x: width.float32 / 2, y: height.float32 / 2)
+  camera.offset = Vector2(x: width / 2'f32, y: height / 2'f32)
   let diff = subtract(player.position, camera.target)
   let length = length(diff)
   if length > minEffectLength:
@@ -215,7 +215,7 @@ proc updateCameraEvenOutOnLanding(camera: var Camera2D, player: Player,
                                   envItems: openArray[EnvItem],
                                   delta: float32, width: int32, height: int32) =
   let evenOutSpeed = 700'f32
-  camera.offset = Vector2(x: width.float32 / 2, y: height.float32 / 2)
+  camera.offset = Vector2(x: width / 2'f32, y: height / 2'f32)
   camera.target.x = player.position.x
   if eveningOut:
     if evenOutTarget > camera.target.y:
