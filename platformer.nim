@@ -204,7 +204,7 @@ proc main =
     camera.zoom += getMouseWheelMove() * 0.05'f32
     if camera.zoom > 3:
       camera.zoom = 3.0
-    elif camera.zoom < 0.25:
+    elif camera.zoom < 0.25'f32:
       camera.zoom = 0.25
     if isKeyPressed(R):
       camera.zoom = 1.0
