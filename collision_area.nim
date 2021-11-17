@@ -87,11 +87,6 @@ proc main =
           screenUpperLimit + 10, 20, Black)
     drawFPS(10, 10)
     endDrawing()
-    # -----------------------------------------------------
-  # De-Initialization
-  # ---------------------------------------------------------
   closeWindow()
-  # Close window and OpenGL context
-  # ----------------------------------------------------------
 
 main()

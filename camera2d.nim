@@ -15,8 +15,9 @@ import nimraylib_now, std/lenientops
 
 const
   MaxBuildings = 100
-  screenWidth = 800'i32
-  screenHeight = 450'i32
+
+  screenWidth = 800
+  screenHeight = 450
 
 proc main =
   initWindow(screenWidth, screenHeight, "Camera 2D")

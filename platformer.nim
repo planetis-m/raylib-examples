@@ -15,9 +15,12 @@
 import std/lenientops, nimraylib_now
 
 const
+  screenWidth = 800
+  screenHeight = 450
+
   G = 400
-  PlayerJumpSpd = 350'f32
-  PlayerHorSpd = 200'f32
+  PlayerJumpSpd = 350
+  PlayerHorSpd = 200
 
 type
   Player = object
@@ -123,7 +126,7 @@ proc updateCameraEvenOutOnLanding(camera: var Camera2D, player: Player,
         eveningOut = false
   else:
     if player.canJump and player.speed == 0 and
-       player.position.y != camera.target.y:
+        player.position.y != camera.target.y:
       eveningOut = true
       evenOutTarget = player.position.y
 
@@ -152,10 +155,6 @@ proc updateCameraPlayerBoundsPush(camera: var Camera2D, player: Player,
     camera.target.y = bboxWorldMin.y + (player.position.y - bboxWorldMax.y)
 
 proc main =
-  # Initialization
-  # --------------------------------------------------------------------------------------
-  let screenWidth = 800'i32
-  let screenHeight = 450'i32
   initWindow(screenWidth, screenHeight, "raylib [core] example - 2d camera")
   var player = Player(
     position: Vector2(x: 400, y: 280),
@@ -234,12 +233,6 @@ proc main =
     drawText("Current camera mode:", 20, 120, 10, Black)
     drawText(cameraDescriptions[cameraOption].cstring, 40, 140, 10, Darkgray)
     endDrawing()
-
-  # ---------------------------------------------------------------------------------
-  # De-Initialization
-  # -------------------------------------------------------------------------------------
   closeWindow()
-  # Close window and OpenGL context
-  # -------------------------------------------------------------------------------------
 
 main()
