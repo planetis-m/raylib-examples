@@ -1,4 +1,4 @@
-# **************************************************************************************
+# ***************************************************************************************
 #
 # raylib [shapes] example - collision area
 #
@@ -7,13 +7,13 @@
 #
 # Copyright (c) 2013-2019 Ramon Santamaria (@raysan5)
 #
-# **************************************************************************************
+# ***************************************************************************************
 
 import nimraylib_now, std/lenientops
 
 proc main =
   # Initialization
-  # ---------------------------------------------------------
+  # -------------------------------------------------------------------------------------
   let screenWidth = 800'i32
   let screenHeight = 450'i32
   initWindow(screenWidth, screenHeight, "raylib [shapes] example - collision area")
@@ -32,21 +32,16 @@ proc main =
     width: 60,
     height: 60
   )
-  var boxCollision: Rectangle
-  # Collision rectangle
-  var screenUpperLimit = 40'i32
-  # Top menu limits
-  var pause = false
-  # Movement pause
-  var collision = false
-  # Collision detection
-  setTargetFPS(60)
-  # Set our game to run at 60 frames-per-second
-  # ----------------------------------------------------------
+  var boxCollision: Rectangle # Collision rectangle
+  var screenUpperLimit = 40'i32 # Top menu limits
+  var pause = false # Movement pause
+  var collision = false # Collision detection
+  setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # Main game loop
+  # -------------------------------------------------------------------------------------
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
-    # -----------------------------------------------------
+    # -----------------------------------------------------------------------------------
     # Move box if not paused
     if not pause:
       boxA.x += boxASpeedX.float32
@@ -87,6 +82,8 @@ proc main =
           screenUpperLimit + 10, 20, Black)
     drawFPS(10, 10)
     endDrawing()
-  closeWindow()
+  # De-Initialization
+  # -------------------------------------------------------------------------------------
+  closeWindow() # Close window and OpenGL context
 
 main()

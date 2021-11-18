@@ -1,4 +1,4 @@
-# **************************************************************************************
+# ***************************************************************************************
 #
 # raylib [core] example - 2d camera platformer
 #
@@ -10,7 +10,7 @@
 # Copyright (c) 2019 arvyy (@arvyy)
 # Converted in 2021 by greenfork
 #
-# **************************************************************************************
+# ***************************************************************************************
 
 import std/lenientops, nimraylib_now
 
@@ -179,7 +179,7 @@ proc main =
     rotation: 0,
     zoom: 1
   )
-  # Store multiple update camera functions
+  # Store pointers to the multiple update camera functions
   let cameraUpdaters = [
     updateCameraCenter,
     updateCameraCenterInsideMap,
@@ -188,16 +188,19 @@ proc main =
     updateCameraPlayerBoundsPush,
   ]
   var cameraOption = 0
-  let cameraDescriptions = ["Follow player center", "Follow player center, but clamp to map edges",
-                            "Follow player center; smoothed",
-                            "Follow player center horizontally; updateplayer center vertically after landing",
-                            "Player push camera on getting too close to screen edge"]
+  let cameraDescriptions = [
+    "Follow player center",
+    "Follow player center, but clamp to map edges",
+    "Follow player center; smoothed",
+    "Follow player center horizontally; updateplayer center vertically after landing",
+    "Player push camera on getting too close to screen edge"
+  ]
   setTargetFPS(60)
-  # -------------------------------------------------------------------------------------
   # Main game loop
+  # -------------------------------------------------------------------------------------
   while not windowShouldClose():
     # Update
-    # ----------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
     let deltaTime = getFrameTime()
     updatePlayer(player, envItems, deltaTime)
     camera.zoom += getMouseWheelMove() * 0.05'f32
@@ -210,12 +213,11 @@ proc main =
       player.position = Vector2(x: 400, y: 280)
     if isKeyPressed(C):
       cameraOption = (cameraOption + 1) mod cameraUpdaters.len
+    # Call update camera function by its pointer
     cameraUpdaters[cameraOption](camera, player, envItems,
-                                deltaTime, screenWidth,
-                                screenHeight)
-    # ---------------------------------------------------------------------------------
+        deltaTime, screenWidth, screenHeight)
     # Draw
-    # ---------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(Lightgray)
     beginMode2D(camera)
@@ -233,6 +235,8 @@ proc main =
     drawText("Current camera mode:", 20, 120, 10, Black)
     drawText(cameraDescriptions[cameraOption].cstring, 40, 140, 10, Darkgray)
     endDrawing()
-  closeWindow()
+  # De-Initialization
+  # -------------------------------------------------------------------------------------
+  closeWindow() # Close window and OpenGL context
 
 main()

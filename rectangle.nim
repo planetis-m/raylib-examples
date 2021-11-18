@@ -1,3 +1,14 @@
+# ***************************************************************************************
+#
+# raylib [textures] example - Texture loading and drawing a part defined by a rectangle
+#
+# This example has been created using raylib 1.3 (www.raylib.com)
+# raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
+#
+# Copyright (c) 2014 Ramon Santamaria (@raysan5)
+# Adapted in 2021 by greenfork
+#
+# ***************************************************************************************
 
 import nimraylib_now, std/lenientops
 
@@ -13,21 +24,18 @@ proc main =
   # -------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [texture] example - texture rectangle")
   # NOTE: Textures MUST be loaded after Window initialization (OpenGL context is requiRed)
-  let scarfy = loadTexture("resources/scarfy.png")
-  # Texture loading
+  let scarfy = loadTexture("resources/scarfy.png") # Texture loading
   let position = Vector2(x: 350, y: 280)
   var frameRec = Rectangle(x: 0, y: 0, width: scarfy.width / 6'f32, height: scarfy.height.float32)
   var currentFrame = 0'i32
   var framesCounter = 0'i32
-  var framesSpeed = 8'i32
-  # Number of spritesheet frames shown by second
-  setTargetFPS(60)
-  # Set our game to run at 60 frames-per-second
+  var framesSpeed = 8'i32 # Number of spritesheet frames shown by second
+  setTargetFPS(60) #  Set our game to run at 60 frames-per-second
   # -------------------------------------------------------------------------------------
   # Main game loop
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
-    # ---------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
     inc framesCounter
     if framesCounter >= 60 div framesSpeed:
       framesCounter = 0
@@ -44,7 +52,7 @@ proc main =
     elif framesSpeed < MinFrameSpeed:
       framesSpeed = MinFrameSpeed
     # Draw
-    # ---------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(RayWhite)
     drawTexture(scarfy, 15, 40, White)
@@ -58,12 +66,13 @@ proc main =
       if i < framesSpeed:
         drawRectangle(250 + 21 * i, 205, 20, 20, Red)
       drawRectangleLines(250 + 21 * i, 205, 20, 20, Maroon)
-    drawTextureRec(scarfy, frameRec, position, White)
-    # Draw part of the texture
+    drawTextureRec(scarfy, frameRec, position, White) # Draw part of the texture
     drawText("(c) Scarfy sprite by Eiden Marsal", screenWidth - 200,
         screenHeight - 20, 10, Gray)
     endDrawing()
-  unloadTexture(scarfy)
-  closeWindow()
+  # De-Initialization
+  # -------------------------------------------------------------------------------------
+  unloadTexture(scarfy) # Texture unloading
+  closeWindow() # Close window and OpenGL context
 
 main()

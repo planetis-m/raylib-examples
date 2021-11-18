@@ -1,15 +1,15 @@
-# ****************************************************************************************
+# ***************************************************************************************
 #
-#   raylib [core] example - 2d camera
+# raylib [core] example - 2d camera
 #
-#   This example has been created using raylib 1.5 (www.raylib.com)
-#   raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
+# This example has been created using raylib 1.5 (www.raylib.com)
+# raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
 #
-#   Copyright (c) 2016 Ramon Santamaria (@raysan5)
-#   Converted in 2020 by bones527
-#   Adapted in 2021 by greenfork
+# Copyright (c) 2016 Ramon Santamaria (@raysan5)
+# Converted in 2020 by bones527
+# Adapted in 2021 by greenfork
 #
-# ****************************************************************************************
+# ***************************************************************************************
 
 import nimraylib_now, std/lenientops
 
@@ -52,7 +52,7 @@ proc main =
   setTargetFPS(60)
   while not windowShouldClose():
     # Update
-    #----------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
     # Player movement
     if isKeyDown(Right): player.x += 2
     elif isKeyDown(Left): player.x -= 2
@@ -72,9 +72,8 @@ proc main =
     if isKeyPressed(R):
       camera.zoom = 1
       camera.rotation = 0
-    #----------------------------------------------------------------------------------
     # Draw
-    #----------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
     beginDrawing()
     clearBackground Raywhite
     beginMode2D camera
@@ -98,6 +97,8 @@ proc main =
     drawText "- A / S to Rotate", 40, 80, 10, Darkgray
     drawText "- R to reset Zoom and Rotation", 40, 100, 10, Darkgray
     endDrawing()
-  closeWindow()
+  # De-Initialization
+  # -------------------------------------------------------------------------------------
+  closeWindow() # Close window and OpenGL context
 
 main()

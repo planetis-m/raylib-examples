@@ -8,8 +8,7 @@ proc main =
   initWindow(screenWidth, screenHeight,
       "raylib [textures] examples - texture source and destination rectangles")
   # NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
-  let scarfy = loadTexture("resources/scarfy.png")
-  # Texture loading
+  let scarfy = loadTexture("resources/scarfy.png") # Texture loading
   let frameWidth = scarfy.width div 6
   let frameHeight = scarfy.height
   # Source rectangle (part of the texture to use for drawing)
@@ -21,14 +20,14 @@ proc main =
   let origin = Vector2(x: frameWidth.float32, y: frameHeight.float32)
   var rotation = 0'i32
   setTargetFPS(60)
-  # -------------------------------------------------------------------------------------
   # Main game loop
+  # -------------------------------------------------------------------------------------
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
-    # ---------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
     inc(rotation)
     # Draw
-    # ---------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(Raywhite)
     # NOTE: Using DrawTexturePro() we can easily rotate and scale the part of the texture we draw
@@ -41,7 +40,9 @@ proc main =
     drawLine(0, destRec.y.int32, screenWidth, destRec.y.int32, Gray)
     drawText("(c) Scarfy sprite by Eiden Marsal", screenWidth - 200, screenHeight - 20, 10, Gray)
     endDrawing()
+  # De-Initialization
+  # -------------------------------------------------------------------------------------
   unloadTexture(scarfy) # Texture unloading
-  closeWindow()
+  closeWindow() # Close window and OpenGL context
 
 main()
