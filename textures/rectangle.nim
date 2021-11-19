@@ -64,8 +64,8 @@ proc main =
     drawText("PRESS RIGHT/LEFT KEYS to CHANGE SPEED!", 290, 240, 10, DarkGray)
     for i in 0 ..< MaxFrameSpeed:
       if i < framesSpeed:
-        drawRectangle(250 + 21 * i, 205, 20, 20, Red)
-      drawRectangleLines(250 + 21 * i, 205, 20, 20, Maroon)
+        drawRectangle(250 + 21 * i.int32, 205, 20, 20, Red)
+      drawRectangleLines(250 + 21 * i.int32, 205, 20, 20, Maroon)
     drawTextureRec(scarfy, frameRec, position, White) # Draw part of the texture
     drawText("(c) Scarfy sprite by Eiden Marsal", screenWidth - 200,
         screenHeight - 20, 10, Gray)

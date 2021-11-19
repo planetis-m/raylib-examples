@@ -1,34 +1,34 @@
-# ****************************************************************************************
+# ***************************************************************************************
 #
-#   raylib [core] example - custom frame control
+# raylib [core] example - custom frame control
 #
-#   WARNING: This is an example for advance users willing to have full control over
-#   the frame processes. By default, EndDrawing() calls the following processes:
-#       1. Draw remaining batch data: rlDrawRenderBatchActive()
-#       2. SwapScreenBuffer()
-#       3. Frame time control: WaitTime()
-#       4. PollInputEvents()
+# WARNING: This is an example for advance users willing to have full control over
+# the frame processes. By default, EndDrawing() calls the following processes:
+#     1. Draw remaining batch data: rlDrawRenderBatchActive()
+#     2. SwapScreenBuffer()
+#     3. Frame time control: WaitTime()
+#     4. PollInputEvents()
 #
-#   To avoid steps 2, 3 and 4, flag SUPPORT_CUSTOM_FRAME_CONTROL can be enabled in
-#   config.h (it requires recompiling raylib). This way those steps are up to the user.
+# To avoid steps 2, 3 and 4, flag SUPPORT_CUSTOM_FRAME_CONTROL can be enabled in
+# config.h (it requires recompiling raylib). This way those steps are up to the user.
 #
-#   Note that enabling this flag invalidates some functions:
-#       - GetFrameTime()
-#       - SetTargetFPS()
-#       - GetFPS()
+# Note that enabling this flag invalidates some functions:
+#     - GetFrameTime()
+#     - SetTargetFPS()
+#     - GetFPS()
 #
-#   This example has been created using raylib 3.8 (www.raylib.com)
-#   raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
+# This example has been created using raylib 3.8 (www.raylib.com)
+# raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
 #
-#   Copyright (c) 2021 Ramon Santamaria (@raysan5)
+# Copyright (c) 2021 Ramon Santamaria (@raysan5)
 #
-# ****************************************************************************************
+# ***************************************************************************************
 
 import nimraylib_now, std/lenientops
 
 const
-  screenWidth = 800'i32
-  screenHeight = 450'i32
+  screenWidth = 800
+  screenHeight = 450
 
 proc main =
   initWindow(screenWidth, screenHeight, "raylib [core] example - custom frame control")
@@ -62,16 +62,16 @@ proc main =
         position = 0
       timeCounter += deltaTime # We count time (seconds)
     beginDrawing()
-    clearBackground(Raywhite)
+    clearBackground(RayWhite)
     for i in 0 ..< getScreenWidth() div 200:
-      drawRectangle(200 * i, 0, 1, getScreenHeight(), Skyblue)
+      drawRectangle(200 * i, 0, 1, getScreenHeight(), SkyBlue)
     drawCircle(position.int32, getScreenHeight() div 2 - 25, 50, Red)
     drawText(textFormat("%03.0f ms", timeCounter * 1000'f32), position.int32 - 40,
              getScreenHeight() div 2 - 100, 20, Maroon)
     drawText(textFormat("PosX: %03.0f", position), position.int32 - 50,
              getScreenHeight() div 2 + 40, 20, Black)
     drawText("Circle is moving at a constant 200 pixels/sec,\nindependently of the frame rate.",
-             10, 10, 20, Darkgray)
+             10, 10, 20, DarkGray)
     drawText("PRESS SPACE to PAUSE MOVEMENT", 10, getScreenHeight() - 60, 20, Gray)
     drawText("PRESS UP | DOWN to CHANGE TARGET FPS", 10, getScreenHeight() - 30, 20, Gray)
     drawText(textFormat("TARGET FPS: %i", targetFPS), getScreenWidth() - 220, 10, 20, Lime)
@@ -94,6 +94,8 @@ proc main =
       deltaTime = updateDrawTime
     # Framerate could be variable
     previousTime = currentTime
-  closeWindow()
+  # De-Initialization
+  # -------------------------------------------------------------------------------------
+  closeWindow() # Close window and OpenGL context
 
 main()

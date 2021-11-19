@@ -1,20 +1,20 @@
-# *****************************************************************************************
+# ***************************************************************************************
 #
-#    raylib example - loading thread
+# raylib example - loading thread
 #
-#    This example has been created using raylib 2.5 (www.raylib.com)
-#    raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
+# This example has been created using raylib 2.5 (www.raylib.com)
+# raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
 #
-#    Copyright (c) 2014-2019 Ramon Santamaria (@raysan5)
-#    Converted in 2021 by greenfork
+# Copyright (c) 2014-2019 Ramon Santamaria (@raysan5)
+# Converted in 2021 by greenfork
 #
-# *****************************************************************************************
+# ***************************************************************************************
 
 import std/times, threading/atomics, nimraylib_now
 
 const
-  screenWidth = 800'i32
-  screenHeight = 450'i32
+  screenWidth = 800
+  screenHeight = 450
 
 type
   State {.pure.} = enum
@@ -40,17 +40,16 @@ proc loadDataThread() {.thread.} =
 
 proc main =
   # Initialization
-  # --------------------------------------------------------------------------------------
+  # -------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [core] example - loading thread")
   var state = Waiting
   var framesCounter = 0'i32
-  setTargetFPS(60)
-  # Set our game to run at 60 frames-per-second
-  # --------------------------------------------------------------------------------------
+  setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # Main game loop
+  # -------------------------------------------------------------------------------------
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
-    # ----------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
     case state
     of Waiting:
       if isKeyPressed(Enter):
@@ -68,23 +67,24 @@ proc main =
         dataLoaded.store(false)
         dataProgress = 0
         state = Waiting
-    # ----------------------------------------------------------------------------------
     # Draw
-    # ----------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
     beginDrawing()
-    clearBackground(Raywhite)
+    clearBackground(RayWhite)
     case state
     of Waiting:
-      drawText("PRESS ENTER to START LOADING DATA", 150, 170, 20, Darkgray)
+      drawText("PRESS ENTER to START LOADING DATA", 150, 170, 20, DarkGray)
     of Loading:
-      drawRectangle(150, 200, dataProgress, 60, Skyblue)
+      drawRectangle(150, 200, dataProgress, 60, SkyBlue)
       if (framesCounter div 15) mod 2 == 1:
-        drawText("LOADING DATA...", 240, 210, 40, Darkblue)
+        drawText("LOADING DATA...", 240, 210, 40, DarkBlue)
     of Finished:
       drawRectangle(150, 200, 500, 60, Lime)
       drawText("DATA LOADED!", 250, 210, 40, Green)
-    drawRectangleLines(150, 200, 500, 60, Darkgray)
+    drawRectangleLines(150, 200, 500, 60, DarkGray)
     endDrawing()
-  closeWindow()
+  # De-Initialization
+  # -------------------------------------------------------------------------------------
+  closeWindow() # Close window and OpenGL context
 
 main()

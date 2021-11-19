@@ -11,11 +11,13 @@
 
 import nimraylib_now, std/lenientops
 
+const
+  screenWidth = 800
+  screenHeight = 450
+
 proc main =
   # Initialization
   # -------------------------------------------------------------------------------------
-  let screenWidth = 800'i32
-  let screenHeight = 450'i32
   initWindow(screenWidth, screenHeight, "raylib [shapes] example - collision area")
   # Box A: Moving box
   var boxA = Rectangle(

@@ -163,7 +163,7 @@ proc main =
   )
   let envItems = [
     EnvItem(rect: Rectangle(x: 0, y: 0, width: 1000, height: 400), blocking: false,
-        color: Lightgray),
+        color: LightGray),
     EnvItem(rect: Rectangle(x: 0, y: 400, width: 1000, height: 200),
         blocking: true, color: Gray),
     EnvItem(rect: Rectangle(x: 300, y: 200, width: 400, height: 10),
@@ -219,7 +219,7 @@ proc main =
     # Draw
     # -----------------------------------------------------------------------------------
     beginDrawing()
-    clearBackground(Lightgray)
+    clearBackground(LightGray)
     beginMode2D(camera)
     for i in 0 ..< envItems.len:
       drawRectangleRec(envItems[i].rect, envItems[i].color)
@@ -228,12 +228,12 @@ proc main =
     drawRectangleRec(playerRect, Red)
     endMode2D()
     drawText("Controls:", 20, 20, 10, Black)
-    drawText("- Right/Left to move", 40, 40, 10, Darkgray)
-    drawText("- Space to jump", 40, 60, 10, Darkgray)
-    drawText("- Mouse Wheel to Zoom in-out, R to reset zoom", 40, 80, 10, Darkgray)
-    drawText("- C to change camera mode", 40, 100, 10, Darkgray)
+    drawText("- Right/Left to move", 40, 40, 10, DarkGray)
+    drawText("- Space to jump", 40, 60, 10, DarkGray)
+    drawText("- Mouse Wheel to Zoom in-out, R to reset zoom", 40, 80, 10, DarkGray)
+    drawText("- C to change camera mode", 40, 100, 10, DarkGray)
     drawText("Current camera mode:", 20, 120, 10, Black)
-    drawText(cameraDescriptions[cameraOption].cstring, 40, 140, 10, Darkgray)
+    drawText(cameraDescriptions[cameraOption].cstring, 40, 140, 10, DarkGray)
     endDrawing()
   # De-Initialization
   # -------------------------------------------------------------------------------------
