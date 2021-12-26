@@ -23,6 +23,7 @@ proc main =
   # Initialization
   # -------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [texture] example - texture rectangle")
+  defer: closeWindow()
   # NOTE: Textures MUST be loaded after Window initialization (OpenGL context is requiRed)
   let scarfy = loadTexture("resources/scarfy.png") # Texture loading
   let position = Vector2(x: 350, y: 280)
@@ -70,9 +71,5 @@ proc main =
     drawText("(c) Scarfy sprite by Eiden Marsal", screenWidth - 200,
         screenHeight - 20, 10, Gray)
     endDrawing()
-  # De-Initialization
-  # -------------------------------------------------------------------------------------
-  unloadTexture(scarfy) # Texture unloading
-  closeWindow() # Close window and OpenGL context
 
 main()

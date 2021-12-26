@@ -99,11 +99,11 @@ proc updateCameraCenterSmoothFollow(camera: var Camera2D, player: Player,
   let minEffectLength = 10'f32
   let fractionSpeed = 0.8'f32
   camera.offset = Vector2(x: width / 2'f32, y: height / 2'f32)
-  let diff = subtract(player.position, camera.target)
+  let diff = player.position - camera.target
   let length = length(diff)
   if length > minEffectLength:
     let speed = max(fractionSpeed * length, minSpeed)
-    camera.target = add(camera.target, scale(diff, speed * delta / length))
+    camera.target = camera.target + diff * (speed * delta / length)
 
 var eveningOut = false
 var evenOutTarget: float32
