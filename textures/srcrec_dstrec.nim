@@ -1,4 +1,4 @@
-import nimraylib_now, std/lenientops
+import raylib, std/lenientops
 
 const
   screenWidth = 800
@@ -7,6 +7,7 @@ const
 proc main =
   initWindow(screenWidth, screenHeight,
       "raylib [textures] examples - texture source and destination rectangles")
+  defer: closeWindow() # Close window and OpenGL context
   # NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
   let scarfy = loadTexture("resources/scarfy.png") # Texture loading
   let frameWidth = scarfy.width div 6
@@ -40,9 +41,5 @@ proc main =
     drawLine(0, destRec.y.int32, screenWidth, destRec.y.int32, Gray)
     drawText("(c) Scarfy sprite by Eiden Marsal", screenWidth - 200, screenHeight - 20, 10, Gray)
     endDrawing()
-  # De-Initialization
-  # -------------------------------------------------------------------------------------
-  unloadTexture(scarfy) # Texture unloading
-  closeWindow() # Close window and OpenGL context
 
 main()

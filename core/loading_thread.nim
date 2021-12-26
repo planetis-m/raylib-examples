@@ -10,7 +10,7 @@
 #
 # ***************************************************************************************
 
-import std/times, threading/atomics, nimraylib_now
+import std/times, threading/atomics, raylib
 
 const
   screenWidth = 800

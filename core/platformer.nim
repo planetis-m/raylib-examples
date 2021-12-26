@@ -12,7 +12,7 @@
 #
 # ***************************************************************************************
 
-import std/lenientops, nimraylib_now
+import std/lenientops, raylib, raymath
 
 const
   screenWidth = 800

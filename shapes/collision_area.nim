@@ -9,7 +9,7 @@
 #
 # ***************************************************************************************
 
-import nimraylib_now, std/lenientops
+import raylib, std/[lenientops, strutils]
 
 const
   screenWidth = 800
@@ -79,8 +79,8 @@ proc main =
           getScreenWidth() div 2 - measureText("COLLISION!", 20) div 2,
           screenUpperLimit div 2 - 10, 20, Black)
       # Draw collision area
-      drawText(textFormat("Collision Area: %i", boxCollision.width.int32 *
-          boxCollision.height.int32), getScreenWidth() div 2 - 100,
+      drawText(format("Collision Area: $#", boxCollision.width.int32 *
+          boxCollision.height.int32).cstring, getScreenWidth() div 2 - 100,
           screenUpperLimit + 10, 20, Black)
     drawFPS(10, 10)
     endDrawing()

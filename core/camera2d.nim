@@ -75,9 +75,9 @@ proc main =
     # Draw
     # -----------------------------------------------------------------------------------
     beginDrawing()
-    clearBackground Raywhite
+    clearBackground RayWhite
     beginMode2D camera
-    drawRectangle -6000, 320, 13000, 8000, Darkgray
+    drawRectangle -6000, 320, 13000, 8000, DarkGray
     for i in 0 ..< MaxBuildings:
       drawRectangleRec buildings[i], buildColors[i]
     drawRectangleRec player, Red
@@ -89,13 +89,13 @@ proc main =
     drawRectangle 0, 5, 5, screenHeight - 10, Red
     drawRectangle screenWidth - 5, 5, 5, screenHeight - 10, Red
     drawRectangle 0, screenHeight - 5, screenWidth, 5, Red
-    drawRectangle 10, 10, 250, 113, fade(Skyblue, 0.5)
+    drawRectangle 10, 10, 250, 113, fade(SkyBlue, 0.5)
     drawRectangleLines 10, 10, 250, 113, Blue
     drawText "Free 2d camera controls:", 20, 20, 10, Black
-    drawText "- Right/Left to move Offset", 40, 40, 10, Darkgray
-    drawText "- Mouse Wheel to Zoom in-out", 40, 60, 10, Darkgray
-    drawText "- A / S to Rotate", 40, 80, 10, Darkgray
-    drawText "- R to reset Zoom and Rotation", 40, 100, 10, Darkgray
+    drawText "- Right/Left to move Offset", 40, 40, 10, DarkGray
+    drawText "- Mouse Wheel to Zoom in-out", 40, 60, 10, DarkGray
+    drawText "- A / S to Rotate", 40, 80, 10, DarkGray
+    drawText "- R to reset Zoom and Rotation", 40, 100, 10, DarkGray
     endDrawing()
   # De-Initialization
   # -------------------------------------------------------------------------------------

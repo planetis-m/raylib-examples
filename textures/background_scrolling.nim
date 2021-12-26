@@ -10,7 +10,7 @@
 #
 # ***************************************************************************************
 
-import std/lenientops, nimraylib_now
+import std/lenientops, raylib, raymath
 
 const
   screenWidth = 800
@@ -20,6 +20,7 @@ proc main =
   # Initialization
   # -------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [textures] example - background scrolling")
+  defer: closeWindow() # Close window and OpenGL context
   # NOTE: Be careful, background width must be equal or bigger than screen width
   # if not, texture should be draw more than two times for scrolling effect
   let background = loadTexture("resources/cyberpunk_street_background.png")
@@ -61,11 +62,5 @@ proc main =
     drawText("(c) Cyberpunk Street Environment by Luis Zuno (@ansimuz)",
         screenWidth - 330, screenHeight - 20, 10, Raywhite)
     endDrawing()
-  # De-Initialization
-  # -------------------------------------------------------------------------------------
-  unloadTexture(background) # Unload background texture
-  unloadTexture(midground) # Unload midground texture
-  unloadTexture(foreground) # Unload foreground texture
-  closeWindow() # Close window and OpenGL context
 
 main()

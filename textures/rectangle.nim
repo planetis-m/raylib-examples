@@ -10,7 +10,7 @@
 #
 # ***************************************************************************************
 
-import nimraylib_now, std/lenientops
+import raylib, std/[lenientops, strutils]
 
 const
   MaxFrameSpeed = 15
@@ -23,7 +23,7 @@ proc main =
   # Initialization
   # -------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [texture] example - texture rectangle")
-  defer: closeWindow()
+  defer: closeWindow() # Close window and OpenGL context
   # NOTE: Textures MUST be loaded after Window initialization (OpenGL context is requiRed)
   let scarfy = loadTexture("resources/scarfy.png") # Texture loading
   let position = Vector2(x: 350, y: 280)
@@ -61,7 +61,7 @@ proc main =
     drawRectangleLines(15 + frameRec.x.int32, 40 + frameRec.y.int32, frameRec.width.int32,
         frameRec.height.int32, Red)
     drawText("FRAME SPEED: ", 165, 210, 10, DarkGray)
-    drawText(textFormat("%02i FPS", framesSpeed), 575, 210, 10, DarkGray)
+    drawText(format("$# FPS", framesSpeed).cstring, 575, 210, 10, DarkGray)
     drawText("PRESS RIGHT/LEFT KEYS to CHANGE SPEED!", 290, 240, 10, DarkGray)
     for i in 0 ..< MaxFrameSpeed:
       if i < framesSpeed:
