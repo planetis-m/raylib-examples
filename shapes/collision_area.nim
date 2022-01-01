@@ -80,7 +80,7 @@ proc main =
           screenUpperLimit div 2 - 10, 20, Black)
       # Draw collision area
       drawText(format("Collision Area: $#", boxCollision.width.int32 *
-          boxCollision.height.int32).cstring, getScreenWidth() div 2 - 100,
+          boxCollision.height.int32), getScreenWidth() div 2 - 100,
           screenUpperLimit + 10, 20, Black)
     drawFPS(10, 10)
     endDrawing()

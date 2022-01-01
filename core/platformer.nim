@@ -185,7 +185,7 @@ proc main =
     updateCameraCenterInsideMap,
     updateCameraCenterSmoothFollow,
     updateCameraEvenOutOnLanding,
-    updateCameraPlayerBoundsPush,
+    updateCameraPlayerBoundsPush
   ]
   var cameraOption = 0
   let cameraDescriptions = [
@@ -233,7 +233,7 @@ proc main =
     drawText("- Mouse Wheel to Zoom in-out, R to reset zoom", 40, 80, 10, DarkGray)
     drawText("- C to change camera mode", 40, 100, 10, DarkGray)
     drawText("Current camera mode:", 20, 120, 10, Black)
-    drawText(cameraDescriptions[cameraOption].cstring, 40, 140, 10, DarkGray)
+    drawText(cameraDescriptions[cameraOption], 40, 140, 10, DarkGray)
     endDrawing()
   # De-Initialization
   # -------------------------------------------------------------------------------------

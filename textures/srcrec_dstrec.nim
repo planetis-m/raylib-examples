@@ -30,7 +30,7 @@ proc main =
     # Draw
     # -----------------------------------------------------------------------------------
     beginDrawing()
-    clearBackground(Raywhite)
+    clearBackground(RayWhite)
     # NOTE: Using DrawTexturePro() we can easily rotate and scale the part of the texture we draw
     # sourceRec defines the part of the texture we use for drawing
     # destRec defines the rectangle where our texture part will fit (scaling it to fit)

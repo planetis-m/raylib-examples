@@ -61,7 +61,7 @@ proc main =
     drawRectangleLines(15 + frameRec.x.int32, 40 + frameRec.y.int32, frameRec.width.int32,
         frameRec.height.int32, Red)
     drawText("FRAME SPEED: ", 165, 210, 10, DarkGray)
-    drawText(format("$# FPS", framesSpeed).cstring, 575, 210, 10, DarkGray)
+    drawText(format("$# FPS", framesSpeed), 575, 210, 10, DarkGray)
     drawText("PRESS RIGHT/LEFT KEYS to CHANGE SPEED!", 290, 240, 10, DarkGray)
     for i in 0 ..< MaxFrameSpeed:
       if i < framesSpeed:
