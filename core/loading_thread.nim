@@ -52,9 +52,9 @@ proc main =
     # -----------------------------------------------------------------------------------
     case state
     of Waiting:
-      if isKeyPressed(Enter):
+      if isKeyPressed(KeyEnter):
         createThread(threadId, loadDataThread)
-        traceLog(Info, "Loading thread initialized successfully")
+        traceLog(LogInfo, "Loading thread initialized successfully")
         state = Loading
     of Loading:
       inc framesCounter
@@ -62,7 +62,7 @@ proc main =
         framesCounter = 0
         state = Finished
     of Finished:
-      if isKeyPressed(Enter):
+      if isKeyPressed(KeyEnter):
         # Reset everything to launch again
         dataLoaded.store(false)
         dataProgress = 0

@@ -5,8 +5,7 @@ const
   screenHeight = 450
 
 proc main =
-  setTraceLogLevel(All)
-  #setConfigFlags(flag(Msaa4xHint, WindowHighdpi))
+  #setConfigFlags(flag(FlagMsaa4xHint, FlagWindowHighdpi))
   initWindow(screenWidth, screenHeight,
       "raylib [models] example - plane rotations (yaw, pitch, roll)")
   defer: closeWindow() # Close window and OpenGL context
@@ -16,11 +15,11 @@ proc main =
   camera.target = Vector3(x: 0, y: 0, z: 0)       # Camera looking at point
   camera.up = Vector3(x: 0, y: 1, z: 0)           # Camera up vector (rotation towards target)
   camera.fovy = 30'f32                            # Camera field-of-view Y
-  camera.projection = Perspective                 # Camera type
+  camera.projection = CameraPerspective           # Camera type
 
   var model = loadModel("resources/models/plane.obj")             # Load model
   let texture = loadTexture("resources/models/plane_diffuse.png") # Load model texture
-  model.materials[0].maps[Diffuse.int32].texture = texture        # Set map diffuse texture
+  model.materials[0].maps[MaterialMapDiffuse].texture = texture   # Set map diffuse texture
 
   var
     pitch: float32 = 0
@@ -34,22 +33,22 @@ proc main =
     # Update
     # -----------------------------------------------------------------------------------
     # Plane pitch (x-axis) controls
-    if isKeyDown(Down): pitch += 0.6'f32
-    elif isKeyDown(Up): pitch -= 0.6'f32
+    if isKeyDown(KeyDown): pitch += 0.6'f32
+    elif isKeyDown(KeyUp): pitch -= 0.6'f32
     else:
       if pitch > 0.3'f32: pitch -= 0.3'f32
       elif pitch < -0.3'f32: pitch += 0.3'f32
 
     # Plane yaw (y-axis) controls
-    if isKeyDown(S): yaw += 1'f32
-    elif isKeyDown(A): yaw -= 1'f32
+    if isKeyDown(KeyS): yaw += 1'f32
+    elif isKeyDown(KeyA): yaw -= 1'f32
     else:
       if yaw > 0'f32: yaw -= 0.5'f32
       elif yaw < 0'f32: yaw += 0.5'f32
 
     # Plane roll (z-axis) controls
-    if isKeyDown(Left): roll += 1'f32
-    elif isKeyDown(Right): roll -= 1'f32
+    if isKeyDown(KeyLeft): roll += 1'f32
+    elif isKeyDown(KeyRight): roll -= 1'f32
     else:
       if roll > 0'f32: roll -= 0.5'f32
       elif roll < 0'f32: roll += 0.5'f32

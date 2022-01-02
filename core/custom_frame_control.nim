@@ -48,11 +48,11 @@ proc main =
     # Update
     # ---------------------------------------------------------------------------------
     pollInputEvents() # Poll input events (SUPPORT_CUSTOM_FRAME_CONTROL)
-    if isKeyPressed(Space):
+    if isKeyPressed(KeySpace):
       pause = not pause
-    if isKeyPressed(Up):
+    if isKeyPressed(KeyUp):
       inc(targetFPS, 20)
-    elif isKeyPressed(Down):
+    elif isKeyPressed(KeyDown):
       dec(targetFPS, 20)
     if targetFPS < 0:
       targetFPS = 0
