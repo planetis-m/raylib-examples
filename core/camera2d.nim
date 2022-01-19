@@ -81,8 +81,10 @@ proc main =
     for i in 0 ..< MaxBuildings:
       drawRectangleRec buildings[i], buildColors[i]
     drawRectangleRec player, Red
-    drawLine camera.target.x.int32, -screenHeight * 10, camera.target.x.int32, screenHeight * 10, Green
-    drawLine -screenWidth * 10, camera.target.y.int32, screenWidth * 10, camera.target.y.int32, Green
+    drawLine camera.target.x.int32, -screenHeight * 10, camera.target.x.int32,
+        screenHeight * 10, Green
+    drawLine -screenWidth * 10, camera.target.y.int32, screenWidth * 10,
+        camera.target.y.int32, Green
     endMode2D()
     drawText "SCREEN AREA", 640, 10, 20, Red
     drawRectangle 0, 0, screenWidth, 5, Red

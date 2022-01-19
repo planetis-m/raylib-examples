@@ -10,12 +10,13 @@ proc main =
       "raylib [models] example - plane rotations (yaw, pitch, roll)")
   defer: closeWindow() # Close window and OpenGL context
 
-  var camera = Camera()
-  camera.position = Vector3(x: 0, y: 50, z: -120) # Camera position perspective
-  camera.target = Vector3(x: 0, y: 0, z: 0)       # Camera looking at point
-  camera.up = Vector3(x: 0, y: 1, z: 0)           # Camera up vector (rotation towards target)
-  camera.fovy = 30'f32                            # Camera field-of-view Y
-  camera.projection = CameraPerspective           # Camera type
+  var camera = Camera(
+    position: Vector3(x: 0, y: 50, z: -120), # Camera position perspective
+    target: Vector3(x: 0, y: 0, z: 0),       # Camera looking at point
+    up: Vector3(x: 0, y: 1, z: 0),           # Camera up vector (rotation towards target)
+    fovy: 30,                                # Camera field-of-view Y
+    projection: CameraPerspective            # Camera type
+  )
 
   var model = loadModel("resources/models/plane.obj")             # Load model
   let texture = loadTexture("resources/models/plane_diffuse.png") # Load model texture

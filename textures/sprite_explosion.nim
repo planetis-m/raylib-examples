@@ -49,8 +49,8 @@ proc main =
             currentLine = 0
             active = false
         framesCounter = 0
-    frameRec.x = frameWidth * currentFrame
-    frameRec.y = frameHeight * currentLine
+    frameRec.x = frameWidth*currentFrame
+    frameRec.y = frameHeight*currentLine
     # -----------------------------------------------------------------------------------
     # Draw
     # -----------------------------------------------------------------------------------
