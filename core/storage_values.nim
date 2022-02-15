@@ -53,10 +53,10 @@ proc main =
     # -------------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(RayWhite)
-    drawText(format("SCORE: $1", score), 280, 130, 40, Maroon)
-    drawText(format("HI-SCORE: $1", hiscore), 210, 200, 50, Black)
+    drawText(&"SCORE: {score}", 280, 130, 40, Maroon)
+    drawText(&"HI-SCORE: {hiscore}", 210, 200, 50, Black)
 
-    drawText(format("frames: $1", framesCounter), 10, 10, 20, Lime)
+    drawText(&"frames: {framesCounter}", 10, 10, 20, Lime)
 
     drawText("Press R to generate random numbers", 220, 40, 20, LightGray)
     drawText("Press ENTER to SAVE values", 250, 310, 20, LightGray)
