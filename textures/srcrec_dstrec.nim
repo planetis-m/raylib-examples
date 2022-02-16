@@ -15,8 +15,8 @@ proc main =
   # Source rectangle (part of the texture to use for drawing)
   let sourceRec = Rectangle(x: 0, y: 0, width: frameWidth.float32, height: frameHeight.float32)
   # Destination rectangle (screen rectangle where drawing part of texture)
-  let destRec = Rectangle(x: screenWidth / 2'f32,
-      y: screenHeight / 2'f32, width: frameWidth * 2'f32, height: frameHeight * 2'f32)
+  let destRec = Rectangle(x: screenWidth/2'f32,
+      y: screenHeight/2'f32, width: frameWidth*2'f32, height: frameHeight*2'f32)
   # Origin of the texture (rotation/scale point), it's relative to destination rectangle size
   let origin = Vector2(x: frameWidth.float32, y: frameHeight.float32)
   var rotation = 0'i32

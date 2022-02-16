@@ -17,7 +17,7 @@ const
   screenHeight = 450
 
 type
-  State {.pure.} = enum
+  State = enum
     Waiting, Loading, Finished
 
 var threadId: Thread[void] # Loading data thread id
@@ -31,7 +31,7 @@ proc loadDataThread() {.thread.} =
   # We simulate data loading with a time counter for 5 seconds
   while timeCounter < 5000:
     var currentTime = cpuTime() - prevTime
-    timeCounter = currentTime.int32 * 1000
+    timeCounter = currentTime.int32*1000
     # We accumulate time over a global variable to be used in
     # main thread as a progress bar
     dataProgress = timeCounter div 10
