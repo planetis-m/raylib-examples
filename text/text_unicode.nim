@@ -102,11 +102,104 @@ proc randomizeEmoji() =
     # Set a random message for this emoji
     emoji[i].message = rand(0..high(messages)).int32
 
+type
+  DrawTextBoxedState = enum
+    MeasureState
+    DrawState
+
 proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
     fontSize: float32; spacing: float32; wordWrap: bool;
     tint: Color; selectStart: int32; selectLength: int32;
-    selectTint: Color; selectBackTint: Color)
+    selectTint: Color; selectBackTint: Color) =
   # Draw text using font inside rectangle limits with support for text selection
+  var selectStart = selectStart
+  let length = len(text).int32 # Total length in bytes of the text, scanned by codepoints in loop
+  var textOffsetY = 0'f32 # Offset between lines (on line break '\n')
+  var textOffsetX = 0'f32 # Offset X to next character to draw
+  let scaleFactor = fontSize / font.baseSize.float32 # Character rectangle scaling factor
+  # Word/character wrapping mechanism variables
+  var state = if wordWrap: MeasureState else: DrawState
+  var startLine = -1'i32
+  # Index where to begin drawing (where a line begins)
+  var endLine = -1'i32
+  # Index where to stop drawing (where a line ends)
+  var lastk = -1'i32
+  # Holds last value of the character position
+  var
+    i = 0'i32
+    k = 0'i32
+  while i < length:
+    # Get next codepoint from byte string and glyph index in font
+    var codepointByteCount = 0'i32
+    var codepoint = getCodepoint(addr(text[i]), addr(codepointByteCount))
+    var index = getGlyphIndex(font, codepoint)
+    # NOTE: Normally we exit the decoding sequence as soon as a bad byte is found (and return 0x3f)
+    # but we need to draw all of the bad bytes using the '?' symbol moving one byte
+    if codepoint == 0x3f:
+      codepointByteCount = 1
+    inc(i, codepointByteCount - 1)
+    var glyphWidth = 0'f32
+    if codepoint != '\n':
+      glyphWidth = if (font.glyphs[index].advanceX == 0): font.recs[index].width *
+          scaleFactor else: font.glyphs[index].advanceX * scaleFactor
+      if i + 1 < length:
+        glyphWidth = glyphWidth + spacing
+    if state == MeasureState:
+      # TODO: There are multiple types of spaces in UNICODE, maybe it's a good idea to add support for more
+      # Ref: http://jkorpela.fi/chars/spaces.html
+      if codepoint == ' ' or codepoint == '\t' or codepoint == '\n':
+        endLine = i
+      if (textOffsetX + glyphWidth) > rec.width:
+        endLine = if (endLine < 1): i else: endLine
+        if i == endLine:
+          dec(endLine, codepointByteCount)
+        if (startLine + codepointByteCount) == endLine:
+          endLine = (i - codepointByteCount)
+        state = not state
+      elif (i + 1) == length:
+        endLine = i
+        state = not state
+      elif codepoint == '\n':
+        state = not state
+      if state == DrawState:
+        textOffsetX = 0
+        i = startLine
+        glyphWidth = 0
+        # Save character position when we switch states
+        var tmp = lastk
+        lastk = k - 1
+        k = tmp
+    else:
+      if codepoint == '\n':
+        if not wordWrap:
+          textOffsetY += (font.baseSize + font.baseSize div 2) * scaleFactor
+          textOffsetX = 0
+      else:
+        if not wordWrap and (textOffsetX + glyphWidth) > rec.width:
+          textOffsetY += (font.baseSize + font.baseSize div 2) * scaleFactor
+          textOffsetX = 0
+        if (textOffsetY + font.baseSize * scaleFactor) > rec.height:
+          break
+        var isGlyphSelected = false
+        if selectStart >= 0 and k >= selectStart and k < (selectStart + selectLength):
+          drawRectangleRec(Rectangle(x: rec.x + textOffsetX - 1, y: rec.y + textOffsetY,
+              width: glyphWidth, height: font.baseSize * scaleFactor)), selectBackTint)
+          isGlyphSelected = true
+        if codepoint != ' ' and codepoint != '\t':
+          drawTextCodepoint(font, codepoint, Vector2(x: rec.x + textOffsetX,
+              y: rec.y + textOffsetY), fontSize, if isGlyphSelected: selectTint else: tint)
+      if wordWrap and (i == endLine):
+        textOffsetY += (font.baseSize + font.baseSize div 2) * scaleFactor
+        textOffsetX = 0
+        startLine = endLine
+        endLine = -1
+        glyphWidth = 0
+        inc(selectStart, lastk - k)
+        k = lastk
+        state = not state
+    textOffsetX += glyphWidth
+    inc(i)
+    inc(k)
 
 proc drawTextBoxed(font: Font; text: string; rec: Rectangle; fontSize: float32;
     spacing: float32; wordWrap: bool; tint: Color) {.inline.} =
@@ -158,6 +251,7 @@ proc main =
     # Draw random emojis in the background
     # -----------------------------------------------------------------------------------
     for i in 0 ..< len(emoji):
+      # Assume that the size of each emoji is one Rune (4 bytes)
       let txt = runeSubStr(emojiCodepoints, emoji[i].index, 1)
       var emojiRect = Rectangle(x: pos.x, y: pos.y, width: fontEmoji.baseSize.float32,
           height: fontEmoji.baseSize.float32)
