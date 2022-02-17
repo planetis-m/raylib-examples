@@ -100,10 +100,10 @@ proc randomizeEmoji() =
     # Generate a random color for this emoji
     emoji[i].color = fade(colorFromHSV(float32((start * (i + 1)) mod 360), 0.6, 0.85), 0.8)
     # Set a random message for this emoji
-    emoji[i].message = rand(0..high(messages)).int32
+    emoji[i].message = rand(0..<len(messages)).int32
 
 type
-  DrawTextBoxedState = enum
+  DrawSelectable = enum
     MeasureState
     DrawState
 
@@ -130,24 +130,23 @@ proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
     k = 0'i32
   while i < length:
     # Get next codepoint from byte string and glyph index in font
-    var codepointByteCount = 0'i32
-    var codepoint = getCodepoint(addr(text[i]), addr(codepointByteCount))
-    var index = getGlyphIndex(font, codepoint)
+    var codepoint = runeAt(text, i)
+    var codepointByteCount = codepoint.size.int32
+    var index = getGlyphIndex(font, codepoint.int32)
     # NOTE: Normally we exit the decoding sequence as soon as a bad byte is found (and return 0x3f)
     # but we need to draw all of the bad bytes using the '?' symbol moving one byte
-    if codepoint == 0x3f:
+    if codepoint == Rune(0x3f):
       codepointByteCount = 1
     inc(i, codepointByteCount - 1)
     var glyphWidth = 0'f32
-    if codepoint != '\n':
+    if codepoint != '\n'.Rune:
       glyphWidth = if (font.glyphs[index].advanceX == 0): font.recs[index].width *
           scaleFactor else: font.glyphs[index].advanceX * scaleFactor
       if i + 1 < length:
         glyphWidth = glyphWidth + spacing
     if state == MeasureState:
-      # TODO: There are multiple types of spaces in UNICODE, maybe it's a good idea to add support for more
-      # Ref: http://jkorpela.fi/chars/spaces.html
-      if codepoint == ' ' or codepoint == '\t' or codepoint == '\n':
+      # TODO: There are multiple types of spaces in UNICODE, maybe use unicode.isWhiteSpace
+      if codepoint == ' '.Rune or codepoint == '\t'.Rune or codepoint == '\n'.Rune:
         endLine = i
       if (textOffsetX + glyphWidth) > rec.width:
         endLine = if (endLine < 1): i else: endLine
@@ -155,12 +154,12 @@ proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
           dec(endLine, codepointByteCount)
         if (startLine + codepointByteCount) == endLine:
           endLine = (i - codepointByteCount)
-        state = not state
+        state = DrawSelectable(1 - state.ord)
       elif (i + 1) == length:
         endLine = i
-        state = not state
-      elif codepoint == '\n':
-        state = not state
+        state = DrawSelectable(1 - state.ord)
+      elif codepoint == '\n'.Rune:
+        state = DrawSelectable(1 - state.ord)
       if state == DrawState:
         textOffsetX = 0
         i = startLine
@@ -170,7 +169,7 @@ proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
         lastk = k - 1
         k = tmp
     else:
-      if codepoint == '\n':
+      if codepoint == '\n'.Rune:
         if not wordWrap:
           textOffsetY += (font.baseSize + font.baseSize div 2) * scaleFactor
           textOffsetX = 0
@@ -183,10 +182,10 @@ proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
         var isGlyphSelected = false
         if selectStart >= 0 and k >= selectStart and k < (selectStart + selectLength):
           drawRectangleRec(Rectangle(x: rec.x + textOffsetX - 1, y: rec.y + textOffsetY,
-              width: glyphWidth, height: font.baseSize * scaleFactor)), selectBackTint)
+              width: glyphWidth, height: font.baseSize * scaleFactor), selectBackTint)
           isGlyphSelected = true
-        if codepoint != ' ' and codepoint != '\t':
-          drawTextCodepoint(font, codepoint, Vector2(x: rec.x + textOffsetX,
+        if codepoint != ' '.Rune and codepoint != '\t'.Rune:
+          drawTextCodepoint(font, codepoint.int32, Vector2(x: rec.x + textOffsetX,
               y: rec.y + textOffsetY), fontSize, if isGlyphSelected: selectTint else: tint)
       if wordWrap and (i == endLine):
         textOffsetY += (font.baseSize + font.baseSize div 2) * scaleFactor
@@ -196,7 +195,7 @@ proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
         glyphWidth = 0
         inc(selectStart, lastk - k)
         k = lastk
-        state = not state
+        state = DrawSelectable(1 - state.ord)
     textOffsetX += glyphWidth
     inc(i)
     inc(k)
@@ -278,7 +277,7 @@ proc main =
       var font = addr(fontDefault)
       # Set correct font for asian languages
       if messages[message].language in ["Chinese", "Korean", "Japanese"]:
-        font = addr(fontAsian)
+        font = addr(fontAsian) # Should have been lent
       var sz = measureTextEx(font[], messages[message].text, font.baseSize.float32, 1)
       if sz.x > 300:
         sz.y = sz.y * (sz.x / 300)
