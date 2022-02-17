@@ -103,7 +103,7 @@ proc randomizeEmoji() =
     emoji[i].message = rand(0..<len(messages)).int32
 
 type
-  DrawSelectable = enum
+  States = enum
     MeasureState
     DrawState
 
@@ -154,12 +154,12 @@ proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
           dec(endLine, codepointByteCount)
         if (startLine + codepointByteCount) == endLine:
           endLine = (i - codepointByteCount)
-        state = DrawSelectable(1 - state.ord)
+        state = States(1 - state.ord)
       elif (i + 1) == length:
         endLine = i
-        state = DrawSelectable(1 - state.ord)
+        state = States(1 - state.ord)
       elif codepoint == '\n'.Rune:
-        state = DrawSelectable(1 - state.ord)
+        state = States(1 - state.ord)
       if state == DrawState:
         textOffsetX = 0
         i = startLine
@@ -195,7 +195,7 @@ proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
         glyphWidth = 0
         inc(selectStart, lastk - k)
         k = lastk
-        state = DrawSelectable(1 - state.ord)
+        state = States(1 - state.ord)
     textOffsetX += glyphWidth
     inc(i)
     inc(k)
