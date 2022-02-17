@@ -69,8 +69,8 @@ proc main =
     endMode3D()
 
     # Draw controls info
-    drawRectangle(30, 370, 260, 70, fade(Green, 0.5'f32))
-    drawRectangleLines(30, 370, 260, 70, fade(DarkGreen, 0.5'f32))
+    drawRectangle(30, 370, 260, 70, fade(Green, 0.5))
+    drawRectangleLines(30, 370, 260, 70, fade(DarkGreen, 0.5))
     drawText("Pitch controlled with: KEY_UP / KEY_DOWN", 40, 380, 10, DarkGray)
     drawText("Roll controlled with: KEY_LEFT / KEY_RIGHT", 40, 400, 10, DarkGray)
     drawText("Yaw controlled with: KEY_A / KEY_S", 40, 420, 10, DarkGray)
