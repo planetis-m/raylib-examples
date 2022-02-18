@@ -134,7 +134,7 @@ proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
     # Get next codepoint from byte string and glyph index in font
     var codepoint = runeAt(text, i)
     var codepointByteCount = codepoint.size.int32
-    var index = getGlyphIndex(font, codepoint.int32)
+    var index = getGlyphIndex(font, codepoint)
     # NOTE: Normally we exit the decoding sequence as soon as a bad byte is found (and return 0x3f)
     # but we need to draw all of the bad bytes using the '?' symbol moving one byte
     if codepoint == Rune(0x3f):
@@ -187,7 +187,7 @@ proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
               width: glyphWidth, height: font.baseSize * scaleFactor), selectBackTint)
           isGlyphSelected = true
         if codepoint != ' '.Rune and codepoint != '\t'.Rune:
-          drawTextCodepoint(font, codepoint.int32, Vector2(x: rec.x + textOffsetX,
+          drawTextCodepoint(font, codepoint, Vector2(x: rec.x + textOffsetX,
               y: rec.y + textOffsetY), fontSize, if isGlyphSelected: selectTint else: tint)
       if wordWrap and (i == endLine):
         textOffsetY += (font.baseSize + font.baseSize div 2) * scaleFactor
@@ -327,6 +327,6 @@ proc main =
     drawText("Each emoji is a unicode character from a font, not a texture... Press [SPACEBAR] to refresh",
         (screenWidth - 484) div 2, screenHeight - 16, 10, Gray)
     endDrawing()
-    # ----------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
 
 main()
