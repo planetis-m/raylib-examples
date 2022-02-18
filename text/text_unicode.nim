@@ -100,12 +100,14 @@ proc randomizeEmoji() =
     # Generate a random color for this emoji
     emoji[i].color = fade(colorFromHSV(float32((start * (i + 1)) mod 360), 0.6, 0.85), 0.8)
     # Set a random message for this emoji
-    emoji[i].message = rand(0..<len(messages)).int32
+    emoji[i].message = rand(0..high(messages).int).int32
 
 type
   States = enum
     MeasureState
     DrawState
+
+proc `not`(x: States): States = States(not x.bool)
 
 proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
     fontSize: float32; spacing: float32; wordWrap: bool;
@@ -154,12 +156,12 @@ proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
           dec(endLine, codepointByteCount)
         if (startLine + codepointByteCount) == endLine:
           endLine = (i - codepointByteCount)
-        state = States(1 - state.ord)
+        state = not state
       elif (i + 1) == length:
         endLine = i
-        state = States(1 - state.ord)
+        state = not state
       elif codepoint == '\n'.Rune:
-        state = States(1 - state.ord)
+        state = not state
       if state == DrawState:
         textOffsetX = 0
         i = startLine
@@ -195,7 +197,7 @@ proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
         glyphWidth = 0
         inc(selectStart, lastk - k)
         k = lastk
-        state = States(1 - state.ord)
+        state = not state
     textOffsetX += glyphWidth
     inc(i)
     inc(k)
