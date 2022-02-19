@@ -18,9 +18,9 @@ proc main =
     projection: CameraPerspective            # Camera type
   )
 
-  var model = loadModel("resources/models/plane.obj")             # Load model
+  var model = loadModel("resources/models/plane.obj") # Load model
   let texture = loadTexture("resources/models/plane_diffuse.png") # Load model texture
-  model.materials[0].maps[MaterialMapDiffuse].texture = texture   # Set map diffuse texture
+  model.materials[0].maps[MaterialMapDiffuse].texture = texture # Set map diffuse texture
 
   var
     pitch: float32 = 0

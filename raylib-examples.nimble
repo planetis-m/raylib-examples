@@ -6,5 +6,5 @@ license       = "Public Domain"
 
 # Dependencies
 requires "nim >= 1.6.0"
-requires "https://github.com/planetis-m/raylib-fever.git>=0.4.0"
+requires "https://github.com/planetis-m/raylib-fever.git>=0.5.1"
 requires "https://github.com/nim-lang/threading.git"

@@ -18,8 +18,10 @@ const
   screenWidth = 800
   screenHeight = 450
 
-proc logCustom(msgType: TraceLogLevel; text: string) =
+proc logCustom(msgType: TraceLogLevel; text: cstring; args: va_list) {.cdecl.} =
   # Custom logging funtion
+  var buffer = newString(128)
+  vsprintf(buffer.cstring, text, args)
   var header = newStringOfCap(36)
   let timeStr = now().format("yyyy-MM-dd hh:mm:ss")
   header.add &"[{timeStr}] "
@@ -29,7 +31,7 @@ proc logCustom(msgType: TraceLogLevel; text: string) =
   of LogWarning: header.add "[WARN]: "
   of LogDebug: header.add "[DEBUG]: "
   else: discard
-  echo(header, text)
+  echo(header, buffer)
 
 proc main =
   # Initialization
