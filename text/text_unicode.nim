@@ -30,7 +30,7 @@ const
     toMsg("Գառը՝ գարնան, ձիւնը՝ ձմռան", "Armenian"),
     toMsg("Jeżu klątw, spłódź Finom część gry hańb!", "Polish"),
     toMsg("Dobrymi chęciami jest piekło wybrukowane.", "Polish"),
-    toMsg("Îți mulțumesc că ai ales raylib.\nȘi sper să ai o zi bună!","Romanian"),
+    toMsg("Îți mulțumesc că ai ales raylib.\nȘi sper să ai o zi bună!", "Romanian"),
     toMsg("Эх, чужак, общий съём цен шляп (юфть) вдрызг!", "Russian"),
     toMsg("Я люблю raylib!", "Russian"),
     toMsg("Молчи, скрывайся и таи\nИ чувства и мечты свои –\nПускай в душевной глубине\nИ всходят и зайдут оне\nКак звезды ясные в ночи-\nЛюбуйся ими – и молчи.", "Russian"),
@@ -142,22 +142,22 @@ proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
     inc(i, codepointByteCount - 1)
     var glyphWidth = 0'f32
     if codepoint != '\n'.Rune:
-      glyphWidth = if (font.glyphs[index].advanceX == 0): font.recs[index].width *
-          scaleFactor else: font.glyphs[index].advanceX * scaleFactor
+      glyphWidth = if font.glyphs[index].advanceX == 0: font.recs[index].width * scaleFactor
+          else: font.glyphs[index].advanceX * scaleFactor
       if i + 1 < length:
         glyphWidth = glyphWidth + spacing
     if state == MeasureState:
       # TODO: There are multiple types of spaces in UNICODE, maybe use unicode.isWhiteSpace
       if codepoint == ' '.Rune or codepoint == '\t'.Rune or codepoint == '\n'.Rune:
         endLine = i
-      if (textOffsetX + glyphWidth) > rec.width:
-        endLine = if (endLine < 1): i else: endLine
+      if textOffsetX + glyphWidth > rec.width:
+        endLine = if endLine < 1: i else: endLine
         if i == endLine:
           dec(endLine, codepointByteCount)
-        if (startLine + codepointByteCount) == endLine:
-          endLine = (i - codepointByteCount)
+        if startLine + codepointByteCount == endLine:
+          endLine = i - codepointByteCount
         state = not state
-      elif (i + 1) == length:
+      elif i + 1 == length:
         endLine = i
         state = not state
       elif codepoint == '\n'.Rune:
@@ -176,20 +176,20 @@ proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
           textOffsetY += (font.baseSize + font.baseSize div 2) * scaleFactor
           textOffsetX = 0
       else:
-        if not wordWrap and (textOffsetX + glyphWidth) > rec.width:
+        if not wordWrap and textOffsetX + glyphWidth > rec.width:
           textOffsetY += (font.baseSize + font.baseSize div 2) * scaleFactor
           textOffsetX = 0
-        if (textOffsetY + font.baseSize * scaleFactor) > rec.height:
+        if textOffsetY + font.baseSize * scaleFactor > rec.height:
           break
         var isGlyphSelected = false
-        if selectStart >= 0 and k >= selectStart and k < (selectStart + selectLength):
+        if selectStart >= 0 and k >= selectStart and k < selectStart + selectLength:
           drawRectangleRec(Rectangle(x: rec.x + textOffsetX - 1, y: rec.y + textOffsetY,
               width: glyphWidth, height: font.baseSize * scaleFactor), selectBackTint)
           isGlyphSelected = true
         if codepoint != ' '.Rune and codepoint != '\t'.Rune:
           drawTextCodepoint(font, codepoint, Vector2(x: rec.x + textOffsetX,
               y: rec.y + textOffsetY), fontSize, if isGlyphSelected: selectTint else: tint)
-      if wordWrap and (i == endLine):
+      if wordWrap and i == endLine:
         textOffsetY += (font.baseSize + font.baseSize div 2) * scaleFactor
         textOffsetX = 0
         startLine = endLine
@@ -214,6 +214,7 @@ proc drawTextBoxed(font: Font; text: string; rec: Rectangle; fontSize: float32;
 proc main =
   # Initialization
   # -------------------------------------------------------------------------------------
+  #randomize()
   setConfigFlags(flag(FlagMsaa4xHint, FlagVsyncHint))
   initWindow(screenWidth, screenHeight, "raylib [text] example - unicode")
   defer: closeWindow() # Close window and OpenGL context
@@ -236,8 +237,8 @@ proc main =
     # Add a new set of emojis when SPACE is pressed
     if isKeyPressed(KeySpace):
       randomizeEmoji()
-    if isMouseButtonPressed(MouseButtonLeft) and (hovered != -1) and
-        (hovered != selected):
+    if isMouseButtonPressed(MouseButtonLeft) and hovered != -1 and
+        hovered != selected:
       selected = hovered
       selectedPos = hoveredPos
       setClipboardText(messages[emoji[selected].message].text)
@@ -263,7 +264,7 @@ proc main =
         drawTextEx(fontEmoji, txt, pos, fontEmoji.baseSize.float32, 1, emoji[i].color)
         hovered = i
         hoveredPos = pos
-      if i != 0 and (i mod EmojiPerWidth == 0):
+      if i != 0 and i mod EmojiPerWidth == 0:
         pos.y += fontEmoji.baseSize + 24.25'f32
         pos.x = 28.8'f32
       else:
@@ -315,11 +316,11 @@ proc main =
       drawTextBoxed(font[], messages[message].text, textRect,
           font.baseSize.float32, 1, true, White)
       # Draw the info text below the main message
-      var size = len(messages[message].text)
-      var length = runeLen(messages[message].text)
+      let size = len(messages[message].text)
+      let length = runeLen(messages[message].text)
       let info = &"{messages[message].language} {length} characters {size} bytes"
       sz = measureTextEx(getFontDefault(), info, 10, 1)
-      var pos = Vector2(x: textRect.x + textRect.width - sz.x,
+      let pos = Vector2(x: textRect.x + textRect.width - sz.x,
           y: msgRect.y + msgRect.height - sz.y - 2)
       drawText(info, pos.x.int32, pos.y.int32, 10, RayWhite)
     drawText("These emojis have something to tell you, click each to find out!",
