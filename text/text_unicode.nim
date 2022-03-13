@@ -98,16 +98,16 @@ proc randomizeEmoji() =
     # 0-179 emoji codepoints (from emoji char array) each 4bytes
     emoji[i].index = rand(0..179).int32
     # Generate a random color for this emoji
-    emoji[i].color = fade(colorFromHSV(float32((start * (i + 1)) mod 360), 0.6, 0.85), 0.8)
+    emoji[i].color = fade(colorFromHSV(float32(start * (i + 1) mod 360), 0.6, 0.85), 0.8)
     # Set a random message for this emoji
     emoji[i].message = rand(0..high(messages).int).int32
 
 type
-  States = enum
+  State = enum
     MeasureState
     DrawState
 
-proc `not`(x: States): States = States(not x.bool)
+proc `not`(x: State): State = State(not x.bool)
 
 proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
     fontSize: float32; spacing: float32; wordWrap: bool;
@@ -272,7 +272,7 @@ proc main =
     # -----------------------------------------------------------------------------------
     # Draw the message when a emoji is selected
     # -----------------------------------------------------------------------------------
-    if selected != -1'i32:
+    if selected != -1:
       let
         message = emoji[selected].message
         horizontalPadding = 20'i32
