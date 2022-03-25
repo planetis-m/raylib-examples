@@ -104,8 +104,8 @@ proc randomizeEmoji() =
 
 type
   State = enum
-    MeasureState
-    DrawState
+    Measure
+    Draw
 
 proc `not`(x: State): State = State(not x.bool)
 
@@ -120,7 +120,7 @@ proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
   var textOffsetX = 0'f32 # Offset X to next character to draw
   let scaleFactor = fontSize / font.baseSize.float32 # Character rectangle scaling factor
   # Word/character wrapping mechanism variables
-  var state = if wordWrap: MeasureState else: DrawState
+  var state = if wordWrap: Measure else: Draw
   var startLine = -1'i32
   # Index where to begin drawing (where a line begins)
   var endLine = -1'i32
@@ -146,7 +146,7 @@ proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
           else: font.glyphs[index].advanceX * scaleFactor
       if i + 1 < length:
         glyphWidth = glyphWidth + spacing
-    if state == MeasureState:
+    if state == Measure:
       # TODO: There are multiple types of spaces in UNICODE, maybe use unicode.isWhiteSpace
       if codepoint == ' '.Rune or codepoint == '\t'.Rune or codepoint == '\n'.Rune:
         endLine = i
@@ -162,7 +162,7 @@ proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
         state = not state
       elif codepoint == '\n'.Rune:
         state = not state
-      if state == DrawState:
+      if state == Draw:
         textOffsetX = 0
         i = startLine
         glyphWidth = 0
@@ -214,7 +214,7 @@ proc drawTextBoxed(font: Font; text: string; rec: Rectangle; fontSize: float32;
 proc main =
   # Initialization
   # -------------------------------------------------------------------------------------
-  #randomize()
+  randomize()
   setConfigFlags(flag(FlagMsaa4xHint, FlagVsyncHint))
   initWindow(screenWidth, screenHeight, "raylib [text] example - unicode")
   defer: closeWindow() # Close window and OpenGL context

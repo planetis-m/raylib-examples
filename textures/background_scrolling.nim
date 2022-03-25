@@ -60,7 +60,7 @@ proc main =
     drawTextureEx(foreground, Vector2(x: foreground.width * 2 + scrollingFore, y: 70), 0, 2, White)
     drawText("BACKGROUND SCROLLING & PARALLAX", 10, 10, 20, Red)
     drawText("(c) Cyberpunk Street Environment by Luis Zuno (@ansimuz)",
-        screenWidth - 330, screenHeight - 20, 10, Raywhite)
+        screenWidth - 330, screenHeight - 20, 10, RayWhite)
     endDrawing()
 
 main()

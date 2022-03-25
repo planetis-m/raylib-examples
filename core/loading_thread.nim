@@ -9,7 +9,6 @@
 # Converted in 2021 by greenfork
 #
 # ***************************************************************************************
-
 import std/times, threading/atomics, raylib
 
 const
