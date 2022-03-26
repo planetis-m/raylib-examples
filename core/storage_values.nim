@@ -8,6 +8,7 @@
 # Copyright (c) 2015 Ramon Santamaria (@raysan5)
 #
 # ***************************************************************************************
+
 import raylib, std/[random, lenientops, strformat]
 
 const

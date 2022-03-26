@@ -27,7 +27,7 @@ proc main =
   # NOTE: Textures MUST be loaded after Window initialization (OpenGL context is requiRed)
   let scarfy = loadTexture("resources/scarfy.png") # Texture loading
   let position = Vector2(x: 350, y: 280)
-  var frameRec = Rectangle(x: 0, y: 0, width: scarfy.width / 6'f32, height: scarfy.height.float32)
+  var frameRec = Rectangle(x: 0, y: 0, width: scarfy.width/6'f32, height: scarfy.height.float32)
   var currentFrame = 0'i32
   var framesCounter = 0'i32
   var framesSpeed = 8'i32 # Number of spritesheet frames shown by second
@@ -43,7 +43,7 @@ proc main =
       inc currentFrame
       if currentFrame > 5:
         currentFrame = 0
-      frameRec.x = currentFrame * (scarfy.width / 6'f32)
+      frameRec.x = currentFrame*(scarfy.width/6'f32)
     if isKeyPressed(KeyRight):
       inc framesSpeed
     elif isKeyPressed(KeyLeft):
@@ -63,10 +63,10 @@ proc main =
     drawText("FRAME SPEED: ", 165, 210, 10, DarkGray)
     drawText(format("$# FPS", framesSpeed), 575, 210, 10, DarkGray)
     drawText("PRESS RIGHT/LEFT KEYS to CHANGE SPEED!", 290, 240, 10, DarkGray)
-    for i in 0 ..< MaxFrameSpeed:
+    for i in 0..<MaxFrameSpeed:
       if i < framesSpeed:
-        drawRectangle(250 + 21 * i.int32, 205, 20, 20, Red)
-      drawRectangleLines(250 + 21 * i.int32, 205, 20, 20, Maroon)
+        drawRectangle(250 + 21*i.int32, 205, 20, 20, Red)
+      drawRectangleLines(250 + 21*i.int32, 205, 20, 20, Maroon)
     drawTextureRec(scarfy, frameRec, position, White) # Draw part of the texture
     drawText("(c) Scarfy sprite by Eiden Marsal", screenWidth - 200,
         screenHeight - 20, 10, Gray)

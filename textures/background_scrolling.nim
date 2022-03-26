@@ -10,7 +10,7 @@
 #
 # ***************************************************************************************
 
-import std/lenientops, raylib, raymath
+import std/lenientops, raylib
 
 const
   screenWidth = 800
@@ -39,7 +39,7 @@ proc main =
     scrollingBack -= 0.1
     scrollingMid -= 0.5
     scrollingFore -= 1.0
-    # NOTE: Texture is scaled twice its size, so it sould be consideRed on scrolling
+    # NOTE: Texture is scaled twice its size, so it sould be considered on scrolling
     if scrollingBack <= -background.width * 2'f32:
       scrollingBack = 0
     if scrollingMid <= -midground.width * 2'f32:

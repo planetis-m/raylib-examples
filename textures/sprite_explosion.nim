@@ -1,3 +1,14 @@
+# ***************************************************************************************
+#
+# raylib [textures] example - sprite explosion
+#
+# This example has been created using raylib 2.5 (www.raylib.com)
+# raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
+#
+# Copyright (c) 2019 Anata and Ramon Santamaria (@raysan5)
+#
+# ***************************************************************************************
+
 import raylib, std/lenientops
 
 const
