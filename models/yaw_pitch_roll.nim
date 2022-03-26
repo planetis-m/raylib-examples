@@ -18,7 +18,7 @@ const
   screenHeight = 450
 
 proc main =
-  #setConfigFlags(flag(FlagMsaa4xHint, FlagWindowHighdpi))
+  #setConfigFlags(flags(FlagMsaa4xHint, FlagWindowHighdpi))
   initWindow(screenWidth, screenHeight,
       "raylib [models] example - plane rotations (yaw, pitch, roll)")
   defer: closeWindow() # Close window and OpenGL context

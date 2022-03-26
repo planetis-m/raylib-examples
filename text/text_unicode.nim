@@ -228,7 +228,7 @@ proc main =
   # Initialization
   # -------------------------------------------------------------------------------------
   randomize()
-  setConfigFlags(flag(FlagMsaa4xHint, FlagVsyncHint))
+  setConfigFlags(flags(FlagMsaa4xHint, FlagVsyncHint))
   initWindow(screenWidth, screenHeight, "raylib [text] example - unicode")
   defer: closeWindow() # Close window and OpenGL context
   # Load the font resources
