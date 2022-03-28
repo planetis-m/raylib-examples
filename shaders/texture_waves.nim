@@ -29,15 +29,17 @@ when defined(PlatformDesktop):
     glslVersion = 330
 else:
   const
-    glslVersion = 100
+    glslVersion = 100 # PlatformRpi, PlatformAndroid, PlatformWeb
 
 proc main =
   # Initialization
   # -------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [shaders] example - texture waves")
   defer: closeWindow() # Close window and OpenGL context
+
   # Load texture texture to apply shaders
   let texture = loadTexture("resources/space.png")
+
   # Load shader and setup location points and values
   let shader = loadShader("", &"resources/shaders/glsl{glslVersion}/wave.fs")
   let secondsLoc = getShaderLocation(shader, "secondes")
@@ -47,6 +49,7 @@ proc main =
   let ampYLoc = getShaderLocation(shader, "ampY")
   let speedXLoc = getShaderLocation(shader, "speedX")
   let speedYLoc = getShaderLocation(shader, "speedY")
+
   # Shader uniform values that can be updated at any time
   var freqX = 25.0'f32
   var freqY = 25.0'f32
@@ -54,6 +57,7 @@ proc main =
   var ampY = 5.0'f32
   var speedX = 8.0'f32
   var speedY = 8.0'f32
+
   var screenSize = [getScreenWidth().float32, getScreenHeight().float32]
   setShaderValue(shader, getShaderLocation(shader, "size"), screenSize)
   setShaderValue(shader, freqXLoc, freqX)
@@ -62,10 +66,11 @@ proc main =
   setShaderValue(shader, ampYLoc, ampY)
   setShaderValue(shader, speedXLoc, speedX)
   setShaderValue(shader, speedYLoc, speedY)
+
   var seconds = 0.0'f32
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
-  # -------------------------------------------------------------------------------------
   # Main game loop
+  # -------------------------------------------------------------------------------------
   while not windowShouldClose(): #  Detect window close button or ESC key
     # Update
     # -----------------------------------------------------------------------------------

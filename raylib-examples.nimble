@@ -6,5 +6,5 @@ license       = "Public Domain"
 
 # Dependencies
 requires "nim >= 1.6.0"
-requires "naylib >= 1.1.5"
+requires "naylib >= 1.1.6"
 requires "https://github.com/nim-lang/threading.git"
