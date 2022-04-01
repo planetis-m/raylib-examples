@@ -18,7 +18,7 @@
 #
 # ***************************************************************************************
 
-import raylib, std/strformat
+import raylib, std/[strformat, sequtils]
 
 when defined(PlatformDesktop):
   const
@@ -35,32 +35,32 @@ const
   ColorsPerPalette = 8
   ValuesPerColor = 3
 
-  palettes: array[MaxPalettes, array[ColorsPerPalette, array[ValuesPerColor, int32]]] = [
-    [[0'i32, 0, 0],
-     [255'i32, 0, 0],
-     [0'i32, 255, 0],
-     [0'i32, 0, 255],
-     [0'i32, 255, 255],
-     [255'i32, 0, 255],
-     [255'i32, 255, 0],
-     [255'i32, 255, 255]], # 3-BIT RGB
-    [[4'i32, 12, 6],
-     [17'i32, 35, 24],
-     [30'i32, 58, 41],
-     [48'i32, 93, 66],
-     [77'i32, 128, 97],
-     [137'i32, 162, 87],
-     [190'i32, 220, 127],
-     [238'i32, 255, 204]], # AMMO-8 (GameBoy-like)
-    [[21'i32, 25, 26],
-     [138'i32, 76, 88],
-     [217'i32, 98, 117],
-     [230'i32, 184, 193],
-     [69'i32, 107, 115],
-     [75'i32, 151, 166],
-     [165'i32, 189, 194],
-     [255'i32, 245, 247]] # RKBV (2-strip film)
-  ]
+  palettes: array[MaxPalettes, array[ColorsPerPalette, array[ValuesPerColor, int32]]] = mapLiterals([
+    [[0, 0, 0],
+     [255, 0, 0],
+     [0, 255, 0],
+     [0, 0, 255],
+     [0, 255, 255],
+     [255, 0, 255],
+     [255, 255, 0],
+     [255, 255, 255]], # 3-BIT RGB
+    [[4, 12, 6],
+     [17, 35, 24],
+     [30, 58, 41],
+     [48, 93, 66],
+     [77, 128, 97],
+     [137, 162, 87],
+     [190, 220, 127],
+     [238, 255, 204]], # AMMO-8 (GameBoy-like)
+    [[21, 25, 26],
+     [138, 76, 88],
+     [217, 98, 117],
+     [230, 184, 193],
+     [69, 107, 115],
+     [75, 151, 166],
+     [165, 189, 194],
+     [255, 245, 247]] # RKBV (2-strip film)
+  ], int32)
 
   paletteText = [
     "3-BIT RGB",
@@ -69,7 +69,6 @@ const
   ]
 
 proc main =
-  # RKBV (2-strip film)
   # Initialization
   # -------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [shaders] example - color palette switch")
@@ -84,8 +83,8 @@ proc main =
   var currentPalette = 0
   const lineHeight = screenHeight div ColorsPerPalette
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
-  # -------------------------------------------------------------------------------------
   # Main game loop
+  # -------------------------------------------------------------------------------------
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # -----------------------------------------------------------------------------------
