@@ -31,6 +31,7 @@ const
   screenWidth = 800
   screenHeight = 450
 
+const
   MaxPalettes = 3
   ColorsPerPalette = 8
   ValuesPerColor = 3
