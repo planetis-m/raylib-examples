@@ -35,7 +35,7 @@ proc main =
   initWindow(screenWidth, screenHeight, "raylib [textures] example - bunnymark")
   defer: closeWindow() # Close window and OpenGL context
   # Load bunny texture
-  var texBunny = loadTexture("resources/wabbit_alpha.png")
+  let texBunny = loadTexture("resources/wabbit_alpha.png")
   var bunnies = newSeq[Bunny](MaxBunnies) # Bunnies seq
   var bunniesCount = 0 # Bunnies counter
   setTargetFPS(60) # Set our game to run at 60 frames-per-second

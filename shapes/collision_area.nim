@@ -22,15 +22,15 @@ proc main =
   # Box A: Moving box
   var boxA = Rectangle(
     x: 10,
-    y: getScreenHeight() / 2'f32 - 50,
+    y: getScreenHeight()/2'f32 - 50,
     width: 200,
     height: 100
   )
   var boxASpeedX = 4'i32
   # Box B: Mouse moved box
   var boxB = Rectangle(
-    x: getScreenWidth() / 2'f32 - 30,
-    y: getScreenHeight() / 2'f32 - 30,
+    x: getScreenWidth()/2'f32 - 30,
+    y: getScreenHeight()/2'f32 - 30,
     width: 60,
     height: 60
   )
@@ -49,8 +49,8 @@ proc main =
       boxA.x += boxASpeedX.float32
     if boxA.x + boxA.width >= getScreenWidth() or boxA.x <= 0:
       boxASpeedX = boxASpeedX * -1
-    boxB.x = getMouseX() - boxB.width / 2
-    boxB.y = getMouseY() - boxB.height / 2
+    boxB.x = getMouseX() - boxB.width/2'f32
+    boxB.y = getMouseY() - boxB.height/2'f32
     # Make sure Box B does not go out of move area limits
     if boxB.x + boxB.width >= getScreenWidth():
       boxB.x = getScreenWidth() - boxB.width

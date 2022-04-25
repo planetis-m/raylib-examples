@@ -48,7 +48,7 @@ proc main =
   # Load SDF required shader (we use default vertex shader)
   var shader = loadShader("", &"resources/shaders/glsl{glslVersion}/sdf.fs")
   setTextureFilter(fontSdf.texture, TextureFilterBilinear) # Required for SDF font
-  var fontPosition = Vector2(x: 40, y: screenHeight / 2'f32 - 50)
+  var fontPosition = Vector2(x: 40, y: screenHeight/2'f32 - 50)
   var textSize = Vector2(x: 0, y: 0)
   var fontSize = 16'f32
   var currentFont = 0 # 0 - fontDefault, 1 - fontSdf
@@ -58,7 +58,7 @@ proc main =
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # -----------------------------------------------------------------------------------
-    fontSize += getMouseWheelMove() * 8
+    fontSize += getMouseWheelMove()*8
     if fontSize < 6:
       fontSize = 6
     if isKeyDown(KeySpace):
@@ -69,8 +69,8 @@ proc main =
       textSize = measureTextEx(fontDefault, msg, fontSize, 0)
     else:
       textSize = measureTextEx(fontSdf, msg, fontSize, 0)
-    fontPosition.x = getScreenWidth() / 2'f32 - textSize.x / 2'f32
-    fontPosition.y = getScreenHeight() / 2'f32 - textSize.y / 2'f32 + 80
+    fontPosition.x = getScreenWidth()/2'f32 - textSize.x/2'f32
+    fontPosition.y = getScreenHeight()/2'f32 - textSize.y/2'f32 + 80
     # Draw
     # -----------------------------------------------------------------------------------
     beginDrawing()

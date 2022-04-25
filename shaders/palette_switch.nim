@@ -105,7 +105,7 @@ proc main =
     for i in 0..<ColorsPerPalette:
       # Draw horizontal screen-wide rectangles with increasing "palette index"
       # The used palette index is encoded in the RGB components of the pixel
-      drawRectangle(0, lineHeight * i.int32, getScreenWidth(), lineHeight,
+      drawRectangle(0, lineHeight*i.int32, getScreenWidth(), lineHeight,
           Color(r: i.uint8, g: i.uint8, b: i.uint8, a: 255))
     endShaderMode()
     drawText("< >", 10, 10, 30, DarkBlue)
