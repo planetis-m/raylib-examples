@@ -28,7 +28,7 @@ proc audioProcessEffectLPF(buffer: pointer; frames: uint32) {.cdecl.} =
     buffer[i + 1] = low[1]
 
 var delayBuffer: seq[float32]
-var delayBufferSize = 0
+var delayBufferSize = 0 #48000
 var delayReadIndex = 2
 var delayWriteIndex = 0
 
@@ -36,14 +36,14 @@ proc audioProcessEffectDelay(buffer: pointer; frames: uint32) {.cdecl.} =
   # Audio effect: delay
   let buffer = cast[ptr UncheckedArray[float32]](buffer)
   for i in countup(frames*2, 2):
-    let leftDelay = delayBuffer[delayReadIndex] # ERROR: Reading buffer -> WHY??? Maybe thread related???4
+    let leftDelay = delayBuffer[delayReadIndex] # ERROR: Reading buffer -> WHY??? Maybe thread related???
     inc(delayReadIndex)
     let rightDelay = delayBuffer[delayReadIndex]
     inc(delayReadIndex)
     if delayReadIndex == delayBufferSize:
       delayReadIndex = 0
-    buffer[i] = 0.5'f32 * buffer[i] + 0.5'f32 * leftDelay
-    buffer[i + 1] = 0.5'f32 * buffer[i + 1] + 0.5'f32 * rightDelay
+    buffer[i] = 0.5'f32*buffer[i] + 0.5'f32*leftDelay
+    buffer[i + 1] = 0.5'f32*buffer[i + 1] + 0.5'f32*rightDelay
     delayBuffer[delayWriteIndex] = buffer[i]
     inc(delayWriteIndex)
     delayBuffer[delayWriteIndex] = buffer[i + 1]
@@ -59,7 +59,7 @@ proc main =
   # Initialization
   # --------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight,
-             "raylib [audio] example - music playing (streaming)")
+      "raylib [audio] example - music playing (streaming)")
   defer: closeWindow() # Close window and OpenGL context
   initAudioDevice()
   defer: closeAudioDevice() # Close audio device (music streaming is automatically stopped)
@@ -104,7 +104,7 @@ proc main =
         attachAudioStreamProcessor(music.stream, audioProcessEffectDelay)
       else:
         detachAudioStreamProcessor(music.stream, audioProcessEffectDelay)
-    timePlayed = getMusicTimePlayed(music) / getMusicTimeLength(music) * 400
+    timePlayed = getMusicTimePlayed(music) / getMusicTimeLength(music)*400
     if timePlayed > 400:
       stopMusicStream(music)
     beginDrawing()
