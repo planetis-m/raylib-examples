@@ -11,7 +11,7 @@
 #
 # ***************************************************************************************
 
-import raylib, raymath, std/[math, lenientops]
+import raylib, raymath, std/math
 
 const
   screenWidth = 800
