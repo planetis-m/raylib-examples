@@ -290,11 +290,11 @@ proc main =
         message = emoji[selected].message
         horizontalPadding = 20'i32
         verticalPadding = 30'i32
-      var font = addr(fontDefault)
+      var font {.cursor.} = fontDefault
       # Set correct font for asian languages
       if messages[message].language in ["Chinese", "Korean", "Japanese"]:
-        font = addr(fontAsian) # Should have been lent
-      var sz = measureTextEx(font[], messages[message].text, font.baseSize.float32, 1)
+        font = fontAsian
+      var sz = measureTextEx(font, messages[message].text, font.baseSize.float32, 1)
       if sz.x > 300:
         sz.y = sz.y * (sz.x / 300)
         sz.x = 300
@@ -326,7 +326,7 @@ proc main =
       let textRect = Rectangle(x: msgRect.x + horizontalPadding div 2,
           y: msgRect.y + verticalPadding div 2,
           width: msgRect.width - horizontalPadding, height: msgRect.height)
-      drawTextBoxed(font[], messages[message].text, textRect,
+      drawTextBoxed(font, messages[message].text, textRect,
           font.baseSize.float32, 1, true, White)
       # Draw the info text below the main message
       let size = len(messages[message].text)
