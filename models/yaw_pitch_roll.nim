@@ -54,15 +54,15 @@ proc main =
       elif pitch < -0.3'f32: pitch += 0.3'f32
 
     # Plane yaw (y-axis) controls
-    if isKeyDown(KeyS): yaw += 1'f32
-    elif isKeyDown(KeyA): yaw -= 1'f32
+    if isKeyDown(KeyS): yaw -= 1'f32
+    elif isKeyDown(KeyA): yaw += 1'f32
     else:
       if yaw > 0'f32: yaw -= 0.5'f32
       elif yaw < 0'f32: yaw += 0.5'f32
 
     # Plane roll (z-axis) controls
-    if isKeyDown(KeyLeft): roll += 1'f32
-    elif isKeyDown(KeyRight): roll -= 1'f32
+    if isKeyDown(KeyLeft): roll -= 1'f32
+    elif isKeyDown(KeyRight): roll += 1'f32
     else:
       if roll > 0'f32: roll -= 0.5'f32
       elif roll < 0'f32: roll += 0.5'f32
