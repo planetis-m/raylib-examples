@@ -47,7 +47,7 @@ proc updatePlayer(player: var Player, envItems: openArray[EnvItem],
     let ei = envItems[i]
     let p = player.position
     if ei.blocking and ei.rect.x <= p.x and ei.rect.x + ei.rect.width >= p.x and
-        ei.rect.y >= p.y and ei.rect.y < p.y + player.speed * delta:
+        ei.rect.y >= p.y and ei.rect.y <= p.y + player.speed * delta:
       hitObstacle = true
       player.speed = 0
       player.position.y = ei.rect.y

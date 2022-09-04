@@ -37,18 +37,22 @@ proc main =
     # Update
     # ------------------------------------------------------------------------------------
     updateMusicStream(music) # Update music buffer with new stream data
+
     # Restart music playing (stop and play)
     if isKeyPressed(KeySpace):
       stopMusicStream(music)
       playMusicStream(music)
+
     # Pause/Resume music playing
     if isKeyPressed(KeyP):
       pause = not pause
       if pause: pauseMusicStream(music)
       else: resumeMusicStream(music)
+
     # Get normalized time played for current music stream
     timePlayed = getMusicTimePlayed(music) / getMusicTimeLength(music)
     if timePlayed > 1: timePlayed = 1 # Make sure time played is no longer than music
+
     beginDrawing()
     clearBackground(RayWhite)
     drawText("MUSIC SHOULD BE PLAYING!", 255, 150, 20, LightGray)

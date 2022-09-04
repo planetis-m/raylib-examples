@@ -18,7 +18,7 @@
 #
 # ***************************************************************************************
 
-import raylib, std/[strformat, sequtils]
+import raylib, std/strformat
 
 when defined(PlatformDesktop):
   const
@@ -36,7 +36,7 @@ const
   ColorsPerPalette = 8
   ValuesPerColor = 3
 
-  palettes: array[MaxPalettes, array[ColorsPerPalette, array[ValuesPerColor, int32]]] = mapLiterals([
+  palettes: array[MaxPalettes, array[ColorsPerPalette, array[ValuesPerColor, int32]]] = [
     [[0, 0, 0],
      [255, 0, 0],
      [0, 255, 0],
@@ -61,7 +61,7 @@ const
      [75, 151, 166],
      [165, 189, 194],
      [255, 245, 247]] # RKBV (2-strip film)
-  ], int32)
+  ]
 
   paletteText = [
     "3-BIT RGB",

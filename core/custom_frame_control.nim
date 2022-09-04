@@ -86,7 +86,7 @@ proc main =
     if targetFPS > 0:
       waitTime = (1'f32 / targetFPS) - updateDrawTime
       if waitTime > 0:
-        waitTime(float32(waitTime * 1000))
+        waitTime(waitTime.float32)
         currentTime = getTime()
         deltaTime = float32(currentTime - previousTime)
     else:
