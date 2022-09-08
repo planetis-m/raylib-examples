@@ -27,23 +27,23 @@ proc main =
   defer: closeWindow() # Close window and OpenGL context
   initAudioDevice() # Initialize audio device
   defer: closeAudioDevice() # Close audio device
-  # Loaded in CPU memory (RAM) from header file (audio_data.h)
+  # Loaded in CPU memory (RAM) from source file (audio_data.nim)
   # Same as: Wave wave = loadWave("sound.wav")
   let wave = toEmbedded(AudioData, AudioFrameCount, AudioSampleRate, AudioSampleSize, AudioChannels)
 
   # Wave converted to Sound to be played
-  let sound = loadSoundFromWave(wave.Wave)
+  let sound = loadSoundFromWave(wave.Wave) # Convert proc argument to Wave
 
   # With a Wave loaded from file, after Sound is loaded, we can unload Wave
   # but in our case, Wave is embedded in executable, in program .data segment
   # we can not (and should not) try to free that private memory region
   #unloadWave(wave) # Do not unload wave data!
 
-  # Loaded in CPU memory (RAM) from header file (image_data.h)
+  # Loaded in CPU memory (RAM) from source file (image_data.nim)
   # Same as: Image image = loadImage("raylib_logo.png")
   let image = toEmbedded(ImageData, ImageWidth, ImageHeight, ImageFormat)
   # Image converted to Texture (VRAM) to be drawn
-  let texture = loadTextureFromImage(image.Image)
+  let texture = loadTextureFromImage(image.Image) # Convert proc argument to Image
 
   # With an Image loaded from file, after Texture is loaded, we can unload Image
   # but in our case, Image is embedded in executable, in program .data segment
