@@ -28,7 +28,7 @@ proc main =
   initAudioDevice() # Initialize audio device
   defer: closeAudioDevice() # Close audio device
   # Loaded in CPU memory (RAM) from source file (audio_data.nim)
-  # Same as: Wave wave = loadWave("sound.wav")
+  # Same as: let wave = loadWave("sound.wav")
   let wave = toEmbedded(AudioData, AudioFrameCount, AudioSampleRate, AudioSampleSize, AudioChannels)
 
   # Wave converted to Sound to be played
@@ -40,7 +40,7 @@ proc main =
   #unloadWave(wave) # Do not unload wave data!
 
   # Loaded in CPU memory (RAM) from source file (image_data.nim)
-  # Same as: Image image = loadImage("raylib_logo.png")
+  # Same as: let image = loadImage("raylib_logo.png")
   let image = toEmbedded(ImageData, ImageWidth, ImageHeight, ImageFormat)
   # Image converted to Texture (VRAM) to be drawn
   let texture = loadTextureFromImage(image.Image) # Convert proc argument to Image
