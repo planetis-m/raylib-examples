@@ -19,7 +19,7 @@ const
   screenHeight = 450
 
 proc logCustom(msgType: TraceLogLevel; text: cstring; args: va_list) {.cdecl.} =
-  # Custom logging funtion
+  # Custom logging function
   var buffer = newString(128)
   vsprintf(buffer.cstring, text, args)
   var header = newStringOfCap(36)
