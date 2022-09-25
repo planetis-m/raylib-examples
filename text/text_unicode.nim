@@ -146,13 +146,13 @@ proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
   while i < length:
     # Get next codepoint from byte string and glyph index in font
     let codepoint = runeAt(text, i)
-    let codepointByteCount = codepoint.size.int32
+    let codepointSize = codepoint.size.int32
     let index = getGlyphIndex(font, codepoint)
     # NOTE: Normally we exit the decoding sequence as soon as a bad byte is found (and return 0xFFFD)
     # but we need to draw all of the bad bytes using the '�' symbol moving three bytes
     #if codepoint == Rune(0xFFFD):
-      #codepointByteCount = 3
-    inc(i, codepointByteCount - 1)
+      #codepointSize = 3
+    inc(i, codepointSize - 1)
     var glyphWidth = 0'f32
     if codepoint != '\n'.Rune:
       glyphWidth = if font.glyphs[index].advanceX == 0: font.recs[index].width * scaleFactor
@@ -166,9 +166,9 @@ proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
       if textOffsetX + glyphWidth > rec.width:
         endLine = if endLine < 1: i else: endLine
         if i == endLine:
-          dec(endLine, codepointByteCount)
-        if startLine + codepointByteCount == endLine:
-          endLine = i - codepointByteCount
+          dec(endLine, codepointSize)
+        if startLine + codepointSize == endLine:
+          endLine = i - codepointSize
         state = not state
       elif i + 1 == length:
         endLine = i
