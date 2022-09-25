@@ -145,9 +145,9 @@ proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
     k = 0'i32
   while i < length:
     # Get next codepoint from byte string and glyph index in font
-    var codepoint = runeAt(text, i)
-    var codepointByteCount = codepoint.size.int32
-    var index = getGlyphIndex(font, codepoint)
+    let codepoint = runeAt(text, i)
+    let codepointByteCount = codepoint.size.int32
+    let index = getGlyphIndex(font, codepoint)
     # NOTE: Normally we exit the decoding sequence as soon as a bad byte is found (and return 0xFFFD)
     # but we need to draw all of the bad bytes using the '�' symbol moving three bytes
     #if codepoint == Rune(0xFFFD):
