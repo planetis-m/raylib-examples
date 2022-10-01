@@ -61,7 +61,8 @@ proc main =
     clearBackground(RayWhite)
     if isGamepadAvailable(0):
       drawText(&"GP1: {getGamepadName(0)}", 10, 10, 10, Black)
-      if getGamepadName(0) in [Xbox360NameId, Xbox360LegacyNameId]:
+      case getGamepadName(0)
+      of Xbox360NameId, Xbox360LegacyNameId:
         drawTexture(texXboxPad, 0, 0, DarkGray)
         # Draw buttons: xbox home
         if isGamepadButtonDown(0, GamepadButtonMiddle): drawCircle(394, 89, 19, Red)
@@ -103,7 +104,7 @@ proc main =
             getGamepadAxisMovement(0, GamepadAxisRightTrigger))/2*70), Red)
         #drawText(&"Xbox axis LT: {getGamepadAxisMovement(0, GamepadAxisLeftTrigger):02.02f}", 10, 40, 10, Black)
         #drawText(&"Xbox axis RT: {getGamepadAxisMovement(0, GamepadAxisRightTrigger):02.02f}", 10, 60, 10, Black)
-      elif getGamepadName(0) == PS3NameId:
+      of PS3NameId:
         drawTexture(texPs3Pad, 0, 0, DarkGray)
         # Draw buttons: ps
         if isGamepadButtonDown(0, GamepadButtonMiddle): drawCircle(396, 222, 13, Red)
