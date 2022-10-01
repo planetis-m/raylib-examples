@@ -52,11 +52,11 @@ proc main =
   # Main game loop
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
-    # ----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     # ...
-    # ----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     # Draw
-    # ----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(RayWhite)
     if isGamepadAvailable(0):
@@ -101,8 +101,8 @@ proc main =
             getGamepadAxisMovement(0, GamepadAxisLeftTrigger))/2*70), Red)
         drawRectangle(604, 30, 15, int32((1 +
             getGamepadAxisMovement(0, GamepadAxisRightTrigger))/2*70), Red)
-        #drawText(&"Xbox axis LT: {GetGamepadAxisMovement(0, GamepadAxisLeftTRIGGER):02.02f}", 10, 40, 10, Black)
-        #drawText(&"Xbox axis RT: {GetGamepadAxisMovement(0, GamepadAxisRightTRIGGER):02.02f}", 10, 60, 10, Black)
+        #drawText(&"Xbox axis LT: {getGamepadAxisMovement(0, GamepadAxisLeftTrigger):02.02f}", 10, 40, 10, Black)
+        #drawText(&"Xbox axis RT: {getGamepadAxisMovement(0, GamepadAxisRightTrigger):02.02f}", 10, 60, 10, Black)
       elif getGamepadName(0) == PS3NameId:
         drawTexture(texPs3Pad, 0, 0, DarkGray)
         # Draw buttons: ps
