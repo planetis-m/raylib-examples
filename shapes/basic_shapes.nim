@@ -9,7 +9,7 @@
 #
 # ***************************************************************************************
 
-import raylib, std/lenientops
+import raylib
 
 const
   screenWidth = 800

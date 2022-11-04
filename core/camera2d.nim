@@ -26,7 +26,7 @@ proc main =
     player = Rectangle(x: 400, y: 280, width: 40, height: 40)
     buildings: array[MaxBuildings, Rectangle]
     buildColors: array[MaxBuildings, Color]
-    spacing = 0'i32
+    spacing: int32 = 0
 
   for i in 0 ..< MaxBuildings:
     buildings[i].width = rand(50..200).float32

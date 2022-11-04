@@ -30,12 +30,12 @@ proc main =
   # Init variables for animation
   let frameWidth = float32(explosion.width div FramesPerLine) # Sprite one frame rectangle width
   let frameHeight = float32(explosion.height div Lines) # Sprite one frame rectangle height
-  var currentFrame = 0'i32
-  var currentLine = 0'i32
+  var currentFrame: int32 = 0
+  var currentLine: int32 = 0
   var frameRec = Rectangle(x: 0, y: 0, width: frameWidth, height: frameHeight)
   var position = Vector2(x: 0, y: 0)
   var active = false
-  var framesCounter = 0'i32
+  var framesCounter: int32 = 0
   setTargetFPS(120)
   # -------------------------------------------------------------------------------------
   # Main game loop

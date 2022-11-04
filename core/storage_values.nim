@@ -28,8 +28,8 @@ proc main =
   # -------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [core] example - storage save/load values")
 
-  var score = 0'i32
-  var hiscore = 0'i32
+  var score: int32 = 0
+  var hiscore: int32 = 0
   var framesCounter = 0
 
   setTargetFPS(60) # Set our game to run at 60 frames-per-second

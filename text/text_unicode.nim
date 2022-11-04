@@ -129,20 +129,20 @@ proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
   # Draw text using font inside rectangle limits with support for text selection
   var selectStart = selectStart
   let length = len(text).int32 # Total length in bytes of the text, scanned by codepoints in loop
-  var textOffsetY = 0'f32 # Offset between lines (on line break '\n')
-  var textOffsetX = 0'f32 # Offset X to next character to draw
+  var textOffsetY: float32 = 0 # Offset between lines (on line break '\n')
+  var textOffsetX: float32 = 0 # Offset X to next character to draw
   let scaleFactor = fontSize / font.baseSize.float32 # Character rectangle scaling factor
   # Word/character wrapping mechanism variables
   var state = if wordWrap: Measure else: Draw
-  var startLine = -1'i32
+  var startLine: int32 = -1
   # Index where to begin drawing (where a line begins)
-  var endLine = -1'i32
+  var endLine: int32 = -1
   # Index where to stop drawing (where a line ends)
-  var lastk = -1'i32
+  var lastk: int32 = -1
   # Holds last value of the character position
   var
-    i = 0'i32
-    k = 0'i32
+    i: int32 = 0
+    k: int32 = 0
   while i < length:
     # Get next codepoint from byte string and glyph index in font
     let codepoint = runeAt(text, i)
@@ -153,7 +153,7 @@ proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
     #if codepoint == Rune(0xFFFD):
       #codepointSize = 3
     inc(i, codepointSize - 1)
-    var glyphWidth = 0'f32
+    var glyphWidth: float32 = 0
     if codepoint != '\n'.Rune:
       glyphWidth = if font.glyphs[index].advanceX == 0: font.recs[index].width * scaleFactor
           else: font.glyphs[index].advanceX * scaleFactor
@@ -279,7 +279,7 @@ proc main =
         hoveredPos = pos
       if i != 0 and i mod EmojiPerWidth == 0:
         pos.y += fontEmoji.baseSize + 24.25'f32
-        pos.x = 28.8'f32
+        pos.x = 28.8
       else:
         pos.x += fontEmoji.baseSize + 28.8'f32
     # -----------------------------------------------------------------------------------
@@ -288,8 +288,8 @@ proc main =
     if selected != -1:
       let
         message = emoji[selected].message
-        horizontalPadding = 20'i32
-        verticalPadding = 30'i32
+        horizontalPadding: int32 = 20
+        verticalPadding: int32 = 30
       var font {.cursor.} = fontDefault
       # Set correct font for asian languages
       if messages[message].language in ["Chinese", "Korean", "Japanese"]:
@@ -300,7 +300,7 @@ proc main =
         sz.x = 300
       elif sz.x < 160:
         sz.x = 160
-      var msgRect = Rectangle(x: selectedPos.x - 38.8f, y: selectedPos.y,
+      var msgRect = Rectangle(x: selectedPos.x - 38.8'f32, y: selectedPos.y,
           width: 2 * horizontalPadding + sz.x, height: 2 * verticalPadding + sz.y)
       msgRect.y -= msgRect.height
       # Coordinates for the chat bubble triangle

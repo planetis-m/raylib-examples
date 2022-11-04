@@ -30,7 +30,7 @@ proc main =
       y: screenHeight/2'f32, width: frameWidth*2'f32, height: frameHeight*2'f32)
   # Origin of the texture (rotation/scale point), it's relative to destination rectangle size
   let origin = Vector2(x: frameWidth.float32, y: frameHeight.float32)
-  var rotation = 0'i32
+  var rotation: int32 = 0
   setTargetFPS(60)
   # Main game loop
   # -------------------------------------------------------------------------------------

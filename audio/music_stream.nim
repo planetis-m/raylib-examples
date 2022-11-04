@@ -27,7 +27,7 @@ proc main =
   let music = loadMusicStream("resources/country.mp3")
   # 1 second delay (device sampleRate*channels)
   playMusicStream(music)
-  var timePlayed = 0'f32 # Time played normalized [0.0f..1.0f]
+  var timePlayed: float32 = 0 # Time played normalized [0.0f..1.0f]
   var pause = false # Music playing paused
   setTargetFPS(60)
   # Set our game to run at 60 frames-per-second

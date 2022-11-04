@@ -23,10 +23,10 @@ type
 var threadId: Thread[void] # Loading data thread id
 var dataLoaded: Atomic[bool] # Data Loaded completion indicator
 dataLoaded.store(false)
-var dataProgress = 0'i32 # Data progress accumulator
+var dataProgress: int32 = 0 # Data progress accumulator
 
 proc loadDataThread() {.thread.} =
-  var timeCounter = 0'i32 # Time counted in ms
+  var timeCounter: int32 = 0 # Time counted in ms
   var prevTime = cpuTime() # Previous time
   # We simulate data loading with a time counter for 5 seconds
   while timeCounter < 5000:
@@ -43,7 +43,7 @@ proc main =
   # -------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [core] example - loading thread")
   var state = Waiting
-  var framesCounter = 0'i32
+  var framesCounter: int32 = 0
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # Main game loop
   # -------------------------------------------------------------------------------------

@@ -37,11 +37,11 @@ proc main =
   var currentTime = 0.0 # Current time measure
   var updateDrawTime = 0.0 # Update + Draw time
   var waitTime = 0.0 # Wait time (if target fps required)
-  var deltaTime = 0'f32 # Frame time (Update + Draw + Wait time)
-  var timeCounter = 0'f32 # Accumulative time counter (seconds)
-  var position = 0'f32 # Circle position
+  var deltaTime: float32 = 0 # Frame time (Update + Draw + Wait time)
+  var timeCounter: float32 = 0 # Accumulative time counter (seconds)
+  var position: float32 = 0 # Circle position
   var pause = false # Pause control flag
-  var targetFPS = 60'i32 # Our initial target fps
+  var targetFPS: int32 = 60 # Our initial target fps
   # -------------------------------------------------------------------------------------
   # Main game loop
   while not windowShouldClose(): # Detect window close button or ESC key

@@ -26,7 +26,7 @@ proc main =
     width: 200,
     height: 100
   )
-  var boxASpeedX = 4'i32
+  var boxASpeedX: int32 = 4
   # Box B: Mouse moved box
   var boxB = Rectangle(
     x: getScreenWidth()/2'f32 - 30,
@@ -35,7 +35,7 @@ proc main =
     height: 60
   )
   var boxCollision: Rectangle # Collision rectangle
-  var screenUpperLimit = 40'i32 # Top menu limits
+  var screenUpperLimit: int32 = 40 # Top menu limits
   var pause = false # Movement pause
   var collision = false # Collision detection
   setTargetFPS(60) # Set our game to run at 60 frames-per-second

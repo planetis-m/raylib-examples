@@ -50,7 +50,7 @@ proc main =
   setTextureFilter(fontSdf.texture, TextureFilterBilinear) # Required for SDF font
   var fontPosition = Vector2(x: 40, y: screenHeight/2'f32 - 50)
   var textSize = Vector2(x: 0, y: 0)
-  var fontSize = 16'f32
+  var fontSize: float32 = 16
   var currentFont = 0 # 0 - fontDefault, 1 - fontSdf
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # Main game loop

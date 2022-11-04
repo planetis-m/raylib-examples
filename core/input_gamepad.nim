@@ -16,6 +16,7 @@
 # Copyright (c) 2013-2022 Ramon Santamaria (@raysan5)
 #
 # ****************************************************************************************
+
 import raylib, std/strformat
 
 # NOTE: Gamepad name ID depends on drivers and OS

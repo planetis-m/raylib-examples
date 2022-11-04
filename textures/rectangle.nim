@@ -28,9 +28,9 @@ proc main =
   let scarfy = loadTexture("resources/scarfy.png") # Texture loading
   let position = Vector2(x: 350, y: 280)
   var frameRec = Rectangle(x: 0, y: 0, width: scarfy.width/6'f32, height: scarfy.height.float32)
-  var currentFrame = 0'i32
-  var framesCounter = 0'i32
-  var framesSpeed = 8'i32 # Number of spritesheet frames shown by second
+  var currentFrame: int32 = 0
+  var framesCounter: int32 = 0
+  var framesSpeed: int32 = 8 # Number of spritesheet frames shown by second
   setTargetFPS(60) #  Set our game to run at 60 frames-per-second
   # -------------------------------------------------------------------------------------
   # Main game loop

@@ -51,12 +51,12 @@ proc main =
   let speedYLoc = getShaderLocation(shader, "speedY")
 
   # Shader uniform values that can be updated at any time
-  let freqX = 25'f32
-  let freqY = 25'f32
-  let ampX = 5'f32
-  let ampY = 5'f32
-  let speedX = 8'f32
-  let speedY = 8'f32
+  let freqX: float32 = 25
+  let freqY: float32 = 25
+  let ampX: float32 = 5
+  let ampY: float32 = 5
+  let speedX: float32 = 8
+  let speedY: float32 = 8
 
   let screenSize = [getScreenWidth().float32, getScreenHeight().float32]
   setShaderValue(shader, getShaderLocation(shader, "size"), screenSize)
@@ -67,7 +67,7 @@ proc main =
   setShaderValue(shader, speedXLoc, speedX)
   setShaderValue(shader, speedYLoc, speedY)
 
-  var seconds = 0'f32
+  var seconds: float32 = 0
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # Main game loop
   # -------------------------------------------------------------------------------------
