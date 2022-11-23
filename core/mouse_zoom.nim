@@ -25,8 +25,7 @@ proc main =
   # Initialization
   # ---------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [core] example - 2d camera mouse zoom")
-  var camera = Camera2D()
-  camera.zoom = 1
+  var camera = Camera2D(zoom: 1)
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # ---------------------------------------------------------------------------------------
   # Main game loop
@@ -65,7 +64,7 @@ proc main =
     # Draw a reference circle
     drawCircle(100, 100, 50, Yellow)
     endMode2D()
-    drawText("Mouse right button drag to move, mouse wheel to zoom", 10, 10, 20, White)
+    drawText("Mouse right button drag to move, mouse wheel to zoom", 10, 10, 20, Black)
     endDrawing()
     # -------------------------------------------------------------------------------------
   # De-Initialization

@@ -42,13 +42,13 @@ proc main =
 
   # Load shader and setup location points and values
   let shader = loadShader("", &"resources/shaders/glsl{glslVersion}/wave.fs")
-  let secondsLoc = getShaderLocation(shader, "secondes")
-  let freqXLoc = getShaderLocation(shader, "freqX")
-  let freqYLoc = getShaderLocation(shader, "freqY")
-  let ampXLoc = getShaderLocation(shader, "ampX")
-  let ampYLoc = getShaderLocation(shader, "ampY")
-  let speedXLoc = getShaderLocation(shader, "speedX")
-  let speedYLoc = getShaderLocation(shader, "speedY")
+  let secondsLoc = getShaderLocation(shader, UniformName"secondes")
+  let freqXLoc = getShaderLocation(shader, UniformName"freqX")
+  let freqYLoc = getShaderLocation(shader, UniformName"freqY")
+  let ampXLoc = getShaderLocation(shader, UniformName"ampX")
+  let ampYLoc = getShaderLocation(shader, UniformName"ampY")
+  let speedXLoc = getShaderLocation(shader, UniformName"speedX")
+  let speedYLoc = getShaderLocation(shader, UniformName"speedY")
 
   # Shader uniform values that can be updated at any time
   let freqX: float32 = 25
@@ -59,7 +59,7 @@ proc main =
   let speedY: float32 = 8
 
   let screenSize = [getScreenWidth().float32, getScreenHeight().float32]
-  setShaderValue(shader, getShaderLocation(shader, "size"), screenSize)
+  setShaderValue(shader, getShaderLocation(shader, UniformName"size"), screenSize)
   setShaderValue(shader, freqXLoc, freqX)
   setShaderValue(shader, freqYLoc, freqY)
   setShaderValue(shader, ampXLoc, ampX)

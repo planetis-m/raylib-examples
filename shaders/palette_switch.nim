@@ -80,7 +80,7 @@ proc main =
   let shader = loadShader("", &"resources/shaders/glsl{glslVersion}/palette_switch.fs")
   # Get variable (uniform) location on the shader to connect with the program
   # NOTE: If uniform variable could not be found in the shader, function returns -1
-  let paletteLoc = getShaderLocation(shader, "palette")
+  let paletteLoc = getShaderLocation(shader, UniformName"palette")
   var currentPalette = 0
   const lineHeight = screenHeight div ColorsPerPalette
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
