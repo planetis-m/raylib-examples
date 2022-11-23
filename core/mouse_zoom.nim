@@ -11,19 +11,11 @@
 #
 # *****************************************************************************************
 
-import
-  raylib, raymath
+import raylib, raymath, rlgl
 
 const
   screenWidth = 800
   screenHeight = 450
-
-{.push callconv: cdecl, header: "rlgl.h".}
-proc pushMatrix*() {.importc: "rlPushMatrix".}
-proc popMatrix*() {.importc: "rlPopMatrix".}
-proc translatef*(x: float32; y: float32; z: float32) {.importc: "rlTranslatef".}
-proc rotatef*(angle: float32; x: float32; y: float32; z: float32) {.importc: "rlRotatef".}
-{.pop.}
 
 # -----------------------------------------------------------------------------------------
 # Program main entry point
@@ -61,12 +53,12 @@ proc main =
       if camera.zoom < zoomIncrement:
         camera.zoom = zoomIncrement
     beginDrawing()
-    clearBackground(Black)
+    clearBackground(RayWhite)
     beginMode2D(camera)
     # Draw the 3d grid, rotated 90 degrees and centered around 0,0
     # just so we have something in the XY plane
     pushMatrix()
-    translatef(0, 25 * 50, 0)
+    translatef(0, 25*50, 0)
     rotatef(90, 1, 0, 0)
     drawGrid(100, 50)
     popMatrix()
