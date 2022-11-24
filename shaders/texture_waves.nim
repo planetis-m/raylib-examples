@@ -31,6 +31,8 @@ else:
   const
     glslVersion = 100 # PlatformRpi, PlatformAndroid, PlatformWeb
 
+template sv(a): untyped = ShaderVariable(a)
+
 proc main =
   # Initialization
   # -------------------------------------------------------------------------------------
@@ -42,13 +44,13 @@ proc main =
 
   # Load shader and setup location points and values
   let shader = loadShader("", &"resources/shaders/glsl{glslVersion}/wave.fs")
-  let secondsLoc = getShaderLocation(shader, UniformName"secondes")
-  let freqXLoc = getShaderLocation(shader, UniformName"freqX")
-  let freqYLoc = getShaderLocation(shader, UniformName"freqY")
-  let ampXLoc = getShaderLocation(shader, UniformName"ampX")
-  let ampYLoc = getShaderLocation(shader, UniformName"ampY")
-  let speedXLoc = getShaderLocation(shader, UniformName"speedX")
-  let speedYLoc = getShaderLocation(shader, UniformName"speedY")
+  let secondsLoc = getShaderLocation(shader, sv"secondes")
+  let freqXLoc = getShaderLocation(shader, sv"freqX")
+  let freqYLoc = getShaderLocation(shader, sv"freqY")
+  let ampXLoc = getShaderLocation(shader, sv"ampX")
+  let ampYLoc = getShaderLocation(shader, sv"ampY")
+  let speedXLoc = getShaderLocation(shader, sv"speedX")
+  let speedYLoc = getShaderLocation(shader, sv"speedY")
 
   # Shader uniform values that can be updated at any time
   let freqX: float32 = 25
@@ -59,7 +61,7 @@ proc main =
   let speedY: float32 = 8
 
   let screenSize = [getScreenWidth().float32, getScreenHeight().float32]
-  setShaderValue(shader, getShaderLocation(shader, UniformName"size"), screenSize)
+  setShaderValue(shader, getShaderLocation(shader, sv"size"), screenSize)
   setShaderValue(shader, freqXLoc, freqX)
   setShaderValue(shader, freqYLoc, freqY)
   setShaderValue(shader, ampXLoc, ampX)
