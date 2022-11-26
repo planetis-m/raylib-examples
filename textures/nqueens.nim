@@ -56,7 +56,7 @@ proc isSafe(x: Queens; row, col: int): bool =
   # Return true if it is possible to place a queen in the given column on the next row.
   result = x.colFree[col] and x.upwardFree[row + col] and x.downwardFree[row - col + N - 1]
 
-proc solve(x: var Queens; solutions: var seq[QueensArr]; row: int) =
+proc solve(x: var Queens; row: int; solutions: var seq[QueensArr]) =
   # Return true if a solution is found.
   if row == N:
     solutions.add x.queenInRow
@@ -64,7 +64,7 @@ proc solve(x: var Queens; solutions: var seq[QueensArr]; row: int) =
     for col in 0..<N:
       if x.isSafe(row, col):
         x.placeQueen(row, col)
-        x.solve(solutions, row + 1)
+        x.solve(row + 1, solutions)
         x.removeQueen(row, col)
 
 # ----------------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ proc main =
   let queenPiece = loadTexture("resources/wQ.png")
   var queens = initQueens()
   var solutions: seq[QueensArr] = @[]
-  queens.solve(solutions, 0)
+  queens.solve(0, solutions)
   # --------------------------------------------------------------------------------------
   # Main game loop
   setTargetFPS(60)
