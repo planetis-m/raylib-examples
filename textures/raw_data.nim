@@ -1,4 +1,4 @@
-# *****************************************************************************************
+# ****************************************************************************************
 #
 #   raylib [textures] example - Load textures from raw data
 #
@@ -11,7 +11,7 @@
 #
 #   Copyright (c) 2015-2022 Ramon Santamaria (@raysan5)
 #
-# *****************************************************************************************
+# ****************************************************************************************
 
 import raylib
 
@@ -19,13 +19,13 @@ const
   screenWidth = 800
   screenHeight = 450
 
-# -----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 # Program main entry point
-# -----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 
 proc main =
   # Initialization
-  # ---------------------------------------------------------------------------------------
+  # --------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [textures] example - texture from raw data")
   defer: closeWindow() # Close window and OpenGL context
 
@@ -40,26 +40,27 @@ proc main =
 
   # Dynamic memory allocation to store pixels data (Color type)
   var pixels = newSeq[Color](width * height)
-  for y in 0 ..< height:
-    for x in 0 ..< width:
+  for y in 0..<height:
+    for x in 0..<width:
       if ((x div 32 + y div 32) div 1) mod 2 == 0:
         pixels[y*width + x] = Orange
       else:
         pixels[y*width + x] = Gold
+
   # Load pixels data into an image structure and create texture
-  var checkedIm = Image(data: addr pixels[0], width: width.int32, height: height.int32,
-      format: PixelformatUncompressedR8g8b8a8, mipmaps: 1)
-  var checked = loadTextureFromImage(checkedIm)
-  checkedIm.data = nil
-  # ---------------------------------------------------------------------------------------
+  let checked = loadTextureFromData(
+      toOpenArray(cast[ptr UncheckedArray[byte]](addr pixels[0]), 0, pixels.high),
+      width.int32, height.int32, PixelformatUncompressedR8g8b8a8)
+  setTargetFPS(60) # Set our game to run at 60 frames-per-second
+  # --------------------------------------------------------------------------------------
   # Main game loop
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
-    # -------------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     # TODO: Update your variables here
-    # -------------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     # Draw
-    # -------------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(RayWhite)
     drawTexture(checked, screenWidth div 2 - checked.width div 2,
