@@ -97,7 +97,7 @@ proc main =
     # Draw the chess board
     for row in 0..<N:
       for col in 0..<N:
-        drawRectangle(row.int32*squareSize, col.int32*squareSize, squareSize, squareSize,
+        drawRectangle(col.int32*squareSize, row.int32*squareSize, squareSize, squareSize,
             if (row + col) mod 2 == 0: getColor(0xf0d9b5ff'u32) else: getColor(0xb58863ff'u32))
     # Draw the queen
     for row in 0..<N:
