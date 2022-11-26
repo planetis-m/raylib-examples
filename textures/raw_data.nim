@@ -48,9 +48,7 @@ proc main =
         pixels[y*width + x] = Gold
 
   # Load pixels data into an image structure and create texture
-  let checked = loadTextureFromData(
-      toOpenArray(cast[ptr UncheckedArray[byte]](addr pixels[0]), 0, pixels.high),
-      width.int32, height.int32, PixelformatUncompressedR8g8b8a8)
+  let checked = loadTextureFromData(pixels, width.int32, height.int32, PixelformatUncompressedR8g8b8a8)
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # --------------------------------------------------------------------------------------
   # Main game loop
