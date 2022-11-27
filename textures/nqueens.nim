@@ -17,7 +17,7 @@ const
   screenSize = 600
 
   N = 8
-  squareSize = 75
+  SquareSize = 75
 
 type
   QueensArr = array[N, int]
@@ -58,7 +58,7 @@ proc isSafe(x: Queens; row, col: int): bool =
 
 proc solve(x: var Queens; row: int; solutions: var seq[QueensArr]) =
   # Return true if a solution is found.
-  if row == N:
+  if row >= N:
     solutions.add x.queenInRow
   else:
     for col in 0..<N:
@@ -89,7 +89,7 @@ proc main =
     # ------------------------------------------------------------------------------------
     if isKeyPressed(KeyEnter):
       inc index
-      if index == solutions.high: index = 0
+      if index >= solutions.len: index = 0
     # ------------------------------------------------------------------------------------
     # Draw
     # ------------------------------------------------------------------------------------
@@ -97,12 +97,12 @@ proc main =
     # Draw the chess board
     for row in 0..<N:
       for col in 0..<N:
-        drawRectangle(col.int32*squareSize, row.int32*squareSize, squareSize, squareSize,
+        drawRectangle(col.int32*SquareSize, row.int32*SquareSize, SquareSize, SquareSize,
             if (row + col) mod 2 == 0: getColor(0xf0d9b5ff'u32) else: getColor(0xb58863ff'u32))
     # Draw the queen
     for row in 0..<N:
       let col = solutions[index][row]
-      drawTexture(queenPiece, col.int32*squareSize, row.int32*squareSize, White)
+      drawTexture(queenPiece, col.int32*SquareSize, row.int32*SquareSize, White)
     drawText(&"Solution {index+1}", 420, 10, 30, Black)
     drawText("Press ENTER to continue", 15, 570, 20, Black)
     endDrawing()
