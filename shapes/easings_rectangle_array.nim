@@ -27,9 +27,13 @@ const
   MaxRecsY = 450 div RecsHeight
   PlayTimeInFrames = 240 # At 60 fps = 4 seconds
 
-# ------------------------------------------------------------------------------------
+type
+  State = enum
+    Playing, Finished
+
+# ----------------------------------------------------------------------------------------
 # Program main entry point
-# ------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 
 proc main =
   # Initialization
@@ -44,14 +48,14 @@ proc main =
       recs[y * MaxRecsX + x].height = RecsHeight
   var rotation: float32 = 0
   var framesCounter: int32 = 0
-  var state: int32 = 0 # Rectangles animation state: 0-Playing, 1-Finished
+  var state = Playing # Rectangles animation state: 0-Playing, 1-Finished
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # --------------------------------------------------------------------------------------
   # Main game loop
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # ----------------------------------------------------------------------------------
-    if state == 0:
+    if state == Playing:
       inc(framesCounter)
       for i in 0 ..< MaxRecsX * MaxRecsY:
         recs[i].height = circOut(framesCounter.float32, RecsHeight, -RecsHeight, PlayTimeInFrames)
@@ -61,9 +65,9 @@ proc main =
         if recs[i].width < 0:
           recs[i].width = 0
         if recs[i].height == 0 and recs[i].width == 0:
-          state = 1
+          state = Finished
         rotation = linearIn(framesCounter.float32, 0, 360, PlayTimeInFrames)
-    elif state == 1 and isKeyPressed(KeySpace):
+    elif state == Finished and isKeyPressed(KeySpace):
       # ----------------------------------------------------------------------------------
       # Draw
       # ----------------------------------------------------------------------------------
@@ -72,13 +76,13 @@ proc main =
       for i in 0 ..< MaxRecsX * MaxRecsY:
         recs[i].height = RecsHeight
         recs[i].width = RecsWidth
-      state = 0
+      state = Playing
     beginDrawing()
     clearBackground(RayWhite)
-    if state == 0:
+    if state == Playing:
       for i in 0 ..< MaxRecsX * MaxRecsY:
         drawRectanglePro(recs[i], Vector2(x: recs[i].width / 2, y: recs[i].height / 2), rotation, Red)
-    elif state == 1:
+    elif state == Finished:
       drawText("PRESS [SPACE] TO PLAY AGAIN!", 240, 200, 20, Gray)
     endDrawing()
     # ------------------------------------------------------------------------------------

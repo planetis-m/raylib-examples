@@ -17,6 +17,10 @@ const
   screenWidth = 800
   screenHeight = 450
 
+type
+  State = enum
+    BounceX, BounceZ, FadeOut, Reset
+
 # ----------------------------------------------------------------------------------------
 # Program main entry point
 # ----------------------------------------------------------------------------------------
@@ -29,50 +33,48 @@ proc main =
   var ballPositionX: int32 = -100
   var ballRadius: int32 = 20
   var ballAlpha: float32 = 0.0
-  var state: int32 = 0
+  var state = BounceX
   var framesCounter: int32 = 0
-  setTargetFPS(60)
-  # Set our game to run at 60 frames-per-second
+  setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # --------------------------------------------------------------------------------------
   # Main game loop
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # ------------------------------------------------------------------------------------
-    if state == 0:
+    case state
+    of BounceX:
       inc(framesCounter)
-      ballPositionX = elasticOut(framesCounter.float32, -100,
-          screenWidth / 2 + 100, 120).int32
+      ballPositionX = elasticOut(framesCounter.float32, -100, screenWidth / 2 + 100, 120).int32
       if framesCounter >= 120:
         framesCounter = 0
-        state = 1
-    elif state == 1:             # Increase ball radius with easing
+        state = BounceZ
+    of BounceZ:             # Increase ball radius with easing
       inc(framesCounter)
       ballRadius = elasticIn(framesCounter.float32, 20, 500, 200).int32
       if framesCounter >= 200:
         framesCounter = 0
-        state = 2
-    elif state == 2:             # Change ball alpha with easing (background color blending)
+        state = FadeOut
+    of FadeOut:             # Change ball alpha with easing (background color blending)
       inc(framesCounter)
       ballAlpha = cubicOut(framesCounter.float32, 0, 1, 200)
       if framesCounter >= 200:
         framesCounter = 0
-        state = 3
-    elif state == 3:             # Reset state to play again
+        state = Reset
+    of Reset:               # Reset state to play again
       if isKeyPressed(KeyEnter):
         # Reset required variables to play again
         ballPositionX = -100
         ballRadius = 20
-        ballAlpha = 0.0
-        state = 0
+        ballAlpha = 0
+        state = BounceX
     if isKeyPressed(KeyR):
       framesCounter = 0
     beginDrawing()
     clearBackground(RayWhite)
-    if state >= 2:
+    if state >= FadeOut:
       drawRectangle(0, 0, screenWidth, screenHeight, Green)
-    drawCircle(ballPositionX, 200, ballRadius.float32,
-               fade(Red, 1.0 - ballAlpha))
-    if state == 3:
+    drawCircle(ballPositionX, 200, ballRadius.float32, fade(Red, 1 - ballAlpha))
+    if state == Reset:
       drawText("PRESS [ENTER] TO PLAY AGAIN!", 240, 200, 20, Black)
     endDrawing()
     # ------------------------------------------------------------------------------------
