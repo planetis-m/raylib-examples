@@ -38,34 +38,34 @@ proc initQueens(): Queens =
     result.upwardFree[i] = true
     result.downwardFree[i] = true
 
-proc placeQueen(x: var Queens, row, col: int32) =
+proc placeQueen(x: var Queens, row, col: int) =
   # Insert a queen in the next row, in the given column.
-  x.queenInRow[row] = col
+  x.queenInRow[row] = col.int32
   x.colFree[col] = false
   x.upwardFree[row + col] = false
   x.downwardFree[row - col + N - 1] = false
 
-proc removeQueen(x: var Queens; row, col: int32) =
+proc removeQueen(x: var Queens; row, col: int) =
   # Remove the queen in the last row.
   let col = x.queenInRow[row]
   x.colFree[col] = true
   x.upwardFree[row + col] = true
   x.downwardFree[row - col + N - 1] = true
 
-proc isSafe(x: Queens; row, col: int32): bool =
+proc isSafe(x: Queens; row, col: int): bool =
   # Return true if it is possible to place a queen in the given column on the next row.
   result = x.colFree[col] and x.upwardFree[row + col] and x.downwardFree[row - col + N - 1]
 
-proc solve(x: var Queens; row: int32; solutions: var seq[QueensArr]) =
+proc solve(x: var Queens; row: int; solutions: var seq[QueensArr]) =
   # Return true if a solution is found.
   if row >= N:
     solutions.add x.queenInRow
   else:
     for col in 0..<N:
-      if x.isSafe(row, col.int32):
-        x.placeQueen(row, col.int32)
+      if x.isSafe(row, col):
+        x.placeQueen(row, col)
         x.solve(row + 1, solutions)
-        x.removeQueen(row, col.int32)
+        x.removeQueen(row, col)
 
 # ----------------------------------------------------------------------------------------
 # Program main entry point
