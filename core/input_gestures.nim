@@ -73,7 +73,7 @@ proc main =
           gesturesCount = 0
     beginDrawing()
     clearBackground(RayWhite)
-    drawRectangleRec(touchArea, Gray)
+    drawRectangle(touchArea, Gray)
     drawRectangle(225, 15, screenWidth - 240, screenHeight - 30, RayWhite)
     drawText("GESTURES TEST AREA", screenWidth - 270, screenHeight - 40, 20, fade(Gray, 0.5))
     for i in 0..<gesturesCount:
@@ -88,7 +88,7 @@ proc main =
     drawRectangleLines(10, 29, 200, screenHeight - 50, Gray)
     drawText("DETECTED GESTURES", 50, 15, 10, Gray)
     if currentGesture != GestureNone:
-      drawCircleV(touchPosition, 30, Maroon)
+      drawCircle(touchPosition, 30, Maroon)
     endDrawing()
   # De-Initialization
   # -------------------------------------------------------------------------------------

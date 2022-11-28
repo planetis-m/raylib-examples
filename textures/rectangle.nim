@@ -67,7 +67,7 @@ proc main =
       if i < framesSpeed:
         drawRectangle(250 + 21*i.int32, 205, 20, 20, Red)
       drawRectangleLines(250 + 21*i.int32, 205, 20, 20, Maroon)
-    drawTextureRec(scarfy, frameRec, position, White) # Draw part of the texture
+    drawTexture(scarfy, frameRec, position, White) # Draw part of the texture
     drawText("(c) Scarfy sprite by Eiden Marsal", screenWidth - 200,
         screenHeight - 20, 10, Gray)
     endDrawing()

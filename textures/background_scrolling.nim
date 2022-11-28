@@ -50,14 +50,14 @@ proc main =
     clearBackground(getColor(0x052C46FF))
     # Draw background image twice
     # NOTE: Texture is scaled twice its size
-    drawTextureEx(background, Vector2(x: scrollingBack, y: 20), 0, 2, White)
-    drawTextureEx(background, Vector2(x: background.width * 2 + scrollingBack, y: 20), 0, 2, White)
+    drawTexture(background, Vector2(x: scrollingBack, y: 20), 0, 2, White)
+    drawTexture(background, Vector2(x: background.width * 2 + scrollingBack, y: 20), 0, 2, White)
     # Draw midground image twice
-    drawTextureEx(midground, Vector2(x: scrollingMid, y: 20), 0, 2, White)
-    drawTextureEx(midground, Vector2(x: midground.width * 2 + scrollingMid, y: 20), 0, 2, White)
+    drawTexture(midground, Vector2(x: scrollingMid, y: 20), 0, 2, White)
+    drawTexture(midground, Vector2(x: midground.width * 2 + scrollingMid, y: 20), 0, 2, White)
     # Draw foreground image twice
-    drawTextureEx(foreground, Vector2(x: scrollingFore, y: 70), 0, 2, White)
-    drawTextureEx(foreground, Vector2(x: foreground.width * 2 + scrollingFore, y: 70), 0, 2, White)
+    drawTexture(foreground, Vector2(x: scrollingFore, y: 70), 0, 2, White)
+    drawTexture(foreground, Vector2(x: foreground.width * 2 + scrollingFore, y: 70), 0, 2, White)
     drawText("BACKGROUND SCROLLING & PARALLAX", 10, 10, 20, Red)
     drawText("(c) Cyberpunk Street Environment by Luis Zuno (@ansimuz)",
         screenWidth - 330, screenHeight - 20, 10, RayWhite)

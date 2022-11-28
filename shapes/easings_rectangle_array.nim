@@ -81,7 +81,7 @@ proc main =
     clearBackground(RayWhite)
     if state == Playing:
       for i in 0 ..< MaxRecsX * MaxRecsY:
-        drawRectanglePro(recs[i], Vector2(x: recs[i].width / 2, y: recs[i].height / 2), rotation, Red)
+        drawRectangle(recs[i], Vector2(x: recs[i].width / 2, y: recs[i].height / 2), rotation, Red)
     elif state == Finished:
       drawText("PRESS [SPACE] TO PLAY AGAIN!", 240, 200, 20, Gray)
     endDrawing()

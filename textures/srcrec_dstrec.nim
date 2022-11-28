@@ -47,7 +47,7 @@ proc main =
     # destRec defines the rectangle where our texture part will fit (scaling it to fit)
     # origin defines the point of the texture used as reference for rotation and scaling
     # rotation defines the texture rotation (using origin as rotation point)
-    drawTexturePro(scarfy, sourceRec, destRec, origin, rotation.float32, White)
+    drawTexture(scarfy, sourceRec, destRec, origin, rotation.float32, White)
     drawLine(destRec.x.int32, 0, destRec.x.int32, screenHeight, Gray)
     drawLine(0, destRec.y.int32, screenWidth, destRec.y.int32, Gray)
     drawText("(c) Scarfy sprite by Eiden Marsal", screenWidth - 200, screenHeight - 20, 10, Gray)

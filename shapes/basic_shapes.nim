@@ -48,7 +48,7 @@ proc main =
 
     # Polygon shapes and lines
     drawPoly(Vector2(x: screenWidth/4'f32 * 3, y: 320), 6, 80, 0, Brown)
-    drawPolyLinesEx(Vector2(x: screenWidth/4'f32 * 3, y: 320), 6, 80, 0, 6, Beige)
+    drawPolyLines(Vector2(x: screenWidth/4'f32 * 3, y: 320), 6, 80, 0, 6, Beige)
 
     # NOTE: We draw all LINES based shapes together to optimize internal drawing,
     # this way, all LINES are rendered in a single draw pass

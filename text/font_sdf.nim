@@ -66,9 +66,9 @@ proc main =
     else:
       currentFont = 0
     if currentFont == 0:
-      textSize = measureTextEx(fontDefault, msg, fontSize, 0)
+      textSize = measureText(fontDefault, msg, fontSize, 0)
     else:
-      textSize = measureTextEx(fontSdf, msg, fontSize, 0)
+      textSize = measureText(fontSdf, msg, fontSize, 0)
     fontPosition.x = getScreenWidth()/2'f32 - textSize.x/2'f32
     fontPosition.y = getScreenHeight()/2'f32 - textSize.y/2'f32 + 80
     # Draw
@@ -78,11 +78,11 @@ proc main =
     if currentFont == 1:
       # NOTE: SDF fonts require a custom SDf shader to compute fragment color
       beginShaderMode(shader) # Activate SDF font shader
-      drawTextEx(fontSdf, msg, fontPosition, fontSize, 0, Black)
+      drawText(fontSdf, msg, fontPosition, fontSize, 0, Black)
       endShaderMode() # Activate our default shader for next drawings
       drawTexture(fontSdf.texture, 10, 10, Black)
     else:
-      drawTextEx(fontDefault, msg, fontPosition, fontSize, 0, Black)
+      drawText(fontDefault, msg, fontPosition, fontSize, 0, Black)
       drawTexture(fontDefault.texture, 10, 10, Black)
     if currentFont == 1:
       drawText("SDF!", 320, 20, 80, Red)

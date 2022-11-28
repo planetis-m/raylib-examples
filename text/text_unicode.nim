@@ -196,7 +196,7 @@ proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
           break
         var isGlyphSelected = false
         if selectStart >= 0 and k >= selectStart and k < selectStart + selectLength:
-          drawRectangleRec(Rectangle(x: rec.x + textOffsetX - 1, y: rec.y + textOffsetY,
+          drawRectangle(Rectangle(x: rec.x + textOffsetX - 1, y: rec.y + textOffsetY,
               width: glyphWidth, height: font.baseSize * scaleFactor), selectBackTint)
           isGlyphSelected = true
         if codepoint != ' '.Rune and codepoint != '\t'.Rune:
@@ -271,10 +271,10 @@ proc main =
       var emojiRect = Rectangle(x: pos.x, y: pos.y, width: fontEmoji.baseSize.float32,
           height: fontEmoji.baseSize.float32)
       if not checkCollisionPointRec(mouse, emojiRect):
-        drawTextEx(fontEmoji, txt, pos, fontEmoji.baseSize.float32, 1,
+        drawText(fontEmoji, txt, pos, fontEmoji.baseSize.float32, 1,
             if selected == i: emoji[i].color else: fade(LightGray, 0.4))
       else:
-        drawTextEx(fontEmoji, txt, pos, fontEmoji.baseSize.float32, 1, emoji[i].color)
+        drawText(fontEmoji, txt, pos, fontEmoji.baseSize.float32, 1, emoji[i].color)
         hovered = i
         hoveredPos = pos
       if i != 0 and i mod EmojiPerWidth == 0:
@@ -294,7 +294,7 @@ proc main =
       # Set correct font for asian languages
       if messages[message].language in ["Chinese", "Korean", "Japanese"]:
         font = fontAsian
-      var sz = measureTextEx(font, messages[message].text, font.baseSize.float32, 1)
+      var sz = measureText(font, messages[message].text, font.baseSize.float32, 1)
       if sz.x > 300:
         sz.y = sz.y * (sz.x / 300)
         sz.x = 300
@@ -320,7 +320,7 @@ proc main =
         swap(a, b)
       if msgRect.x + msgRect.width > screenWidth:
         msgRect.x -= (msgRect.x + msgRect.width) - screenWidth + 10
-      drawRectangleRec(msgRect, emoji[selected].color)
+      drawRectangle(msgRect, emoji[selected].color)
       drawTriangle(a, b, c, emoji[selected].color)
       # Draw the main text message
       let textRect = Rectangle(x: msgRect.x + horizontalPadding div 2,
@@ -332,7 +332,7 @@ proc main =
       let size = len(messages[message].text)
       let length = runeLen(messages[message].text)
       let info = &"{messages[message].language} {length} characters {size} bytes"
-      sz = measureTextEx(getFontDefault(), info, 10, 1)
+      sz = measureText(getFontDefault(), info, 10, 1)
       let pos = Vector2(x: textRect.x + textRect.width - sz.x,
           y: msgRect.y + msgRect.height - sz.y - 2)
       drawText(info, pos.x.int32, pos.y.int32, 10, RayWhite)

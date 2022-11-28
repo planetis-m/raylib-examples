@@ -69,7 +69,7 @@ proc main =
     clearBackground(RayWhite)
     # Draw explosion required frame rectangle
     if active:
-      drawTextureRec(explosion, frameRec, position, White)
+      drawTexture(explosion, frameRec, position, White)
     endDrawing()
 
 main()

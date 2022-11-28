@@ -69,11 +69,11 @@ proc main =
     beginDrawing()
     clearBackground(White)
     drawRectangle(0, 0, screenWidth, screenUpperLimit, if collision: Red else: Black)
-    drawRectangleRec(boxA, Gold)
-    drawRectangleRec(boxB, Blue)
+    drawRectangle(boxA, Gold)
+    drawRectangle(boxB, Blue)
     if collision:
       # Draw collision area
-      drawRectangleRec(boxCollision, Lime)
+      drawRectangle(boxCollision, Lime)
       # Draw collision message
       drawText("COLLISION!",
           getScreenWidth() div 2 - measureText("COLLISION!", 20) div 2,
