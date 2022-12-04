@@ -27,7 +27,7 @@ var
   texRoad: Texture
   showCurve = false
 
-  curveWidth: float32 = 50
+  curveWidth: int32 = 50
   curveSegments: int32 = 24
 
   startPosition: Vector2
@@ -106,10 +106,10 @@ proc drawTexturedCurve =
     if not tangentSet:
       previousTangent = normal
       tangentSet = true
-    let prevPosNormal = previous + previousTangent * curveWidth
-    let prevNegNormal = previous + previousTangent * -curveWidth
-    let currentPosNormal = current + normal * curveWidth
-    let currentNegNormal = current + normal * -curveWidth
+    let prevPosNormal = previous + previousTangent * curveWidth.float32
+    let prevNegNormal = previous + previousTangent * -curveWidth.float32
+    let currentPosNormal = current + normal * curveWidth.float32
+    let currentNegNormal = current + normal * -curveWidth.float32
     # Draw the segment as a quad
     setTexture(texRoad.id)
     rlBegin(DrawQuads)
@@ -133,9 +133,9 @@ proc updateOptions =
   if isKeyPressed(KeySpace):
     showCurve = not showCurve
   if isKeyPressed(KeyEqual):
-    curveWidth += 2
+    inc(curveWidth, 2)
   if isKeyPressed(KeyMinus):
-    curveWidth -= 2
+    dec(curveWidth, 2)
   if curveWidth < 2:
     curveWidth = 2
   if isKeyPressed(KeyLeft):
@@ -178,8 +178,8 @@ proc main =
     clearBackground(RayWhite)
     drawTexturedCurve()
     drawCurve()
-    drawText("Drag points to move curve, press startPositionACE to show/hide base curve", 10, 10, 10, DarkGray)
-    drawText(&"Width {curveWidth:2.0f} (Use + and - to adjust)", 10, 30, 10, DarkGray)
+    drawText("Drag points to move curve, press SPACE to show/hide base curve", 10, 10, 10, DarkGray)
+    drawText(&"Width {curveWidth} (Use + and - to adjust)", 10, 30, 10, DarkGray)
     drawText(&"Segments {curveSegments} (Use LEFT and RIGHT to adjust)", 10, 50, 10, DarkGray)
     endDrawing()
     # ------------------------------------------------------------------------------------
