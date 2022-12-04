@@ -80,11 +80,11 @@ proc updateCurve =
 proc drawTexturedCurve =
   let step = 1'f32 / curveSegments.float32
   var previous = startPosition
-  var previousTangent: Vector2
+  var previousTangent = Vector2()
   var previousV: float32 = 0
   # We can't compute a tangent for the first point, so we need to reuse the tangent from the first segment
   var tangentSet = false
-  var current: Vector2
+  var current = Vector2()
   var t: float32 = 0
   for i in 1..curveSegments:
     # Segment the curve
@@ -132,12 +132,14 @@ proc drawTexturedCurve =
 proc updateOptions =
   if isKeyPressed(KeySpace):
     showCurve = not showCurve
+  # Update width
   if isKeyPressed(KeyEqual):
     inc(curveWidth, 2)
   if isKeyPressed(KeyMinus):
     dec(curveWidth, 2)
   if curveWidth < 2:
     curveWidth = 2
+  # Update segments
   if isKeyPressed(KeyLeft):
     dec(curveSegments, 2)
   if isKeyPressed(KeyRight):
@@ -159,10 +161,11 @@ proc main =
   setTextureFilter(texRoad, TextureFilterBilinear)
   # Setup the curve
   startPosition = Vector2(x: 80, y: 100)
-  startPositionTangent = Vector2(x: 100, y: 300)
+  startPositionTangent = Vector2(x: 180, y: 340)
 
   endPosition = Vector2(x: 700, y: 350)
-  endPositionTangent = Vector2(x: 600, y: 100)
+  endPositionTangent = Vector2(x: 600, y: 110)
+
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # --------------------------------------------------------------------------------------
   # Main game loop
