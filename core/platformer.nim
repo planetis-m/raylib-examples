@@ -223,10 +223,10 @@ proc main =
     clearBackground(LightGray)
     beginMode2D(camera)
     for i in 0 ..< envItems.len:
-      drawRectangleRec(envItems[i].rect, envItems[i].color)
+      drawRectangle(envItems[i].rect, envItems[i].color)
     let playerRect = Rectangle(x: player.position.x - 20, y: player.position.y - 40,
         width: 40, height: 40)
-    drawRectangleRec(playerRect, Red)
+    drawRectangle(playerRect, Red)
     endMode2D()
     drawText("Controls:", 20, 20, 10, Black)
     drawText("- Right/Left to move", 40, 40, 10, DarkGray)
