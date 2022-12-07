@@ -1,1 +1,2 @@
---define: "PlatformDesktop"
+when not defined(PlatformWeb):
+  --define: "PlatformDesktop"
