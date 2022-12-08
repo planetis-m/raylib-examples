@@ -23,7 +23,6 @@ type
   QueensArr = array[N, int32]
 
   Queens = object
-    count: int32
     queenInRow: QueensArr # column number of queen in each row
     colFree: array[N, bool]
     upwardFree: array[N*2-1, bool]
@@ -32,7 +31,6 @@ type
 proc initQueens(): Queens =
   # The Queens object is set up as an empty configuration on a chessboard with N
   # cells in each row and column.
-  result.count = 0
   for i in 0..<N:
     result.queenInRow[i] = -1
     result.colFree[i] = true
@@ -40,35 +38,34 @@ proc initQueens(): Queens =
     result.upwardFree[i] = true
     result.downwardFree[i] = true
 
-proc placeQueen(x: var Queens, col: int) =
+proc placeQueen(x: var Queens, row, col: int) =
   # Insert a queen in the next row, in the given column.
-  x.queenInRow[x.count] = col.int32
+  x.queenInRow[row] = col.int32
   x.colFree[col] = false
-  x.upwardFree[x.count + col] = false
-  x.downwardFree[x.count - col + N - 1] = false
-  inc x.count
+  x.upwardFree[row + col] = false
+  x.downwardFree[row - col + N - 1] = false
 
-proc removeQueen(x: var Queens; col: int) =
+proc removeQueen(x: var Queens; row, col: int) =
   # Remove the queen in the last row.
-  dec x.count
+  let col = x.queenInRow[row]
   x.colFree[col] = true
-  x.upwardFree[x.count + col] = true
-  x.downwardFree[x.count - col + N - 1] = true
+  x.upwardFree[row + col] = true
+  x.downwardFree[row - col + N - 1] = true
 
-proc isSafe(x: Queens; col: int): bool =
+proc isSafe(x: Queens; row, col: int): bool =
   # Return true if it is possible to place a queen in the given column on the next row.
-  result = x.colFree[col] and x.upwardFree[x.count + col] and x.downwardFree[x.count - col + N - 1]
+  result = x.colFree[col] and x.upwardFree[row + col] and x.downwardFree[row - col + N - 1]
 
-proc solve(x: var Queens; solutions: var seq[QueensArr]) =
+proc solve(x: var Queens; row: int; solutions: var seq[QueensArr]) =
   # Return true if a solution is found.
-  if x.count >= N:
+  if row >= N:
     solutions.add x.queenInRow
   else:
     for col in 0..<N:
-      if x.isSafe(col):
-        x.placeQueen(col)
-        x.solve(solutions)
-        x.removeQueen(col)
+      if x.isSafe(row, col):
+        x.placeQueen(row, col)
+        x.solve(row + 1, solutions)
+        x.removeQueen(row, col)
 
 # ----------------------------------------------------------------------------------------
 # Program main entry point
@@ -82,7 +79,7 @@ proc main =
   let queenPiece = loadTexture("resources/wQ.png")
   var queens = initQueens()
   var solutions: seq[QueensArr] = @[]
-  queens.solve(solutions)
+  queens.solve(0, solutions)
   # --------------------------------------------------------------------------------------
   # Main game loop
   setTargetFPS(60)
