@@ -1,7 +1,6 @@
-if defined(PlatformWeb):
-  --define:NaylibWebResources
+when defined(PlatformWeb):
   --define:emscripten
-  --nimcache:tmp
+  --define:NaylibWebResources
   --os:linux
   --cpu:wasm32
   --cc:clang
@@ -15,7 +14,7 @@ if defined(PlatformWeb):
     --clang.linkerexe:emcc
     --clang.cpp.exe:emcc
     --clang.cpp.linkerexe:emcc
-  --gc:orc
+  --mm:orc
+  --threads:off
   --panics:on
   --define:noSignalHandler
-  --threads:off
