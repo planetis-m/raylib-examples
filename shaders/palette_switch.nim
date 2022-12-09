@@ -20,12 +20,12 @@
 
 import raylib, std/strformat
 
-when defined(PlatformDesktop):
+when defined(GraphicsApiOpenGl33):
   const
     glslVersion = 330
 else:
   const
-    glslVersion = 100 # PlatformRpi, PlatformAndroid, PlatformWeb
+    glslVersion = 100
 
 const
   screenWidth = 800

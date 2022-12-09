@@ -50,7 +50,7 @@ proc main =
   # Initialization
   # --------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [core] example - basic window")
-  when defined(PlatformWeb):
+  when defined(emscripten):
     emscriptenSetMainLoop(updateDrawFrame, 0, 1)
   else:
     setTargetFPS(60)

@@ -24,12 +24,12 @@ const
   screenWidth = 800
   screenHeight = 450
 
-when defined(PlatformDesktop):
+when defined(GraphicsApiOpenGl33):
   const
     glslVersion = 330
 else:
   const
-    glslVersion = 100 # PlatformRpi, PlatformAndroid, PlatformWeb
+    glslVersion = 100
 
 template sv(a): untyped = ShaderVariable(a)
 
