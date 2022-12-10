@@ -18,8 +18,7 @@ const
 proc main =
   # Initialization
   # --------------------------------------------------------------------------------------
-  initWindow(screenWidth, screenHeight,
-      "raylib [audio] example - music playing (streaming)")
+  initWindow(screenWidth, screenHeight, "raylib [audio] example - music playing (streaming)")
   defer: closeWindow() # Close window and OpenGL context
   initAudioDevice()
   defer: closeAudioDevice() # Close audio device (music streaming is automatically stopped)
