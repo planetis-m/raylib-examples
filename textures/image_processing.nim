@@ -127,7 +127,7 @@ proc main =
           if i == currentProcess.ord or i == mouseHoverRec: SkyBlue else: LightGray)
       drawRectangleLines(toggleRecs[i].x.int32, toggleRecs[i].y.int32, toggleRecs[i].width.int32,
           toggleRecs[i].height.int32, if i == currentProcess.ord or i == mouseHoverRec: Blue else: Gray)
-      drawText(processText[i], int32(toggleRecs[i].x + toggleRecs[i].width / 2 - measureText(processText[i], 10) / 2),
+      drawText(processText[i], int32(toggleRecs[i].x + toggleRecs[i].width/2 - measureText(processText[i], 10)/2),
           toggleRecs[i].y.int32 + 11, 10,
           if i == currentProcess.ord or i == mouseHoverRec: DarkBlue else: DarkGray)
     drawTexture(texture, screenWidth - texture.width - 60, screenHeight div 2 - texture.height div 2, White)

@@ -18,3 +18,5 @@ else:
 --threads:off
 --panics:on
 --define:noSignalHandler
+# From https://github.com/emscripten-core/emscripten/blob/main/src/shell_minimal.html
+# --passL:"-o public/index.html --shell-file shell_minimal.html"
