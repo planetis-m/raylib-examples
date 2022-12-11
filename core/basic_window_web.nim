@@ -2,10 +2,11 @@
 #
 #   raylib [core] example - Basic window (adapted for HTML5 platform)
 #
-#   NOTE: This example is configured to compile to WebAssembly, as shown in
-#   basic_window_web.nims file. To run the example on the Web, run nimhttpd from the public
-#   directory and visit the address printed to stdout.
-#   As you will notice, code structure is slightly diferent to the other examples...
+#   NOTE: This example is prepared to compile to WebAssembly, as shown in the
+#   basic_window_web.nims file. Compile with the -d:emscripten flag.
+#   To run the example on the Web, run nimhttpd from the public directory and visit
+#   the address printed to stdout. As you will notice, code structure is slightly
+#   diferent to the other examples...
 #
 #   Example originally created with raylib 1.3, last time updated with raylib 1.3
 #
