@@ -19,5 +19,5 @@ when defined(emscripten):
   --panics:on
   --define:noSignalHandler
   --passL:"-o public/index.html"
-  # From https://github.com/emscripten-core/emscripten/blob/main/src/shell_minimal.html
-  # --passL:"--shell-file shell_minimal.html"
+  # Use raylib/src/shell.html or raylib/src/minshell.html
+  # --passL:"--shell-file minshell.html"

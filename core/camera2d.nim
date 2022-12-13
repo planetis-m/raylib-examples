@@ -79,8 +79,8 @@ proc main =
     beginMode2D camera
     drawRectangle -6000, 320, 13000, 8000, DarkGray
     for i in 0 ..< MaxBuildings:
-      drawRectangleRec buildings[i], buildColors[i]
-    drawRectangleRec player, Red
+      drawRectangle buildings[i], buildColors[i]
+    drawRectangle player, Red
     drawLine camera.target.x.int32, -screenHeight * 10, camera.target.x.int32,
         screenHeight * 10, Green
     drawLine -screenWidth * 10, camera.target.y.int32, screenWidth * 10,

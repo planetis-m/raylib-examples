@@ -31,7 +31,7 @@ proc main =
   var currentFrame: int32 = 0
   var framesCounter: int32 = 0
   var framesSpeed: int32 = 8 # Number of spritesheet frames shown by second
-  setTargetFPS(60) #  Set our game to run at 60 frames-per-second
+  setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # -------------------------------------------------------------------------------------
   # Main game loop
   while not windowShouldClose(): # Detect window close button or ESC key
