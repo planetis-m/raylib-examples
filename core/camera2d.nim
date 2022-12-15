@@ -29,10 +29,8 @@ proc main =
     spacing: int32 = 0
 
   for i in 0 ..< MaxBuildings:
-    buildings[i].width = rand(50..200).float32
-    buildings[i].height = rand(100..800).float32
-    buildings[i].y = screenHeight - 130 - buildings[i].height
-    buildings[i].x = -6000'f32 + spacing
+    buildings[i] = Rectangle(x: -6000'f32 + spacing, y: screenHeight - 130 - buildings[i].height,
+        width: rand(50..200).float32, height: rand(100..800).float32)
 
     spacing += buildings[i].width.int32
 
