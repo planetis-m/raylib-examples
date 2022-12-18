@@ -37,12 +37,15 @@ proc main =
   let fxButton = loadSound("resources/buttonfx.wav") # Load button sound
   let button = loadTexture("resources/button.png") # Load button texture
   # Define frame rectangle for drawing
-  var frameHeight = button.height.float32 / NumFrames
-  var sourceRec = Rectangle(x: 0, y: 0, width: float32(button.width), height: frameHeight)
+  let frameHeight = button.height.float32 / NumFrames
+  var sourceRec = Rectangle(x: 0, y: 0, width: button.width.float32, height: frameHeight)
   # Define button bounds on screen
-  var btnBounds = Rectangle(x: screenWidth.float32 / 2 - button.width.float32 / 2,
-      y: screenHeight.float32 / 2 - button.height.float32 / NumFrames / 2,
-      width: float32(button.width), height: frameHeight)
+  let btnBounds = Rectangle(
+    x: screenWidth.float32 / 2 - button.width.float32 / 2,
+    y: screenHeight.float32 / 2 - button.height.float32 / NumFrames / 2,
+    width: button.width.float32,
+    height: frameHeight
+  )
   var btnState = Normal # Button state
   var btnAction = false # Button action should be activated
   var mousePoint = Vector2(x: 0, y: 0)

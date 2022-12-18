@@ -42,8 +42,12 @@ proc main =
   var recs: array[MaxRecsX * MaxRecsY, Rectangle]
   for y in 0..<MaxRecsY:
     for x in 0..<MaxRecsX:
-      recs[y * MaxRecsX + x] = Rectangle(x: RecsWidth / 2'f32 + RecsWidth * x,
-          y: RecsHeight / 2'f32 + RecsHeight * y, width: RecsWidth, height: RecsHeight)
+      recs[y * MaxRecsX + x] = Rectangle(
+        x: RecsWidth / 2'f32 + RecsWidth * x,
+        y: RecsHeight / 2'f32 + RecsHeight * y,
+        width: RecsWidth,
+        height: RecsHeight
+      )
   var rotation: float32 = 0
   var framesCounter: int32 = 0
   var state = Playing # Rectangles animation state: 0-Playing, 1-Finished

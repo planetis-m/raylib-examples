@@ -163,16 +163,26 @@ proc main =
     canJump: false
   )
   let envItems = [
-    EnvItem(rect: Rectangle(x: 0, y: 0, width: 1000, height: 400), blocking: false,
-        color: LightGray),
+    EnvItem(rect: Rectangle(x: 0, y: 0, width: 1000, height: 400),
+      blocking: false,
+      color: LightGray
+    ),
     EnvItem(rect: Rectangle(x: 0, y: 400, width: 1000, height: 200),
-        blocking: true, color: Gray),
+      blocking: true,
+      color: Gray
+    ),
     EnvItem(rect: Rectangle(x: 300, y: 200, width: 400, height: 10),
-        blocking: true, color: Gray),
+      blocking: true,
+      color: Gray
+    ),
     EnvItem(rect: Rectangle(x: 250, y: 300, width: 100, height: 10),
-        blocking: true, color: Gray),
+      blocking: true,
+      color: Gray
+    ),
     EnvItem(rect: Rectangle(x: 650, y: 300, width: 100, height: 10),
-        blocking: true, color: Gray),
+      blocking: true,
+      color: Gray
+    ),
   ]
   var camera = Camera2D(
     target: player.position,
@@ -224,8 +234,12 @@ proc main =
     beginMode2D(camera)
     for i in 0 ..< envItems.len:
       drawRectangle(envItems[i].rect, envItems[i].color)
-    let playerRect = Rectangle(x: player.position.x - 20, y: player.position.y - 40,
-        width: 40, height: 40)
+    let playerRect = Rectangle(
+      x: player.position.x - 20,
+      y: player.position.y - 40,
+      width: 40,
+      height: 40
+    )
     drawRectangle(playerRect, Red)
     endMode2D()
     drawText("Controls:", 20, 20, 10, Black)

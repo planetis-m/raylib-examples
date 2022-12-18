@@ -64,7 +64,8 @@ proc main =
   var textureReload = false
   var toggleRecs: array[NumProcesses, Rectangle]
   var mouseHoverRec = -1
-  for i in 0..<NumProcesses: toggleRecs[i] = Rectangle(x: 40, y: float32(50 + 32*i), width: 150, height: 30)
+  for i in 0..<NumProcesses:
+    toggleRecs[i] = Rectangle(x: 40, y: float32(50 + 32*i), width: 150, height: 30)
   setTargetFPS(60)
   # --------------------------------------------------------------------------------------
   # Main game loop

@@ -196,8 +196,12 @@ proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
           break
         var isGlyphSelected = false
         if selectStart >= 0 and k >= selectStart and k < selectStart + selectLength:
-          drawRectangle(Rectangle(x: rec.x + textOffsetX - 1, y: rec.y + textOffsetY,
-              width: glyphWidth, height: font.baseSize * scaleFactor), selectBackTint)
+          drawRectangle(Rectangle(
+              x: rec.x + textOffsetX - 1,
+              y: rec.y + textOffsetY,
+              width: glyphWidth,
+              height: font.baseSize * scaleFactor
+              ), selectBackTint)
           isGlyphSelected = true
         if codepoint != ' '.Rune and codepoint != '\t'.Rune:
           drawTextCodepoint(font, codepoint, Vector2(x: rec.x + textOffsetX,

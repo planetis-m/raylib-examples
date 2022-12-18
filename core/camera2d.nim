@@ -29,8 +29,12 @@ proc main =
     spacing: int32 = 0
 
   for i in 0 ..< MaxBuildings:
-    buildings[i] = Rectangle(x: -6000'f32 + spacing, y: screenHeight - 130 - buildings[i].height,
-        width: rand(50..200).float32, height: rand(100..800).float32)
+    buildings[i] = Rectangle(
+      x: -6000'f32 + spacing,
+      y: screenHeight - 130 - buildings[i].height,
+      width: rand(50..200).float32,
+      height: rand(100..800).float32
+    )
 
     spacing += buildings[i].width.int32
 
@@ -73,29 +77,29 @@ proc main =
     # Draw
     # -----------------------------------------------------------------------------------
     beginDrawing()
-    clearBackground RayWhite
-    beginMode2D camera
-    drawRectangle -6000, 320, 13000, 8000, DarkGray
+    clearBackground(RayWhite)
+    beginMode2D(camera)
+    drawRectangle(-6000, 320, 13000, 8000, DarkGray)
     for i in 0 ..< MaxBuildings:
-      drawRectangle buildings[i], buildColors[i]
-    drawRectangle player, Red
-    drawLine camera.target.x.int32, -screenHeight * 10, camera.target.x.int32,
-        screenHeight * 10, Green
-    drawLine -screenWidth * 10, camera.target.y.int32, screenWidth * 10,
-        camera.target.y.int32, Green
+      drawRectangle(buildings[i], buildColors[i])
+    drawRectangle(player, Red)
+    drawLine(camera.target.x.int32, -screenHeight * 10, camera.target.x.int32,
+        screenHeight * 10, Green)
+    drawLine(-screenWidth * 10, camera.target.y.int32, screenWidth * 10,
+        camera.target.y.int32, Green)
     endMode2D()
-    drawText "SCREEN AREA", 640, 10, 20, Red
-    drawRectangle 0, 0, screenWidth, 5, Red
-    drawRectangle 0, 5, 5, screenHeight - 10, Red
-    drawRectangle screenWidth - 5, 5, 5, screenHeight - 10, Red
-    drawRectangle 0, screenHeight - 5, screenWidth, 5, Red
-    drawRectangle 10, 10, 250, 113, fade(SkyBlue, 0.5)
-    drawRectangleLines 10, 10, 250, 113, Blue
-    drawText "Free 2d camera controls:", 20, 20, 10, Black
-    drawText "- Right/Left to move Offset", 40, 40, 10, DarkGray
-    drawText "- Mouse Wheel to Zoom in-out", 40, 60, 10, DarkGray
-    drawText "- A / S to Rotate", 40, 80, 10, DarkGray
-    drawText "- R to reset Zoom and Rotation", 40, 100, 10, DarkGray
+    drawText("SCREEN AREA", 640, 10, 20, Red)
+    drawRectangle(0, 0, screenWidth, 5, Red)
+    drawRectangle(0, 5, 5, screenHeight - 10, Red)
+    drawRectangle(screenWidth - 5, 5, 5, screenHeight - 10, Red)
+    drawRectangle(0, screenHeight - 5, screenWidth, 5, Red)
+    drawRectangle(10, 10, 250, 113, fade(SkyBlue, 0.5))
+    drawRectangleLines(10, 10, 250, 113, Blue)
+    drawText("Free 2d camera controls:", 20, 20, 10, Black)
+    drawText("- Right/Left to move Offset", 40, 40, 10, DarkGray)
+    drawText("- Mouse Wheel to Zoom in-out", 40, 60, 10, DarkGray)
+    drawText("- A / S to Rotate", 40, 80, 10, DarkGray)
+    drawText("- R to reset Zoom and Rotation", 40, 100, 10, DarkGray)
     endDrawing()
   # De-Initialization
   # -------------------------------------------------------------------------------------
