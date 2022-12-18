@@ -23,7 +23,7 @@ const
   # Colors to choose from
   colors: array[MaxColorsCount, Color] = [
     RayWhite, Yellow, Gold, Orange, Pink, Red,
-    Maroon, Green, Lime, Darkgreen, SkyBlue, Blue,
+    Maroon, Green, Lime, DarkGreen, SkyBlue, Blue,
     DarkBlue, Purple, Violet, DarkPurple, Beige, Brown,
     DarkBrown, LightGray, Gray, DarkGray, Black
   ]
@@ -51,7 +51,7 @@ proc main =
   var showSaveMessage = false
   var saveMessageCounter: int32 = 0
   # Create a RenderTexture2D to use as a canvas
-  var target = loadRenderTexture(screenWidth, screenHeight)
+  let target = loadRenderTexture(screenWidth, screenHeight)
   # Clear render texture before entering the game loop
   beginTextureMode(target)
   clearBackground(colors[0])
@@ -62,7 +62,7 @@ proc main =
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # ----------------------------------------------------------------------------------
-    var mousePos = getMousePosition()
+    let mousePos = getMousePosition()
     # Move between colors with keys
     if isKeyPressed(KeyRight):
       inc(colorSelected)
