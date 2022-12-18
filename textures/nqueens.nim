@@ -25,8 +25,8 @@ type
   Queens = object
     queenInRow: QueensArr # column number of queen in each row
     colFree: array[N, bool]
-    upwardFree: array[N*2-1, bool]
-    downwardFree: array[N*2-1, bool]
+    upwardFree: array[N*2 - 1, bool]
+    downwardFree: array[N*2 - 1, bool]
 
 proc initQueens(): Queens =
   # The Queens object is set up as an empty configuration on a chessboard with N
@@ -34,7 +34,7 @@ proc initQueens(): Queens =
   for i in 0..<N:
     result.queenInRow[i] = -1
     result.colFree[i] = true
-  for i in 0..<N*2-1:
+  for i in 0..<N*2 - 1:
     result.upwardFree[i] = true
     result.downwardFree[i] = true
 
@@ -47,7 +47,6 @@ proc placeQueen(x: var Queens, row, col: int) =
 
 proc removeQueen(x: var Queens; row, col: int) =
   # Remove the queen in the last row.
-  let col = x.queenInRow[row]
   x.colFree[col] = true
   x.upwardFree[row + col] = true
   x.downwardFree[row - col + N - 1] = true
