@@ -34,8 +34,8 @@ proc main =
   defer: closeWindow() # Close window and OpenGL context
   initAudioDevice() # Initialize audio device
   defer: closeAudioDevice() # Close audio device
-  let fxButton: Sound = loadSound("resources/buttonfx.wav") # Load button sound
-  let button: Texture2D = loadTexture("resources/button.png") # Load button texture
+  let fxButton = loadSound("resources/buttonfx.wav") # Load button sound
+  let button = loadTexture("resources/button.png") # Load button texture
   # Define frame rectangle for drawing
   var frameHeight = button.height.float32 / NumFrames
   var sourceRec = Rectangle(x: 0, y: 0, width: float32(button.width), height: frameHeight)
@@ -43,8 +43,8 @@ proc main =
   var btnBounds = Rectangle(x: screenWidth.float32 / 2 - button.width.float32 / 2,
       y: screenHeight.float32 / 2 - button.height.float32 / NumFrames / 2,
       width: float32(button.width), height: frameHeight)
-  var btnState: ButtonState = Normal # Button state
-  var btnAction: bool = false # Button action should be activated
+  var btnState = Normal # Button state
+  var btnAction = false # Button action should be activated
   var mousePoint = Vector2(x: 0, y: 0)
   setTargetFPS(60)
   # --------------------------------------------------------------------------------------
