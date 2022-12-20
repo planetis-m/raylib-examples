@@ -37,12 +37,12 @@ proc main =
   let fxButton = loadSound("resources/buttonfx.wav") # Load button sound
   let button = loadTexture("resources/button.png") # Load button texture
   # Define frame rectangle for drawing
-  let frameHeight = button.height.float32 / NumFrames
+  let frameHeight = button.height.float32/NumFrames
   var sourceRec = Rectangle(x: 0, y: 0, width: button.width.float32, height: frameHeight)
   # Define button bounds on screen
   let btnBounds = Rectangle(
-    x: screenWidth.float32 / 2 - button.width.float32 / 2,
-    y: screenHeight.float32 / 2 - button.height.float32 / NumFrames / 2,
+    x: screenWidth.float32/2 - button.width.float32/2,
+    y: screenHeight.float32/2 - button.height.float32/NumFrames/2,
     width: button.width.float32,
     height: frameHeight
   )
@@ -70,7 +70,7 @@ proc main =
     if btnAction:
       playSound(fxButton)
       # TODO: Any desired action
-    sourceRec.y = btnState.float32 * frameHeight
+    sourceRec.y = btnState.float32*frameHeight
     # ------------------------------------------------------------------------------------
     # Draw
     # ------------------------------------------------------------------------------------

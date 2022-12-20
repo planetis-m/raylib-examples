@@ -24,9 +24,9 @@ const
   FloppyRadius = 24
   TubeWidth = 80
 
-# ----------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 # Types and Structures Definition
-# ----------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 
 type
   Floppy = object
@@ -111,7 +111,7 @@ proc updateGame =
       gameOver = false
 
 proc drawGame =
-  ##  Draw game (one frame)
+  # Draw game (one frame)
   beginDrawing()
   clearBackground(RayWhite)
   if not gameOver:
@@ -127,13 +127,12 @@ proc drawGame =
     drawText(&"{score:04d}", 20, 20, 40, Gray)
     drawText(&"HI-SCORE: {hiScore:04d}", 20, 70, 20, LightGray)
     if pause:
-      drawText("GAME PAUSED",
-               screenWidth div 2 - measureText("GAME PAUSED", 40) div 2,
-               screenHeight div 2 - 40, 40, Gray)
+      drawText("GAME PAUSED", screenWidth div 2 - measureText("GAME PAUSED", 40) div 2,
+          screenHeight div 2 - 40, 40, Gray)
   else:
     drawText("PRESS [ENTER] TO PLAY AGAIN", getScreenWidth() div 2 -
         measureText("PRESS [ENTER] TO PLAY AGAIN", 20) div 2,
-             getScreenHeight() div 2 - 50, 20, Gray)
+        getScreenHeight() div 2 - 50, 20, Gray)
   endDrawing()
 
 proc unloadGame =
@@ -141,7 +140,7 @@ proc unloadGame =
   # TODO: Unload all dynamic loaded data (textures, sounds, models...)
   discard
 
-proc updateDrawFrame =
+proc updateDrawFrame {.cdecl.} =
   # Update and Draw (one frame)
   updateGame()
   drawGame()
@@ -154,21 +153,22 @@ proc main =
   # Initialization
   # --------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "classic game: floppy")
-  defer: closeWindow() # Close window and OpenGL context
-  initGame()
-  when defined(emscripten):
-    emscriptenSetMainLoop(updateDrawFrame, 60, 1)
-  else:
-    setTargetFPS(60)
+  try:
+    initGame()
+    when defined(emscripten):
+      emscriptenSetMainLoop(updateDrawFrame, 60, 1)
+    else:
+      setTargetFPS(60)
+      # ----------------------------------------------------------------------------------
+      # Main game loop
+      while not windowShouldClose(): # Detect window close button or ESC key
+        # Update and Draw
+        # --------------------------------------------------------------------------------
+        updateDrawFrame()
+        # --------------------------------------------------------------------------------
+    # De-Initialization
     # ------------------------------------------------------------------------------------
-    # Main game loop
-    while not windowShouldClose(): # Detect window close button or ESC key
-      # Update and Draw
-      # ----------------------------------------------------------------------------------
-      updateDrawFrame()
-      # ----------------------------------------------------------------------------------
-  # De-Initialization
-  # --------------------------------------------------------------------------------------
-  unloadGame() # Unload loaded data (textures, sounds, models...)
+    unloadGame() # Unload loaded data (textures, sounds, models...)
+  finally: closeWindow() # Close window and OpenGL context
 
 main()
