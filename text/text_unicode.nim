@@ -106,14 +106,14 @@ proc randomizeEmoji() =
   # Fills the emoji array with random emoji (only those emojis present in fontEmoji)
   hovered = -1
   selected = -1
-  let start = rand(45..360).int32
+  let start = rand(45'i32..360'i32)
   for i in 0 ..< len(emoji):
     # 0-179 emoji codepoints (from emoji char array) each 4bytes
-    emoji[i].index = rand(0..179).int32
+    emoji[i].index = rand(0'i32..179'i32)
     # Generate a random color for this emoji
     emoji[i].color = fade(colorFromHSV(float32(start * (i + 1) mod 360), 0.6, 0.85), 0.8)
     # Set a random message for this emoji
-    emoji[i].message = rand(0..high(messages).int).int32
+    emoji[i].message = rand(0'i32..high(messages).int32)
 
 type
   State = enum

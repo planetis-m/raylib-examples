@@ -52,9 +52,9 @@ proc main =
           bunnies[bunniesCount].speed.x = rand(-250..250)/60'f32
           bunnies[bunniesCount].speed.y = rand(-250..250)/60'f32
           bunnies[bunniesCount].color = Color(
-            r: rand(50..240).uint8,
-            g: rand(80..240).uint8,
-            b: rand(100..240).uint8,
+            r: rand(50'u8..240'u8),
+            g: rand(80'u8..240'u8),
+            b: rand(100'u8..240'u8),
             a: 255
           )
           inc bunniesCount

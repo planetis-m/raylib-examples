@@ -39,14 +39,14 @@ proc main =
     spacing += buildings[i].width.int32
 
     buildColors[i] = Color(
-      r: rand(200..240).uint8,
-      g: rand(200..240).uint8,
-      b: rand(200..240).uint8,
-      a: 255.uint8
+      r: rand(200'u8..240'u8),
+      g: rand(200'u8..240'u8),
+      b: rand(200'u8..240'u8),
+      a: 255
     )
   var camera = Camera2D(
     target: Vector2(x: player.x + 20, y: player.y + 20),
-    offset: Vector2(x: screenWidth / 2'f32, y: screenHeight / 2'f32),
+    offset: Vector2(x: screenWidth/2'f32, y: screenHeight/2'f32),
     rotation: 0,
     zoom: 1,
   )

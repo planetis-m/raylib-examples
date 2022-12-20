@@ -39,8 +39,8 @@ proc main =
     # Update
     #------------------------------------------------------------------------------------
     if isKeyPressed(KeyR):
-      score = rand(1000..2000).int32
-      hiscore = rand(2000..4000).int32
+      score = rand(1000'i32..2000'i32)
+      hiscore = rand(2000'i32..4000'i32)
     if isKeyPressed(KeyEnter):
       discard saveStorageValue(PositionScore, score)
       discard saveStorageValue(PositionHiscore, hiscore)
