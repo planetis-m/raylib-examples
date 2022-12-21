@@ -44,17 +44,16 @@ proc main =
     # Update
     # ------------------------------------------------------------------------------------
     # Compute required framebuffer scaling
-    let scale = min(getScreenWidth().float32 / gameScreenWidth, getScreenHeight().float32 / gameScreenHeight)
+    let scale = min(getScreenWidth().float32/gameScreenWidth, getScreenHeight().float32/gameScreenHeight)
     if isKeyPressed(KeySpace):
       # Recalculate random colors for the bars
       for i in 0..colors.high:
         colors[i] = Color(r: rand(100'u8..250'u8), g: rand(50'u8..150'u8), b: rand(10'u8..100'u8), a: 255)
     let mouse = getMousePosition()
-    var virtualMouse: Vector2
-    virtualMouse.x = (mouse.x - (getScreenWidth() - (gameScreenWidth*scale))*0.5'f32)/scale
-    virtualMouse.y = (mouse.y - (getScreenHeight() - (gameScreenHeight*scale))*0.5'f32)/scale
-    virtualMouse = clamp(virtualMouse, Vector2(x: 0, y: 0), Vector2(x: gameScreenWidth,
-        y: gameScreenHeight))
+    var virtualMouse = Vector2(
+      x: clamp((mouse.x - (getScreenWidth() - (gameScreenWidth*scale))*0.5'f32)/scale, 0, gameScreenWidth),
+      y: clamp((mouse.y - (getScreenHeight() - (gameScreenHeight*scale))*0.5'f32)/scale, 0, gameScreenHeight)
+    )
     # Apply the same transformation as the virtual mouse to the real mouse (i.e. to work with raygui)
     # setMouseOffset(-(getScreenWidth() - (gameScreenWidth*scale))*0.5'f32, -(getScreenHeight() - (gameScreenHeight*scale))*0.5'f32)
     # setMouseScale(1/scale, 1/scale)
@@ -63,8 +62,7 @@ proc main =
     # ------------------------------------------------------------------------------------
     # Draw everything in the render texture, note this will not be rendered on screen, yet
     beginTextureMode(target)
-    clearBackground(RayWhite)
-    # Clear render texture background color
+    clearBackground(RayWhite) # Clear render texture background color
     for i in 0..colors.high:
       drawRectangle(0, (gameScreenHeight div 10)*i.int32, gameScreenWidth, gameScreenHeight div 10,
           colors[i])
@@ -74,8 +72,7 @@ proc main =
     drawText(&"Virtual Mouse: [{virtualMouse.x.int32}, {virtualMouse.y.int32}]", 350, 55, 20, Yellow)
     endTextureMode()
     beginDrawing()
-    clearBackground(Black)
-    # Clear screen background
+    clearBackground(Black) # Clear screen background
     # Draw render texture to screen, properly scaled
     drawTexture(target.texture, Rectangle(x: 0, y: 0, width: target.texture.width.float32,
         height: -target.texture.height.float32), Rectangle(x: (getScreenWidth() - (
