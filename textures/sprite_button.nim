@@ -48,14 +48,13 @@ proc main =
   )
   var btnState = Normal # Button state
   var btnAction = false # Button action should be activated
-  var mousePoint = Vector2(x: 0, y: 0)
   setTargetFPS(60)
   # --------------------------------------------------------------------------------------
   # Main game loop
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # ------------------------------------------------------------------------------------
-    mousePoint = getMousePosition()
+    let mousePoint = getMousePosition()
     btnAction = false
     # Check button state
     if checkCollisionPointRec(mousePoint, btnBounds):
