@@ -43,8 +43,7 @@ proc main =
   model.materials[0].maps[MaterialMapDiffuse].texture = texture # Set map diffuse texture
 
   let mapPosition = Vector3(x: -8, y: 0, z: -8) # Define model position
-  unloadImage(image) # Unload heightmap image from RAM, already uploaded to VRAM
-  wasMoved(image)
+  reset(image) # Unload heightmap image from RAM, already uploaded to VRAM
 
   setCameraMode(camera, CameraOrbital) # Set an orbital camera mode
   setTargetFPS(60) # Set our game to run at 60 frames-per-second

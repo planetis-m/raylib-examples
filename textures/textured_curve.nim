@@ -188,9 +188,8 @@ proc main =
     # ------------------------------------------------------------------------------------
   # De-Initialization
   # --------------------------------------------------------------------------------------
-  unloadTexture(texRoad)
-  closeWindow()
-  # Close window and OpenGL context
+  reset(texRoad)
+  closeWindow() # Close window and OpenGL context
   # --------------------------------------------------------------------------------------
 
 main()
