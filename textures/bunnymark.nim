@@ -16,9 +16,7 @@ const
   screenHeight = 450
   screenWidth = 800
 
-const
   MaxBunnies = 50_000 # 50K bunnies limit
-
   # This is the maximum amount of elements (quads) per batch
   # NOTE: This value is defined in [rlgl] module and can be changed there
   MaxBatchElements = 8192
