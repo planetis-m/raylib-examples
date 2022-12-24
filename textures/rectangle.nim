@@ -24,6 +24,7 @@ proc main =
   # -------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [texture] example - texture rectangle")
   defer: closeWindow() # Close window and OpenGL context
+
   # NOTE: Textures MUST be loaded after Window initialization (OpenGL context is requiRed)
   let scarfy = loadTexture("resources/scarfy.png") # Texture loading
   let position = Vector2(x: 350, y: 280)
