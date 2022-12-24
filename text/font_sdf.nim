@@ -22,6 +22,8 @@ const
   screenWidth = 800
   screenHeight = 450
 
+  Message = "Signed Distance Fields"
+
 template toBytes(x: string): untyped =
   toOpenArrayByte(x, 0, x.high)
 
@@ -31,7 +33,6 @@ proc main =
   initWindow(screenWidth, screenHeight, "raylib [text] example - SDF fonts")
   defer: closeWindow() # Close window and OpenGL context
   # NOTE: Textures/Fonts MUST be loaded after Window initialization (OpenGL context is required)
-  const msg = "Signed Distance Fields"
   # Loading file to memory
   let fileData = readFile("resources/anonymous_pro_bold.ttf")
   # Default font generation from TTF font
@@ -66,9 +67,9 @@ proc main =
     else:
       currentFont = 0
     if currentFont == 0:
-      textSize = measureText(fontDefault, msg, fontSize, 0)
+      textSize = measureText(fontDefault, Message, fontSize, 0)
     else:
-      textSize = measureText(fontSdf, msg, fontSize, 0)
+      textSize = measureText(fontSdf, Message, fontSize, 0)
     fontPosition.x = getScreenWidth()/2'f32 - textSize.x/2'f32
     fontPosition.y = getScreenHeight()/2'f32 - textSize.y/2'f32 + 80
     # Draw
@@ -78,11 +79,11 @@ proc main =
     if currentFont == 1:
       # NOTE: SDF fonts require a custom SDf shader to compute fragment color
       beginShaderMode(shader) # Activate SDF font shader
-      drawText(fontSdf, msg, fontPosition, fontSize, 0, Black)
+      drawText(fontSdf, Message, fontPosition, fontSize, 0, Black)
       endShaderMode() # Activate our default shader for next drawings
       drawTexture(fontSdf.texture, 10, 10, Black)
     else:
-      drawText(fontDefault, msg, fontPosition, fontSize, 0, Black)
+      drawText(fontDefault, Message, fontPosition, fontSize, 0, Black)
       drawTexture(fontDefault.texture, 10, 10, Black)
     if currentFont == 1:
       drawText("SDF!", 320, 20, 80, Red)

@@ -49,7 +49,7 @@ proc main =
       else: resumeMusicStream(music)
 
     # Get normalized time played for current music stream
-    timePlayed = getMusicTimePlayed(music) / getMusicTimeLength(music)
+    timePlayed = getMusicTimePlayed(music)/getMusicTimeLength(music)
     if timePlayed > 1: timePlayed = 1 # Make sure time played is no longer than music
 
     beginDrawing()
