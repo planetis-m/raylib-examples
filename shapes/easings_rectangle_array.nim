@@ -39,12 +39,12 @@ proc main =
   # Initialization
   # --------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [shapes] example - easings rectangle array")
-  var recs: array[MaxRecsX * MaxRecsY, Rectangle]
+  var recs: array[MaxRecsX*MaxRecsY, Rectangle]
   for y in 0..<MaxRecsY:
     for x in 0..<MaxRecsX:
       recs[y * MaxRecsX + x] = Rectangle(
-        x: RecsWidth / 2'f32 + RecsWidth * x,
-        y: RecsHeight / 2'f32 + RecsHeight * y,
+        x: RecsWidth/2'f32 + RecsWidth*x,
+        y: RecsHeight/2'f32 + RecsHeight*y,
         width: RecsWidth,
         height: RecsHeight
       )
@@ -59,7 +59,7 @@ proc main =
     # ----------------------------------------------------------------------------------
     if state == Playing:
       inc(framesCounter)
-      for i in 0 ..< MaxRecsX * MaxRecsY:
+      for i in 0 ..< MaxRecsX*MaxRecsY:
         recs[i].height = circOut(framesCounter.float32, RecsHeight, -RecsHeight, PlayTimeInFrames)
         recs[i].width = circOut(framesCounter.float32, RecsWidth, -RecsWidth, PlayTimeInFrames)
         if recs[i].height < 0:
@@ -75,15 +75,15 @@ proc main =
       # ----------------------------------------------------------------------------------
       # When animation has finished, press space to restart
       framesCounter = 0
-      for i in 0 ..< MaxRecsX * MaxRecsY:
+      for i in 0..<MaxRecsX*MaxRecsY:
         recs[i].height = RecsHeight
         recs[i].width = RecsWidth
       state = Playing
     beginDrawing()
     clearBackground(RayWhite)
     if state == Playing:
-      for i in 0 ..< MaxRecsX * MaxRecsY:
-        drawRectangle(recs[i], Vector2(x: recs[i].width / 2, y: recs[i].height / 2), rotation, Red)
+      for i in 0..<MaxRecsX*MaxRecsY:
+        drawRectangle(recs[i], Vector2(x: recs[i].width/2, y: recs[i].height/2), rotation, Red)
     elif state == Finished:
       drawText("PRESS [SPACE] TO PLAY AGAIN!", 240, 200, 20, Gray)
     endDrawing()

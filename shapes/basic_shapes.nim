@@ -1,4 +1,4 @@
-# ***************************************************************************************
+# ****************************************************************************************
 #
 # raylib [shapes] example - Draw basic shapes 2d (rectangle, circle, line...)
 #
@@ -7,7 +7,7 @@
 #
 # Copyright (c) 2014 Ramon Santamaria (@raysan5)
 #
-# ***************************************************************************************
+# ****************************************************************************************
 
 import raylib
 
@@ -19,10 +19,10 @@ proc main =
   initWindow(screenWidth, screenHeight, "raylib [shapes] example - basic shapes drawing")
   setTargetFPS(60)
   # Main game loop
-  # -------------------------------------------------------------------------------------
+  # --------------------------------------------------------------------------------------
   while not windowShouldClose(): # Detect window close button or ESC key
     # Draw
-    # -----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(RayWhite)
     drawText("some basic shapes available on raylib", 20, 20, 20, DarkGray)
@@ -54,7 +54,10 @@ proc main =
     # this way, all LINES are rendered in a single draw pass
     drawLine(18, 42, screenWidth - 18'i32, 42, Black)
     endDrawing()
-
+    # ------------------------------------------------------------------------------------
+  # De-Initialization
+  # --------------------------------------------------------------------------------------
   closeWindow() # Close window and OpenGL context
+  # --------------------------------------------------------------------------------------
 
 main()

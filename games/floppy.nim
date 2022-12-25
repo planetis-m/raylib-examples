@@ -169,6 +169,7 @@ proc main =
     # De-Initialization
     # ------------------------------------------------------------------------------------
     unloadGame() # Unload loaded data (textures, sounds, models...)
-  finally: closeWindow() # Close window and OpenGL context
+  finally:
+    closeWindow() # Close window and OpenGL context
 
 main()
