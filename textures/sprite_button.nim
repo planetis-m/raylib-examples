@@ -32,6 +32,7 @@ proc main =
   # --------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [textures] example - sprite button")
   defer: closeWindow() # Close window and OpenGL context
+
   initAudioDevice() # Initialize audio device
   defer: closeAudioDevice() # Close audio device
 

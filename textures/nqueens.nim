@@ -75,6 +75,7 @@ proc main =
   # --------------------------------------------------------------------------------------
   initWindow(screenSize, screenSize, "raylib example - 8 queens puzzle")
   defer: closeWindow() # Close window and OpenGL context
+
   let queenPiece = loadTexture("resources/wQ.png")
   var queens = initQueens()
   var solutions: seq[QueensArr] = @[]

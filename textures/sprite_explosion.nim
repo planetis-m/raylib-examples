@@ -1,4 +1,4 @@
-# ***************************************************************************************
+# ****************************************************************************************
 #
 # raylib [textures] example - sprite explosion
 #
@@ -7,7 +7,7 @@
 #
 # Copyright (c) 2019 Anata and Ramon Santamaria (@raysan5)
 #
-# ***************************************************************************************
+# ****************************************************************************************
 
 import raylib, std/lenientops
 
@@ -21,8 +21,10 @@ const
 proc main =
   initWindow(screenWidth, screenHeight, "raylib [textures] example - sprite explosion")
   defer: closeWindow()
+
   initAudioDevice()
   defer: closeAudioDevice()
+
   # Load explosion sound
   let fxBoom = loadSound("resources/boom.wav")
   # Load explosion texture
@@ -36,12 +38,13 @@ proc main =
   var position = Vector2(x: 0, y: 0)
   var active = false
   var framesCounter: int32 = 0
+
   setTargetFPS(120)
-  # -------------------------------------------------------------------------------------
+  # --------------------------------------------------------------------------------------
   # Main game loop
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
-    # -----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     # Check for mouse button pressed and activate explosion (if not active)
     if isMouseButtonPressed(MouseButtonLeft) and not active:
       position = getMousePosition()
@@ -62,14 +65,15 @@ proc main =
         framesCounter = 0
     frameRec.x = frameWidth*currentFrame
     frameRec.y = frameHeight*currentLine
-    # -----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     # Draw
-    # -----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(RayWhite)
     # Draw explosion required frame rectangle
     if active:
       drawTexture(explosion, frameRec, position, White)
     endDrawing()
+    # ------------------------------------------------------------------------------------
 
 main()
