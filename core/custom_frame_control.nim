@@ -1,4 +1,4 @@
-# ***************************************************************************************
+# ****************************************************************************************
 #
 # raylib [core] example - custom frame control
 #
@@ -22,7 +22,7 @@
 #
 # Copyright (c) 2021 Ramon Santamaria (@raysan5)
 #
-# ***************************************************************************************
+# ****************************************************************************************
 
 import raylib, std/[lenientops, strformat]
 
@@ -61,6 +61,9 @@ proc main =
       if position >= getScreenWidth():
         position = 0
       timeCounter += deltaTime # We count time (seconds)
+    # ------------------------------------------------------------------------------------
+    # Draw
+    # ------------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(RayWhite)
     for i in 0 ..< getScreenWidth() div 200:
@@ -84,7 +87,7 @@ proc main =
     currentTime = getTime()
     updateDrawTime = currentTime - previousTime
     if targetFPS > 0:
-      waitTime = (1'f32 / targetFPS) - updateDrawTime
+      waitTime = (1'f32/targetFPS) - updateDrawTime
       if waitTime > 0:
         waitTime(waitTime.float32)
         currentTime = getTime()
@@ -94,7 +97,7 @@ proc main =
     # Framerate could be variable
     previousTime = currentTime
   # De-Initialization
-  # -------------------------------------------------------------------------------------
+  # --------------------------------------------------------------------------------------
   closeWindow() # Close window and OpenGL context
 
 main()

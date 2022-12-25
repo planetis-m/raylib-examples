@@ -39,6 +39,7 @@ proc main =
   # Initialization
   # --------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [shapes] example - easings rectangle array")
+
   var recs: array[MaxRecsX*MaxRecsY, Rectangle]
   for y in 0 ..< MaxRecsY:
     for x in 0 ..< MaxRecsX:
@@ -48,9 +49,11 @@ proc main =
         width: RecsWidth,
         height: RecsHeight
       )
+
   var rotation: float32 = 0
   var framesCounter: int32 = 0
   var state = Playing # Rectangles animation state: 0-Playing, 1-Finished
+
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # --------------------------------------------------------------------------------------
   # Main game loop

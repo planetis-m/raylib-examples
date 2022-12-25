@@ -39,7 +39,12 @@ proc main =
 
   var colors: array[10, Color]
   for i in 0..colors.high:
-    colors[i] = Color(r: rand(100'u8..250'u8), g: rand(50'u8..150'u8), b: rand(10'u8..100'u8), a: 255)
+    colors[i] = Color(
+      r: rand(100'u8..250'u8),
+      g: rand(50'u8..150'u8),
+      b: rand(10'u8..100'u8),
+      a: 255
+    )
 
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # --------------------------------------------------------------------------------------
@@ -53,7 +58,12 @@ proc main =
     if isKeyPressed(KeySpace):
       # Recalculate random colors for the bars
       for i in 0..colors.high:
-        colors[i] = Color(r: rand(100'u8..250'u8), g: rand(50'u8..150'u8), b: rand(10'u8..100'u8), a: 255)
+        colors[i] = Color(
+          r: rand(100'u8..250'u8),
+          g: rand(50'u8..150'u8),
+          b: rand(10'u8..100'u8),
+          a: 255
+        )
 
     let mouse = getMousePosition()
     var virtualMouse = Vector2(
