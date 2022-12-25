@@ -1,4 +1,4 @@
-# ******************************************************************************************
+# ****************************************************************************************
 #
 #   raylib [shapes] example - easings rectangle array
 #
@@ -12,7 +12,7 @@
 #
 #   Copyright (c) 2014-2022 Ramon Santamaria (@raysan5)
 #
-# ******************************************************************************************
+# ****************************************************************************************
 
 import raylib, reasings, std/lenientops
 
@@ -40,9 +40,9 @@ proc main =
   # --------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [shapes] example - easings rectangle array")
   var recs: array[MaxRecsX*MaxRecsY, Rectangle]
-  for y in 0..<MaxRecsY:
-    for x in 0..<MaxRecsX:
-      recs[y * MaxRecsX + x] = Rectangle(
+  for y in 0 ..< MaxRecsY:
+    for x in 0 ..< MaxRecsX:
+      recs[y*MaxRecsX + x] = Rectangle(
         x: RecsWidth/2'f32 + RecsWidth*x,
         y: RecsHeight/2'f32 + RecsHeight*y,
         width: RecsWidth,
@@ -56,7 +56,7 @@ proc main =
   # Main game loop
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
-    # ----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     if state == Playing:
       inc(framesCounter)
       for i in 0 ..< MaxRecsX*MaxRecsY:
@@ -70,19 +70,19 @@ proc main =
           state = Finished
         rotation = linearIn(framesCounter.float32, 0, 360, PlayTimeInFrames)
     elif state == Finished and isKeyPressed(KeySpace):
-      # ----------------------------------------------------------------------------------
-      # Draw
-      # ----------------------------------------------------------------------------------
       # When animation has finished, press space to restart
       framesCounter = 0
-      for i in 0..<MaxRecsX*MaxRecsY:
+      for i in 0 ..< MaxRecsX*MaxRecsY:
         recs[i].height = RecsHeight
         recs[i].width = RecsWidth
       state = Playing
+    # ------------------------------------------------------------------------------------
+    # Draw
+    # ------------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(RayWhite)
     if state == Playing:
-      for i in 0..<MaxRecsX*MaxRecsY:
+      for i in 0 ..< MaxRecsX*MaxRecsY:
         drawRectangle(recs[i], Vector2(x: recs[i].width/2, y: recs[i].height/2), rotation, Red)
     elif state == Finished:
       drawText("PRESS [SPACE] TO PLAY AGAIN!", 240, 200, 20, Gray)

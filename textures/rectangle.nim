@@ -1,4 +1,4 @@
-# ***************************************************************************************
+# ****************************************************************************************
 #
 # raylib [textures] example - Texture loading and drawing a part defined by a rectangle
 #
@@ -8,7 +8,7 @@
 # Copyright (c) 2014 Ramon Santamaria (@raysan5)
 # Adapted in 2021 by greenfork
 #
-# ***************************************************************************************
+# ****************************************************************************************
 
 import raylib, std/[lenientops, strutils]
 
@@ -21,7 +21,7 @@ const
 
 proc main =
   # Initialization
-  # -------------------------------------------------------------------------------------
+  # --------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [texture] example - texture rectangle")
   defer: closeWindow() # Close window and OpenGL context
 
@@ -32,12 +32,13 @@ proc main =
   var currentFrame: int32 = 0
   var framesCounter: int32 = 0
   var framesSpeed: int32 = 8 # Number of spritesheet frames shown by second
+
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
-  # -------------------------------------------------------------------------------------
+  # --------------------------------------------------------------------------------------
   # Main game loop
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
-    # -----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     inc framesCounter
     if framesCounter >= 60 div framesSpeed:
       framesCounter = 0
@@ -53,8 +54,9 @@ proc main =
       framesSpeed = MaxFrameSpeed
     elif framesSpeed < MinFrameSpeed:
       framesSpeed = MinFrameSpeed
+    # ------------------------------------------------------------------------------------
     # Draw
-    # -----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(RayWhite)
     drawTexture(scarfy, 15, 40, White)
@@ -69,8 +71,8 @@ proc main =
         drawRectangle(250 + 21*i.int32, 205, 20, 20, Red)
       drawRectangleLines(250 + 21*i.int32, 205, 20, 20, Maroon)
     drawTexture(scarfy, frameRec, position, White) # Draw part of the texture
-    drawText("(c) Scarfy sprite by Eiden Marsal", screenWidth - 200,
-        screenHeight - 20, 10, Gray)
+    drawText("(c) Scarfy sprite by Eiden Marsal", screenWidth - 200, screenHeight - 20, 10, Gray)
     endDrawing()
+    # ------------------------------------------------------------------------------------
 
 main()

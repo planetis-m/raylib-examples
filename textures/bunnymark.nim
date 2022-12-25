@@ -1,4 +1,4 @@
-# ***************************************************************************************
+# ****************************************************************************************
 #
 # raylib [textures] example - Bunnymark
 #
@@ -8,7 +8,7 @@
 # Copyright (c) 2014-2019 Ramon Santamaria (@raysan5)
 # Converted in 2021 by greenfork
 #
-# ***************************************************************************************
+# ****************************************************************************************
 
 import raylib, std/[lenientops, random, strformat]
 
@@ -29,7 +29,7 @@ type
 
 proc main =
   # Initialization
-  # -------------------------------------------------------------------------------------
+  # --------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [textures] example - bunnymark")
   defer: closeWindow() # Close window and OpenGL context
 
@@ -40,10 +40,10 @@ proc main =
   var bunniesCount = 0 # Bunnies counter
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # Main game loop
-  # -------------------------------------------------------------------------------------
+  # --------------------------------------------------------------------------------------
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
-    # -----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     if isMouseButtonDown(MouseButtonLeft):
       # Create more bunnies
       for i in 0..<100:
@@ -72,8 +72,9 @@ proc main =
       if bunnies[i].position.y + texBunny.height/2'f32 > getScreenHeight() or
           bunnies[i].position.y + texBunny.height/2'f32 - 40 < 0:
         bunnies[i].speed.y *= -1
+    # ------------------------------------------------------------------------------------
     # Draw
-    # -----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(RayWhite)
     for i in 0..<bunniesCount:
@@ -89,5 +90,6 @@ proc main =
     drawText(&"batched draw calls: {1 + bunniesCount div MaxBatchElements}", 320, 10, 20, Maroon)
     drawFPS(10, 10)
     endDrawing()
+    # ------------------------------------------------------------------------------------
 
 main()

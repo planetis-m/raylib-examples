@@ -34,6 +34,7 @@ proc main =
   defer: closeWindow() # Close window and OpenGL context
   initAudioDevice() # Initialize audio device
   defer: closeAudioDevice() # Close audio device
+
   let fxButton = loadSound("resources/buttonfx.wav") # Load button sound
   let button = loadTexture("resources/button.png") # Load button texture
   # Define frame rectangle for drawing
@@ -48,6 +49,7 @@ proc main =
   )
   var btnState = Normal # Button state
   var btnAction = false # Button action should be activated
+
   setTargetFPS(60)
   # --------------------------------------------------------------------------------------
   # Main game loop

@@ -105,5 +105,6 @@ proc main =
     drawText(&"Solution {index+1}", 420, 10, 30, Black)
     drawText("Press ENTER to continue", 15, 570, 20, Black)
     endDrawing()
+    # ------------------------------------------------------------------------------------
 
 main()

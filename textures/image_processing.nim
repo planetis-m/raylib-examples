@@ -55,6 +55,7 @@ proc main =
   # --------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [textures] example - image processing")
   defer: closeWindow() # Close window and OpenGL context
+
   # NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
   var imOrigin = loadImage("resources/parrots.png") # Loaded in CPU memory (RAM)
   imageFormat(imOrigin, PixelformatUncompressedR8g8b8a8) # Format image to RGBA 32bit (required for texture update) <-- ISSUE
@@ -66,6 +67,7 @@ proc main =
   var mouseHoverRec = -1
   for i in 0..<NumProcesses:
     toggleRecs[i] = Rectangle(x: 40, y: float32(50 + 32*i), width: 150, height: 30)
+
   setTargetFPS(60)
   # --------------------------------------------------------------------------------------
   # Main game loop
@@ -119,6 +121,9 @@ proc main =
       let pixels: CSeq[Color] = loadImageColors(imCopy) # Load pixel data from image (RGBA 32bit)
       updateTexture(texture, pixels.toOpenArray) # Update texture with new image data
       textureReload = false
+    # ------------------------------------------------------------------------------------
+    # Draw
+    # ------------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(RayWhite)
     drawText("IMAGE PROCESSING:", 40, 30, 10, DarkGray)

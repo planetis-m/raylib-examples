@@ -1,4 +1,4 @@
-# ***************************************************************************************
+# ****************************************************************************************
 #
 # raylib [textures] example - Texture source and destination rectangles
 #
@@ -7,7 +7,7 @@
 #
 # Copyright (c) 2015 Ramon Santamaria (@raysan5)
 #
-# ***************************************************************************************
+# ****************************************************************************************
 
 import raylib, std/lenientops
 
@@ -19,6 +19,7 @@ proc main =
   initWindow(screenWidth, screenHeight,
       "raylib [textures] examples - texture source and destination rectangles")
   defer: closeWindow() # Close window and OpenGL context
+
   # NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
   let scarfy = loadTexture("resources/scarfy.png") # Texture loading
   let frameWidth = scarfy.width div 6
@@ -35,15 +36,17 @@ proc main =
   # Origin of the texture (rotation/scale point), it's relative to destination rectangle size
   let origin = Vector2(x: frameWidth.float32, y: frameHeight.float32)
   var rotation: int32 = 0
+
   setTargetFPS(60)
   # Main game loop
-  # -------------------------------------------------------------------------------------
+  # --------------------------------------------------------------------------------------
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
-    # -----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     inc(rotation)
+    # ------------------------------------------------------------------------------------
     # Draw
-    # -----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(RayWhite)
     # NOTE: Using DrawTexturePro() we can easily rotate and scale the part of the texture we draw
@@ -56,5 +59,6 @@ proc main =
     drawLine(0, destRec.y.int32, screenWidth, destRec.y.int32, Gray)
     drawText("(c) Scarfy sprite by Eiden Marsal", screenWidth - 200, screenHeight - 20, 10, Gray)
     endDrawing()
+    # ------------------------------------------------------------------------------------
 
 main()

@@ -1,4 +1,4 @@
-# ***************************************************************************************
+# ****************************************************************************************
 #
 # raylib [textures] example - Background scrolling
 #
@@ -8,7 +8,7 @@
 # Copyright (c) 2019 Ramon Santamaria (@raysan5)
 # Converted in 2021 by greenfork
 #
-# ***************************************************************************************
+# ****************************************************************************************
 
 import std/lenientops, raylib
 
@@ -18,27 +18,30 @@ const
 
 proc main =
   # Initialization
-  # -------------------------------------------------------------------------------------
+  # --------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [textures] example - background scrolling")
   defer: closeWindow() # Close window and OpenGL context
+
   # NOTE: Be careful, background width must be equal or bigger than screen width
   # if not, texture should be draw more than two times for scrolling effect
   let background = loadTexture("resources/cyberpunk_street_background.png")
   let midground = loadTexture("resources/cyberpunk_street_midground.png")
   let foreground = loadTexture("resources/cyberpunk_street_foreground.png")
+
   var scrollingBack: float32 = 0
   var scrollingMid: float32 = 0
   var scrollingFore: float32 = 0
-  setTargetFPS(60)
-  # Set our game to run at 60 frames-per-second
-  # -------------------------------------------------------------------------------------
+
+  setTargetFPS(60) # Set our game to run at 60 frames-per-second
+  # --------------------------------------------------------------------------------------
   # Main game loop
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
-    # -----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     scrollingBack -= 0.1
     scrollingMid -= 0.5
     scrollingFore -= 1.0
+
     # NOTE: Texture is scaled twice its size, so it sould be considered on scrolling
     if scrollingBack <= -background.width * 2'f32:
       scrollingBack = 0
@@ -46,8 +49,9 @@ proc main =
       scrollingMid = 0
     if scrollingFore <= -foreground.width * 2'f32:
       scrollingFore = 0
+
     beginDrawing()
-    clearBackground(getColor(0x052C46FF))
+    clearBackground(getColor(0x052c46ff))
     # Draw background image twice
     # NOTE: Texture is scaled twice its size
     drawTexture(background, Vector2(x: scrollingBack, y: 20), 0, 2, White)
@@ -62,5 +66,6 @@ proc main =
     drawText("(c) Cyberpunk Street Environment by Luis Zuno (@ansimuz)",
         screenWidth - 330, screenHeight - 20, 10, RayWhite)
     endDrawing()
+    # ------------------------------------------------------------------------------------
 
 main()

@@ -1,4 +1,4 @@
-# ******************************************************************************************
+# ****************************************************************************************
 #
 #   raylib [textures] example - Mouse painting
 #
@@ -11,7 +11,7 @@
 #
 #   Copyright (c) 2019-2022 Chris Dill (@MysteriousSpace) and Ramon Santamaria (@raysan5)
 #
-# ******************************************************************************************
+# ****************************************************************************************
 
 import raylib
 
@@ -28,9 +28,9 @@ const
     DarkBrown, LightGray, Gray, DarkGray, Black
   ]
 
-# ------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 # Program main entry point
-# ------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 
 proc main =
   # Initialization
@@ -61,7 +61,7 @@ proc main =
   # Main game loop
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
-    # ----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     let mousePos = getMousePosition()
     # Move between colors with keys
     if isKeyPressed(KeyRight):
@@ -81,7 +81,7 @@ proc main =
     if colorMouseHover >= 0 and isMouseButtonPressed(MouseButtonLeft):
       colorSelected = colorMouseHover
       colorSelectedPrev = colorSelected
-    brushSize += getMouseWheelMove() * 5
+    brushSize += getMouseWheelMove()*5
     if brushSize < 2:
       brushSize = 2
     if brushSize > 50:
@@ -130,6 +130,9 @@ proc main =
       if saveMessageCounter > 240:
         showSaveMessage = false
         saveMessageCounter = 0
+    # ------------------------------------------------------------------------------------
+    # Draw
+    # ------------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(RayWhite)
     # NOTE: Render texture must be y-flipped due to default OpenGL coordinates (left-bottom)
@@ -149,10 +152,13 @@ proc main =
     drawRectangleLines(10, 10, 30, 30, LightGray)
     if colorMouseHover >= 0:
       drawRectangle(colorsRecs[colorMouseHover], fade(White, 0.6))
-    drawRectangleLines(Rectangle(x: colorsRecs[colorSelected].x - 2,
-                                 y: colorsRecs[colorSelected].y - 2,
-                                 width: colorsRecs[colorSelected].width + 4,
-                                 height: colorsRecs[colorSelected].height + 4), 2, Black)
+    drawRectangleLines(
+        Rectangle(
+          x: colorsRecs[colorSelected].x - 2,
+          y: colorsRecs[colorSelected].y - 2,
+          width: colorsRecs[colorSelected].width + 4,
+          height: colorsRecs[colorSelected].height + 4
+        ), 2, Black)
     # Draw save image button
     drawRectangleLines(btnSaveRec, 2, if btnSaveMouseHover: Red else: Black)
     drawText("SAVE!", 755, 20, 10, if btnSaveMouseHover: Red else: Black)
@@ -162,6 +168,6 @@ proc main =
       drawRectangle(0, 150, getScreenWidth(), 80, Black)
       drawText("IMAGE SAVED:  my_amazing_texture_painting.png", 150, 180, 20, RayWhite)
     endDrawing()
-    # ----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
 
 main()

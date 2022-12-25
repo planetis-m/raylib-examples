@@ -69,6 +69,9 @@ proc main =
         state = BounceX
     if isKeyPressed(KeyR):
       framesCounter = 0
+    # ------------------------------------------------------------------------------------
+    # Draw
+    # ------------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(RayWhite)
     if state >= FadeOut:

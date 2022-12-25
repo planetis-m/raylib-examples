@@ -1,4 +1,4 @@
-# ***************************************************************************************
+# ****************************************************************************************
 #
 # raylib [core] example - 2d camera platformer
 #
@@ -10,7 +10,7 @@
 # Copyright (c) 2019 arvyy (@arvyy)
 # Converted in 2021 by greenfork
 #
-# ***************************************************************************************
+# ****************************************************************************************
 
 import std/lenientops, raylib, raymath
 
@@ -18,7 +18,6 @@ const
   screenWidth = 800
   screenHeight = 450
 
-const
   G = 400
   PlayerJumpSpd = 350
   PlayerHorSpd = 200
@@ -162,6 +161,7 @@ proc main =
     speed: 0,
     canJump: false
   )
+
   let envItems = [
     EnvItem(rect: Rectangle(x: 0, y: 0, width: 1000, height: 400),
       blocking: false,
@@ -184,6 +184,7 @@ proc main =
       color: Gray
     ),
   ]
+
   var camera = Camera2D(
     target: player.position,
     offset: Vector2(x: screenWidth / 2'f32, y: screenHeight / 2'f32),
@@ -206,6 +207,7 @@ proc main =
     "Follow player center horizontally; updateplayer center vertically after landing",
     "Player push camera on getting too close to screen edge"
   ]
+
   setTargetFPS(60)
   # Main game loop
   # -------------------------------------------------------------------------------------
@@ -227,10 +229,12 @@ proc main =
     # Call update camera function by its pointer
     cameraUpdaters[cameraOption](camera, player, envItems,
         deltaTime, screenWidth, screenHeight)
+    # ------------------------------------------------------------------------------------
     # Draw
-    # -----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(LightGray)
+
     beginMode2D(camera)
     for i in 0 ..< envItems.len:
       drawRectangle(envItems[i].rect, envItems[i].color)
@@ -242,6 +246,7 @@ proc main =
     )
     drawRectangle(playerRect, Red)
     endMode2D()
+
     drawText("Controls:", 20, 20, 10, Black)
     drawText("- Right/Left to move", 40, 40, 10, DarkGray)
     drawText("- Space to jump", 40, 60, 10, DarkGray)
@@ -251,7 +256,7 @@ proc main =
     drawText(cameraDescriptions[cameraOption], 40, 140, 10, DarkGray)
     endDrawing()
   # De-Initialization
-  # -------------------------------------------------------------------------------------
+  # --------------------------------------------------------------------------------------
   closeWindow() # Close window and OpenGL context
 
 main()

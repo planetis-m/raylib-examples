@@ -1,4 +1,4 @@
-# ***************************************************************************************
+# ****************************************************************************************
 #
 # raylib [shapes] example - collision area
 #
@@ -7,7 +7,7 @@
 #
 # Copyright (c) 2013-2019 Ramon Santamaria (@raysan5)
 #
-# ***************************************************************************************
+# ****************************************************************************************
 
 import raylib, std/[lenientops, strutils]
 
@@ -17,7 +17,7 @@ const
 
 proc main =
   # Initialization
-  # -------------------------------------------------------------------------------------
+  # --------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [shapes] example - collision area")
   # Box A: Moving box
   var boxA = Rectangle(
@@ -38,12 +38,13 @@ proc main =
   var screenUpperLimit: int32 = 40 # Top menu limits
   var pause = false # Movement pause
   var collision = false # Collision detection
+
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # Main game loop
-  # -------------------------------------------------------------------------------------
+  # --------------------------------------------------------------------------------------
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
-    # -----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     # Move box if not paused
     if not pause:
       boxA.x += boxASpeedX.float32
@@ -66,6 +67,9 @@ proc main =
       boxCollision = getCollisionRec(boxA, boxB)
     if isKeyPressed(KeySpace):
       pause = not pause
+    # ------------------------------------------------------------------------------------
+    # Draw
+    # ------------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(White)
     drawRectangle(0, 0, screenWidth, screenUpperLimit, if collision: Red else: Black)
@@ -84,8 +88,10 @@ proc main =
           screenUpperLimit + 10, 20, Black)
     drawFPS(10, 10)
     endDrawing()
+    # ------------------------------------------------------------------------------------
   # De-Initialization
-  # -------------------------------------------------------------------------------------
+  # --------------------------------------------------------------------------------------
   closeWindow() # Close window and OpenGL context
+  # --------------------------------------------------------------------------------------
 
 main()
