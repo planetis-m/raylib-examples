@@ -25,8 +25,8 @@ proc main =
   var touchArea = Rectangle(x: 220, y: 10, width: screenWidth - 230, height: screenHeight - 20)
   var gesturesCount = 0
   var gestureStrings: array[MaxGestureStrings, string]
-  var currentGesture = GestureNone
-  var lastGesture = GestureNone
+  var currentGesture: Gesture = None
+  var lastGesture: Gesture = None
   #setGesturesEnabled(flags(GestureTap, GestureDrag)) # Enable only some gestures to be detected
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # Main game loop
@@ -38,29 +38,29 @@ proc main =
     currentGesture = getGestureDetected()
     let touchPosition = getTouchPosition(0)
 
-    if checkCollisionPointRec(touchPosition, touchArea) and currentGesture != GestureNone:
+    if checkCollisionPointRec(touchPosition, touchArea) and currentGesture != None:
       if currentGesture != lastGesture:
         # Store gesture string
         case currentGesture
-        of GestureTap:
+        of Tap:
           gestureStrings[gesturesCount] = "GESTURE TAP"
-        of GestureDoubletap:
+        of Doubletap:
           gestureStrings[gesturesCount] = "GESTURE DOUBLETAP"
-        of GestureHold:
+        of Hold:
           gestureStrings[gesturesCount] = "GESTURE HOLD"
-        of GestureDrag:
+        of Drag:
           gestureStrings[gesturesCount] = "GESTURE DRAG"
-        of GestureSwipeRight:
+        of SwipeRight:
           gestureStrings[gesturesCount] = "GESTURE SWIPE RIGHT"
-        of GestureSwipeLeft:
+        of SwipeLeft:
           gestureStrings[gesturesCount] = "GESTURE SWIPE LEFT"
-        of GestureSwipeUp:
+        of SwipeUp:
           gestureStrings[gesturesCount] = "GESTURE SWIPE UP"
-        of GestureSwipeDown:
+        of SwipeDown:
           gestureStrings[gesturesCount] = "GESTURE SWIPE DOWN"
-        of GesturePinchIn:
+        of PinchIn:
           gestureStrings[gesturesCount] = "GESTURE PINCH IN"
-        of GesturePinchOut:
+        of PinchOut:
           gestureStrings[gesturesCount] = "GESTURE PINCH OUT"
         else:
           discard
@@ -86,7 +86,7 @@ proc main =
         drawText(gestureStrings[i], 35, 36 + 20*i.int32, 10, Maroon)
     drawRectangleLines(10, 29, 200, screenHeight - 50, Gray)
     drawText("DETECTED GESTURES", 50, 15, 10, Gray)
-    if currentGesture != GestureNone:
+    if currentGesture != None:
       drawCircle(touchPosition, 30, Maroon)
     endDrawing()
     # ------------------------------------------------------------------------------------

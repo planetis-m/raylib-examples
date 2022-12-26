@@ -81,7 +81,7 @@ proc initGame =
 proc updateGame =
   # Update game (one frame)
   if not gameOver:
-    if isKeyPressed(KeyP):
+    if isKeyPressed(P):
       pause = not pause
     if not pause:
       for i in 0..<MaxTubes:
@@ -89,7 +89,7 @@ proc updateGame =
       for i in countup(0, MaxTubes*2 - 1, 2):
         tubes[i].rec.x = tubesPos[i div 2].x
         tubes[i + 1].rec.x = tubesPos[i div 2].x
-      if isKeyDown(KeySpace) and not gameOver:
+      if isKeyDown(Space) and not gameOver:
         floppy.position.y -= 3
       else:
         floppy.position.y += 1
@@ -106,7 +106,7 @@ proc updateGame =
           if score > hiScore:
             hiScore = score
   else:
-    if isKeyPressed(KeyEnter):
+    if isKeyPressed(Enter):
       initGame()
       gameOver = false
 

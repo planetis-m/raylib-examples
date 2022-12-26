@@ -57,7 +57,7 @@ proc main =
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # ------------------------------------------------------------------------------------
-    if isKeyPressed(KeySpace): playSound(sound) # Play sound
+    if isKeyPressed(Space): playSound(sound) # Play sound
     # ------------------------------------------------------------------------------------
     # Draw
     # ------------------------------------------------------------------------------------

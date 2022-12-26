@@ -65,7 +65,7 @@ proc main =
     # Get collision rectangle (only on collision)
     if collision:
       boxCollision = getCollisionRec(boxA, boxB)
-    if isKeyPressed(KeySpace):
+    if isKeyPressed(Space):
       pause = not pause
     # ------------------------------------------------------------------------------------
     # Draw

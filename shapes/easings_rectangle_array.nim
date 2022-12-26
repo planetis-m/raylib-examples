@@ -72,7 +72,7 @@ proc main =
         if recs[i].height == 0 and recs[i].width == 0:
           state = Finished
         rotation = linearIn(framesCounter.float32, 0, 360, PlayTimeInFrames)
-    elif state == Finished and isKeyPressed(KeySpace):
+    elif state == Finished and isKeyPressed(Space):
       # When animation has finished, press space to restart
       framesCounter = 0
       for i in 0 ..< MaxRecsX*MaxRecsY:

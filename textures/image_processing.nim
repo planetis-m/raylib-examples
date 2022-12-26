@@ -58,7 +58,7 @@ proc main =
 
   # NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
   var imOrigin = loadImage("resources/parrots.png") # Loaded in CPU memory (RAM)
-  imageFormat(imOrigin, PixelformatUncompressedR8g8b8a8) # Format image to RGBA 32bit (required for texture update) <-- ISSUE
+  imageFormat(imOrigin, UncompressedR8g8b8a8) # Format image to RGBA 32bit (required for texture update) <-- ISSUE
   var texture = loadTextureFromImage(imOrigin) # Image converted to texture, GPU memory (VRAM)
   var imCopy: Image = imOrigin
   var currentProcess: ImageProcess = None
@@ -78,18 +78,18 @@ proc main =
     for i in 0..<NumProcesses:
       if checkCollisionPointRec(getMousePosition(), toggleRecs[i]):
         mouseHoverRec = i
-        if isMouseButtonReleased(MouseButtonLeft):
+        if isMouseButtonReleased(Left):
           currentProcess = ImageProcess(i)
           textureReload = true
         break
       else:
         mouseHoverRec = -1
     # Keyboard toggle group logic
-    if isKeyPressed(KeyDown):
+    if isKeyPressed(Down):
       if currentProcess == high(ImageProcess): currentProcess = low(ImageProcess)
       else: inc(currentProcess)
       textureReload = true
-    elif isKeyPressed(KeyUp):
+    elif isKeyPressed(Up):
       if currentProcess == low(ImageProcess): currentProcess = high(ImageProcess)
       else: dec(currentProcess)
       textureReload = true
@@ -131,8 +131,9 @@ proc main =
     for i in 0..<NumProcesses:
       drawRectangle(toggleRecs[i],
           if i == currentProcess.ord or i == mouseHoverRec: SkyBlue else: LightGray)
-      drawRectangleLines(toggleRecs[i].x.int32, toggleRecs[i].y.int32, toggleRecs[i].width.int32,
-          toggleRecs[i].height.int32, if i == currentProcess.ord or i == mouseHoverRec: Blue else: Gray)
+      drawRectangleLines(toggleRecs[i].x.int32, toggleRecs[i].y.int32,
+          toggleRecs[i].width.int32, toggleRecs[i].height.int32,
+          if i == currentProcess.ord or i == mouseHoverRec: Blue else: Gray)
       drawText(processText[i], int32(toggleRecs[i].x + toggleRecs[i].width/2 - measureText(processText[i], 10)/2),
           toggleRecs[i].y.int32 + 11, 10,
           if i == currentProcess.ord or i == mouseHoverRec: DarkBlue else: DarkGray)

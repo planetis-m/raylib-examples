@@ -87,7 +87,7 @@ proc main =
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # ------------------------------------------------------------------------------------
-    if isKeyPressed(KeyEnter):
+    if isKeyPressed(Enter):
       inc index
       if index >= solutions.len: index = 0
     # ------------------------------------------------------------------------------------

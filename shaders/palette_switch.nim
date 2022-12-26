@@ -80,7 +80,7 @@ proc main =
   let shader = loadShader("", &"resources/shaders/glsl{glslVersion}/palette_switch.fs")
   # Get variable (uniform) location on the shader to connect with the program
   # NOTE: If uniform variable could not be found in the shader, function returns -1
-  let paletteLoc = getShaderLocation(shader, ShaderVariable"palette")
+  let paletteLoc = getShaderLocation(shader, "palette")
   var currentPalette = 0
   const lineHeight = screenHeight div ColorsPerPalette
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
@@ -89,8 +89,8 @@ proc main =
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # -----------------------------------------------------------------------------------
-    if isKeyPressed(KeyRight): inc currentPalette
-    elif isKeyPressed(KeyLeft): dec currentPalette
+    if isKeyPressed(Right): inc currentPalette
+    elif isKeyPressed(Left): dec currentPalette
 
     if currentPalette >= MaxPalettes: currentPalette = 0
     elif currentPalette < 0: currentPalette = MaxPalettes - 1

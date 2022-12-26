@@ -34,7 +34,7 @@ proc main =
     # Update
     # ------------------------------------------------------------------------------------
     # Translate based on mouse right click
-    if isMouseButtonDown(MouseButtonRight):
+    if isMouseButtonDown(Right):
       var delta = getMouseDelta()
       delta /= -camera.zoom
       camera.target += delta

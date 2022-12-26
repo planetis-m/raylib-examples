@@ -55,17 +55,17 @@ proc main =
     of Title:
       # TODO: Update TITLE screen variables here!
       # Press enter to change to GAMEPLAY screen
-      if isKeyPressed(KeyEnter) or isGestureDetected(GestureTap):
+      if isKeyPressed(Enter) or isGestureDetected(Tap):
         currentScreen = Gameplay
     of Gameplay:
       # TODO: Update GAMEPLAY screen variables here!
       # Press enter to change to ENDING screen
-      if isKeyPressed(KeyEnter) or isGestureDetected(GestureTap):
+      if isKeyPressed(Enter) or isGestureDetected(Tap):
         currentScreen = Ending
     of Ending:
       # TODO: Update ENDING screen variables here!
       # Press enter to return to TITLE screen
-      if isKeyPressed(KeyEnter) or isGestureDetected(GestureTap):
+      if isKeyPressed(Enter) or isGestureDetected(Tap):
         currentScreen = Title
     # ------------------------------------------------------------------------------------
     # Draw

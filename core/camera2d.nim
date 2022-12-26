@@ -56,13 +56,13 @@ proc main =
     # Update
     # -----------------------------------------------------------------------------------
     # Player movement
-    if isKeyDown(KeyRight): player.x += 2
-    elif isKeyDown(KeyLeft): player.x -= 2
+    if isKeyDown(Right): player.x += 2
+    elif isKeyDown(Left): player.x -= 2
     # Camera target follows player
     camera.target = Vector2(x: player.x + 20, y: player.y + 20)
     # Camera rotation controls
-    if isKeyDown(KeyA): camera.rotation -= 1
-    elif isKeyDown(KeyS): camera.rotation += 1
+    if isKeyDown(A): camera.rotation -= 1
+    elif isKeyDown(S): camera.rotation += 1
     # Limit camera rotation to 80 degrees (-40 to 40)
     if camera.rotation > 40: camera.rotation = 40
     elif camera.rotation < -40: camera.rotation = -40
@@ -71,7 +71,7 @@ proc main =
     if camera.zoom > 3: camera.zoom = 3
     elif camera.zoom < 0.1'f32: camera.zoom = 0.1'f32
     # Camera reset (zoom and rotation)
-    if isKeyPressed(KeyR):
+    if isKeyPressed(R):
       camera.zoom = 1
       camera.rotation = 0
     # Draw

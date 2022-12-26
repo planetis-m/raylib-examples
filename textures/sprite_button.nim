@@ -48,7 +48,7 @@ proc main =
     width: button.width.float32,
     height: frameHeight
   )
-  var btnState = Normal # Button state
+  var btnState: ButtonState = Normal
   var btnAction = false # Button action should be activated
 
   setTargetFPS(60)
@@ -61,11 +61,11 @@ proc main =
     btnAction = false
     # Check button state
     if checkCollisionPointRec(mousePoint, btnBounds):
-      if isMouseButtonDown(MouseButtonLeft):
+      if isMouseButtonDown(Left):
         btnState = Pressed
       else:
         btnState = MouseHover
-      if isMouseButtonReleased(MouseButtonLeft):
+      if isMouseButtonReleased(Left):
         btnAction = true
     else:
       btnState = Normal

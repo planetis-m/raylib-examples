@@ -34,7 +34,7 @@ proc main =
 
   # NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
   # Load RAW image data (512x512, 32bit RGBA, no file header)
-  let fudesumiRaw = loadImageRaw("resources/fudesumi.raw", 384, 512, PixelformatUncompressedR8g8b8a8, 0)
+  let fudesumiRaw = loadImageRaw("resources/fudesumi.raw", 384, 512, UncompressedR8g8b8a8, 0)
   let fudesumi = loadTextureFromImage(fudesumiRaw) # Upload CPU (RAM) image to GPU (VRAM)
 
   # Generate a checked texture by code

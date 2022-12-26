@@ -61,7 +61,7 @@ proc drawCurve =
 
 proc updateCurve =
   # If the mouse is not down, we are not editing the curve so clear the selection
-  if not isMouseButtonDown(MouseButtonLeft):
+  if not isMouseButtonDown(Left):
     selectedPoint = nil
     return
   if selectedPoint != nil:
@@ -112,7 +112,7 @@ proc drawTexturedCurve =
     let currentNegNormal = current + normal * -curveWidth.float32
     # Draw the segment as a quad
     setTexture(texRoad.id)
-    rlBegin(DrawQuads)
+    rlBegin(Quads)
     color4ub(255, 255, 255, 255)
     normal3f(0, 0, 1)
     texCoord2f(0, previousV)
@@ -130,19 +130,19 @@ proc drawTexturedCurve =
     previousV = v
 
 proc updateOptions =
-  if isKeyPressed(KeySpace):
+  if isKeyPressed(Space):
     showCurve = not showCurve
   # Update width
-  if isKeyPressed(KeyEqual):
+  if isKeyPressed(Equal):
     inc(curveWidth, 2)
-  if isKeyPressed(KeyMinus):
+  if isKeyPressed(Minus):
     dec(curveWidth, 2)
   if curveWidth < 2:
     curveWidth = 2
   # Update segments
-  if isKeyPressed(KeyLeft):
+  if isKeyPressed(Left):
     dec(curveSegments, 2)
-  if isKeyPressed(KeyRight):
+  if isKeyPressed(Right):
     inc(curveSegments, 2)
   if curveSegments < 2:
     curveSegments = 2
@@ -154,11 +154,11 @@ proc updateOptions =
 proc main =
   # Initialization
   # --------------------------------------------------------------------------------------
-  setConfigFlags(flags(FlagVsyncHint, FlagMsaa4xHint))
+  setConfigFlags({VsyncHint, Msaa4xHint})
   initWindow(screenWidth, screenHeight, "raylib [textures] examples - textured curve")
   # Load the road texture
   texRoad = loadTexture("resources/road.png")
-  setTextureFilter(texRoad, TextureFilterBilinear)
+  setTextureFilter(texRoad, Bilinear)
   # Setup the curve
   startPosition = Vector2(x: 80, y: 100)
   startPositionTangent = Vector2(x: 180, y: 340)

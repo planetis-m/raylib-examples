@@ -35,11 +35,11 @@ type
 
 proc updatePlayer(player: var Player, envItems: openArray[EnvItem],
     delta: float32) =
-  if isKeyDown(KeyLeft):
+  if isKeyDown(Left):
     player.position.x -= PlayerHorSpd * delta
-  if isKeyDown(KeyRight):
+  if isKeyDown(Right):
     player.position.x += PlayerJumpSpd * delta
-  if isKeyDown(KeySpace) and player.canJump:
+  if isKeyDown(Space) and player.canJump:
     player.speed = -PlayerJumpSpd
     player.canJump = false
   var hitObstacle = false
@@ -221,10 +221,10 @@ proc main =
       camera.zoom = 3.0
     elif camera.zoom < 0.25'f32:
       camera.zoom = 0.25
-    if isKeyPressed(KeyR):
+    if isKeyPressed(R):
       camera.zoom = 1.0
       player.position = Vector2(x: 400, y: 280)
-    if isKeyPressed(KeyC):
+    if isKeyPressed(C):
       cameraOption = (cameraOption + 1) mod cameraUpdaters.len
     # Call update camera function by its pointer
     cameraUpdaters[cameraOption](camera, player, envItems,

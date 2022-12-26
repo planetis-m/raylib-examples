@@ -61,13 +61,13 @@ proc main =
         framesCounter = 0
         state = Reset
     of Reset:               # Reset state to play again
-      if isKeyPressed(KeyEnter):
+      if isKeyPressed(Enter):
         # Reset required variables to play again
         ballPositionX = -100
         ballRadius = 20
         ballAlpha = 0
         state = BounceX
-    if isKeyPressed(KeyR):
+    if isKeyPressed(R):
       framesCounter = 0
     # ------------------------------------------------------------------------------------
     # Draw

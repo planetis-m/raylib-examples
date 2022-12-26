@@ -44,7 +44,7 @@ proc main =
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # ------------------------------------------------------------------------------------
-    if isMouseButtonDown(MouseButtonLeft):
+    if isMouseButtonDown(Left):
       # Create more bunnies
       for i in 0..<100:
         if bunniesCount < MaxBunnies:

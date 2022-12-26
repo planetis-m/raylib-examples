@@ -38,17 +38,17 @@ proc main =
   # Default font generation from TTF font
   # Loading font data from memory data
   # Parameters > font size: 16, no glyphs array provided (0), glyphs count: 95 (autogenerate chars array)
-  let glyphsDefault = loadFontData(fileData.toBytes, 16, 95, FontDefault)
+  let glyphsDefault = loadFontData(fileData.toBytes, 16, 95, Default)
   # Parameters > glyphs count: 95, font size: 16, glyphs padding in image: 4 px, pack method: 0 (default)
   let fontDefault = loadFontFromData(glyphsDefault, 16, 4, 0)
   # SDF font generation from TTF font
   # Parameters > font size: 16, no glyphs array provided (0), glyphs count: 0 (defaults to 95)
-  let glyphsSdf = loadFontData(fileData.toBytes, 16, 0, FontSdf)
+  let glyphsSdf = loadFontData(fileData.toBytes, 16, 0, Sdf)
   # Parameters > glyphs count: 95, font size: 16, glyphs padding in image: 0 px, pack method: 1 (Skyline algorythm)
   let fontSdf = loadFontFromData(glyphsSdf, 16, 0, 1)
   # Load SDF required shader (we use default vertex shader)
   var shader = loadShader("", &"resources/shaders/glsl{glslVersion}/sdf.fs")
-  setTextureFilter(fontSdf.texture, TextureFilterBilinear) # Required for SDF font
+  setTextureFilter(fontSdf.texture, Bilinear) # Required for SDF font
   var fontPosition = Vector2(x: 40, y: screenHeight/2'f32 - 50)
   var textSize = Vector2(x: 0, y: 0)
   var fontSize: float32 = 16
@@ -62,7 +62,7 @@ proc main =
     fontSize += getMouseWheelMove()*8
     if fontSize < 6:
       fontSize = 6
-    if isKeyDown(KeySpace):
+    if isKeyDown(Space):
       currentFont = 1
     else:
       currentFont = 0

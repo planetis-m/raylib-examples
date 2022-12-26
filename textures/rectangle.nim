@@ -46,9 +46,9 @@ proc main =
       if currentFrame > 5:
         currentFrame = 0
       frameRec.x = currentFrame*(scarfy.width/6'f32)
-    if isKeyPressed(KeyRight):
+    if isKeyPressed(Right):
       inc framesSpeed
-    elif isKeyPressed(KeyLeft):
+    elif isKeyPressed(Left):
       dec framesSpeed
     if framesSpeed > MaxFrameSpeed:
       framesSpeed = MaxFrameSpeed

@@ -33,19 +33,19 @@ proc main =
     target: Vector3(x: 0, y: 0, z: 0),
     up: Vector3(x: 0, y: 1, z: 0),
     fovy: 45,
-    projection: CameraPerspective
+    projection: Perspective
   )
 
   var image = loadImage("resources/heightmap.png") # Load heightmap image (RAM)
   var texture = loadTextureFromImage(image) # Convert image to texture (VRAM)
   let mesh = genMeshHeightmap(image, Vector3(x: 16, y: 8, z: 16)) # Generate heightmap mesh (RAM and VRAM)
   var model = loadModelFromMesh(mesh) # Load model from generated mesh
-  model.materials[0].maps[MaterialMapDiffuse].texture = texture # Set map diffuse texture
+  model.materials[0].maps[MapDiffuse].texture = texture # Set map diffuse texture
 
   let mapPosition = Vector3(x: -8, y: 0, z: -8) # Define model position
   reset(image) # Unload heightmap image from RAM, already uploaded to VRAM
 
-  setCameraMode(camera, CameraOrbital) # Set an orbital camera mode
+  setCameraMode(camera, Orbital) # Set an orbital camera mode
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # --------------------------------------------------------------------------------------
   # Main game loop

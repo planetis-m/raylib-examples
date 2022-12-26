@@ -46,7 +46,7 @@ proc main =
     # Update
     # ------------------------------------------------------------------------------------
     # Check for mouse button pressed and activate explosion (if not active)
-    if isMouseButtonPressed(MouseButtonLeft) and not active:
+    if isMouseButtonPressed(Left) and not active:
       position = getMousePosition()
       active = true
       position.x -= frameWidth/2'f32

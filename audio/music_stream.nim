@@ -41,12 +41,12 @@ proc main =
     updateMusicStream(music) # Update music buffer with new stream data
 
     # Restart music playing (stop and play)
-    if isKeyPressed(KeySpace):
+    if isKeyPressed(Space):
       stopMusicStream(music)
       playMusicStream(music)
 
     # Pause/Resume music playing
-    if isKeyPressed(KeyP):
+    if isKeyPressed(P):
       pause = not pause
       if pause: pauseMusicStream(music)
       else: resumeMusicStream(music)

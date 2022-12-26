@@ -64,9 +64,9 @@ proc main =
     # ------------------------------------------------------------------------------------
     let mousePos = getMousePosition()
     # Move between colors with keys
-    if isKeyPressed(KeyRight):
+    if isKeyPressed(Right):
       inc(colorSelected)
-    elif isKeyPressed(KeyLeft):
+    elif isKeyPressed(Left):
       dec(colorSelected)
     if colorSelected >= MaxColorsCount:
       colorSelected = MaxColorsCount - 1
@@ -78,7 +78,7 @@ proc main =
         break
       else:
         colorMouseHover = -1
-    if colorMouseHover >= 0 and isMouseButtonPressed(MouseButtonLeft):
+    if colorMouseHover >= 0 and isMouseButtonPressed(Left):
       colorSelected = colorMouseHover
       colorSelectedPrev = colorSelected
     brushSize += getMouseWheelMove()*5
@@ -86,13 +86,12 @@ proc main =
       brushSize = 2
     if brushSize > 50:
       brushSize = 50
-    if isKeyPressed(KeyC):
+    if isKeyPressed(C):
       # Clear render texture to clear color
       beginTextureMode(target)
       clearBackground(colors[0])
       endTextureMode()
-    if isMouseButtonDown(MouseButtonLeft) or
-        (getGestureDetected() == GestureDrag):
+    if isMouseButtonDown(Left) or getGestureDetected() == Drag:
       # Paint circle into render texture
       # NOTE: To avoid discontinuous circles, we could store
       # previous-next mouse points and just draw a line using brush size
@@ -100,7 +99,7 @@ proc main =
       if mousePos.y > 50:
         drawCircle(mousePos.x.int32, mousePos.y.int32, brushSize, colors[colorSelected])
       endTextureMode()
-    if isMouseButtonDown(MouseButtonRight):
+    if isMouseButtonDown(Right):
       if not mouseWasPressed:
         colorSelectedPrev = colorSelected
         colorSelected = 0
@@ -110,7 +109,7 @@ proc main =
       if mousePos.y > 50:
         drawCircle(mousePos.x.int32, mousePos.y.int32, brushSize, colors[0])
       endTextureMode()
-    elif isMouseButtonReleased(MouseButtonRight) and mouseWasPressed: # Check mouse hover save button
+    elif isMouseButtonReleased(Right) and mouseWasPressed: # Check mouse hover save button
       colorSelected = colorSelectedPrev
       mouseWasPressed = false
     if checkCollisionPointRec(mousePos, btnSaveRec):
@@ -119,7 +118,7 @@ proc main =
       btnSaveMouseHover = false
     # Image saving logic
     # NOTE: Saving painted texture to a default named image
-    if btnSaveMouseHover and isMouseButtonReleased(MouseButtonLeft) or isKeyPressed(KeyS):
+    if btnSaveMouseHover and isMouseButtonReleased(Left) or isKeyPressed(S):
       var image = loadImageFromTexture(target.texture)
       imageFlipVertical(image)
       discard exportImage(image, "my_amazing_texture_painting.png")
@@ -140,7 +139,7 @@ proc main =
         width: target.texture.width.float32, height: -target.texture.height.float32), Vector2(x: 0, y: 0), White)
     # Draw drawing circle for reference
     if mousePos.y > 50:
-      if isMouseButtonDown(MouseButtonRight):
+      if isMouseButtonDown(Right):
         drawCircleLines(mousePos.x.int32, mousePos.y.int32, brushSize, Gray)
       else:
         drawCircle(getMouseX(), getMouseY(), brushSize, colors[colorSelected])

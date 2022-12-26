@@ -28,14 +28,14 @@ const
 
 proc main =
   # Enable config flags for resizable window and vertical synchro
-  setConfigFlags(flags(FlagWindowResizable, FlagVsyncHint))
+  setConfigFlags({WindowResizable, VsyncHint})
   initWindow(windowWidth, windowHeight, "raylib [core] example - window scale letterbox")
   defer: closeWindow() # Close window and OpenGL context
   setWindowMinSize(320, 240)
 
   # Render texture initialization, used to hold the rendering result so we can easily resize it
   let target = loadRenderTexture(gameScreenWidth, gameScreenHeight)
-  setTextureFilter(target.texture, TextureFilterBilinear) # Texture scale filter to use
+  setTextureFilter(target.texture, Bilinear) # Texture scale filter to use
 
   var colors: array[10, Color]
   for i in 0..colors.high:
@@ -55,7 +55,7 @@ proc main =
     # Compute required framebuffer scaling
     let scale = min(getScreenWidth().float32/gameScreenWidth, getScreenHeight().float32/gameScreenHeight)
 
-    if isKeyPressed(KeySpace):
+    if isKeyPressed(Space):
       # Recalculate random colors for the bars
       for i in 0..colors.high:
         colors[i] = Color(

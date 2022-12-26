@@ -28,12 +28,12 @@ proc main =
     target: Vector3(x: 0, y: 0, z: 0),       # Camera looking at point
     up: Vector3(x: 0, y: 1, z: 0),           # Camera up vector (rotation towards target)
     fovy: 30,                                # Camera field-of-view Y
-    projection: CameraPerspective            # Camera type
+    projection: Perspective                  # Camera type
   )
 
   var model = loadModel("resources/models/plane.obj") # Load model
   let texture = loadTexture("resources/models/plane_diffuse.png") # Load model texture
-  model.materials[0].maps[MaterialMapDiffuse].texture = texture # Set map diffuse texture
+  model.materials[0].maps[MapDiffuse].texture = texture # Set map diffuse texture
 
   var
     pitch: float32 = 0
