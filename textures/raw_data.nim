@@ -69,5 +69,6 @@ proc main =
     drawText("and RAW IMAGE LOADING", 46, 210, 30, Brown)
     drawText("(c) Fudesumi sprite by Eiden Marsal", 310, screenHeight - 20, 10, Brown)
     endDrawing()
+    # ------------------------------------------------------------------------------------
 
 main()
