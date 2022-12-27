@@ -43,7 +43,7 @@ const
 proc main =
   # Initialization
   # --------------------------------------------------------------------------------------
-  setConfigFlags({FlagMsaa4xHint}) # Set MSAA 4X hint before windows creation
+  setConfigFlags(flag(Msaa4xHint)) # Set MSAA 4X hint before windows creation
   initWindow(screenWidth, screenHeight, "raylib [core] example - gamepad input")
   defer: closeWindow() # Close window and OpenGL context
   let texPs3Pad = loadTexture("resources/ps3.png")
