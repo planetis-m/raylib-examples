@@ -43,9 +43,10 @@ const
 proc main =
   # Initialization
   # --------------------------------------------------------------------------------------
-  setConfigFlags(flag(Msaa4xHint)) # Set MSAA 4X hint before windows creation
+  setConfigFlags(flags(Msaa4xHint)) # Set MSAA 4X hint before windows creation
   initWindow(screenWidth, screenHeight, "raylib [core] example - gamepad input")
   defer: closeWindow() # Close window and OpenGL context
+
   let texPs3Pad = loadTexture("resources/ps3.png")
   let texXboxPad = loadTexture("resources/xbox.png")
   setTargetFPS(60) # Set our game to run at 60 frames-per-second

@@ -154,8 +154,9 @@ proc updateOptions =
 proc main =
   # Initialization
   # --------------------------------------------------------------------------------------
-  setConfigFlags(flag(VsyncHint, Msaa4xHint))
+  setConfigFlags(flags(VsyncHint, Msaa4xHint))
   initWindow(screenWidth, screenHeight, "raylib [textures] examples - textured curve")
+
   # Load the road texture
   texRoad = loadTexture("resources/road.png")
   setTextureFilter(texRoad, Bilinear)
