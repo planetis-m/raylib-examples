@@ -232,7 +232,7 @@ proc main =
   # Initialization
   # -------------------------------------------------------------------------------------
   randomize()
-  setConfigFlags({Msaa4xHint, VsyncHint})
+  setConfigFlags(flags(Msaa4xHint, VsyncHint))
   initWindow(screenWidth, screenHeight, "raylib [text] example - unicode")
   defer: closeWindow() # Close window and OpenGL context
   # Load the font resources
@@ -252,9 +252,9 @@ proc main =
     # Update
     # -----------------------------------------------------------------------------------
     # Add a new set of emojis when SPACE is pressed
-    if isKeyPressed(KeySpace):
+    if isKeyPressed(Space):
       randomizeEmoji()
-    if isMouseButtonPressed(ButtonLeft) and hovered != -1 and
+    if isMouseButtonPressed(Left) and hovered != -1 and
         hovered != selected:
       selected = hovered
       selectedPos = hoveredPos

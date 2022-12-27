@@ -18,7 +18,7 @@ const
   screenHeight = 450
 
 proc main =
-  #setConfigFlags(flags(FlagMsaa4xHint, FlagWindowHighdpi))
+  #setConfigFlags(flags(Msaa4xHint, WindowHighdpi))
   initWindow(screenWidth, screenHeight,
       "raylib [models] example - plane rotations (yaw, pitch, roll)")
   defer: closeWindow() # Close window and OpenGL context
@@ -33,7 +33,7 @@ proc main =
 
   var model = loadModel("resources/models/plane.obj") # Load model
   let texture = loadTexture("resources/models/plane_diffuse.png") # Load model texture
-  model.materials[0].maps[MapDiffuse].texture = texture # Set map diffuse texture
+  model.materials[0].maps[Diffuse].texture = texture # Set map diffuse texture
 
   var
     pitch: float32 = 0
@@ -47,22 +47,22 @@ proc main =
     # Update
     # ------------------------------------------------------------------------------------
     # Plane pitch (x-axis) controls
-    if isKeyDown(KeyDown): pitch += 0.6'f32
-    elif isKeyDown(KeyUp): pitch -= 0.6'f32
+    if isKeyDown(Down): pitch += 0.6'f32
+    elif isKeyDown(Up): pitch -= 0.6'f32
     else:
       if pitch > 0.3'f32: pitch -= 0.3'f32
       elif pitch < -0.3'f32: pitch += 0.3'f32
 
     # Plane yaw (y-axis) controls
-    if isKeyDown(KeyS): yaw -= 1'f32
-    elif isKeyDown(KeyA): yaw += 1'f32
+    if isKeyDown(S): yaw -= 1'f32
+    elif isKeyDown(A): yaw += 1'f32
     else:
       if yaw > 0'f32: yaw -= 0.5'f32
       elif yaw < 0'f32: yaw += 0.5'f32
 
     # Plane roll (z-axis) controls
-    if isKeyDown(KeyLeft): roll -= 1'f32
-    elif isKeyDown(KeyRight): roll += 1'f32
+    if isKeyDown(Left): roll -= 1'f32
+    elif isKeyDown(Right): roll += 1'f32
     else:
       if roll > 0'f32: roll -= 0.5'f32
       elif roll < 0'f32: roll += 0.5'f32

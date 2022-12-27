@@ -28,7 +28,7 @@ const
 
 proc main =
   # Enable config flags for resizable window and vertical synchro
-  setConfigFlags({WindowResizable, VsyncHint})
+  setConfigFlags(flags(WindowResizable, VsyncHint))
   initWindow(windowWidth, windowHeight, "raylib [core] example - window scale letterbox")
   defer: closeWindow() # Close window and OpenGL context
   setWindowMinSize(320, 240)

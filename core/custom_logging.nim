@@ -26,10 +26,10 @@ proc logCustom(msgType: TraceLogLevel; text: cstring; args: va_list) {.cdecl.} =
   let timeStr = now().format("yyyy-MM-dd hh:mm:ss")
   header.add &"[{timeStr}] "
   case msgType
-  of LogInfo: header.add "[INFO]: "
-  of LogError: header.add "[ERROR]: "
-  of LogWarning: header.add "[WARN]: "
-  of LogDebug: header.add "[DEBUG]: "
+  of Info: header.add "[INFO]: "
+  of Error: header.add "[ERROR]: "
+  of Warning: header.add "[WARN]: "
+  of Debug: header.add "[DEBUG]: "
   else: discard
   echo(header, buffer)
 
@@ -52,8 +52,7 @@ proc main =
     # -----------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(RayWhite)
-    drawText("Check out the console output to see the custom logger in action!", 60, 200,
-        20, LightGray)
+    drawText("Check out the console output to see the custom logger in action!", 60, 200, 20, LightGray)
     endDrawing()
   # De-Initialization
   # -------------------------------------------------------------------------------------
