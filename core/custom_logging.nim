@@ -1,4 +1,4 @@
-# ***************************************************************************************
+# ****************************************************************************************
 #
 # raylib [core] example - Custom logging
 #
@@ -10,7 +10,7 @@
 # Copyright (c) 2018 Pablo Marcos Oltra (@pamarcos) and Ramon Santamaria (@raysan5)
 # Converted in 2021 by greenfork
 #
-# ***************************************************************************************
+# ****************************************************************************************
 
 import raylib, std/[times, strformat]
 
@@ -35,27 +35,28 @@ proc logCustom(msgType: TraceLogLevel; text: cstring; args: va_list) {.cdecl.} =
 
 proc main =
   # Initialization
-  # -------------------------------------------------------------------------------------
+  # --------------------------------------------------------------------------------------
   # First thing we do is setting our custom logger to ensure everything raylib logs
   # will use our own logger instead of its internal one
   setTraceLogCallback(logCustom)
   initWindow(screenWidth, screenHeight, "raylib [core] example - custom logging")
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
-  # -------------------------------------------------------------------------------------
+  # --------------------------------------------------------------------------------------
   # Main game loop
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
-    # -----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     # TODO: Update your variables here
-    # -----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     # Draw
-    # -----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(RayWhite)
     drawText("Check out the console output to see the custom logger in action!", 60, 200, 20, LightGray)
     endDrawing()
   # De-Initialization
-  # -------------------------------------------------------------------------------------
+  # --------------------------------------------------------------------------------------
   closeWindow() # Close window and OpenGL context
+  # --------------------------------------------------------------------------------------
 
 main()

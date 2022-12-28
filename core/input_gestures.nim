@@ -27,7 +27,7 @@ proc main =
   var gestureStrings: array[MaxGestureStrings, string]
   var currentGesture: Gesture = None
   var lastGesture: Gesture = None
-  #setGesturesEnabled(flags(Tap, Drag)) # Enable only some gestures to be detected
+  # setGesturesEnabled(flags(Tap, Drag)) # Enable only some gestures to be detected
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # Main game loop
   # --------------------------------------------------------------------------------------
@@ -67,8 +67,8 @@ proc main =
         inc gesturesCount
         # Reset gestures strings
         if gesturesCount >= MaxGestureStrings:
-          #for i in 0..<MaxGestureStrings:
-            #gestureStrings[i] = ""
+          # for i in 0..<MaxGestureStrings:
+          #   gestureStrings[i] = ""
           gesturesCount = 0
     beginDrawing()
     clearBackground(RayWhite)
