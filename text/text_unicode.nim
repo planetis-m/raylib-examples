@@ -197,10 +197,10 @@ proc drawTextBoxedSelectable(font: Font; text: string; rec: Rectangle;
         var isGlyphSelected = false
         if selectStart >= 0 and k >= selectStart and k < selectStart + selectLength:
           drawRectangle(Rectangle(
-              x: rec.x + textOffsetX - 1,
-              y: rec.y + textOffsetY,
-              width: glyphWidth,
-              height: font.baseSize * scaleFactor
+                x: rec.x + textOffsetX - 1,
+                y: rec.y + textOffsetY,
+                width: glyphWidth,
+                height: font.baseSize * scaleFactor
               ), selectBackTint)
           isGlyphSelected = true
         if codepoint != ' '.Rune and codepoint != '\t'.Rune:
@@ -269,7 +269,7 @@ proc main =
     clearBackground(RayWhite)
     # Draw random emojis in the background
     # -----------------------------------------------------------------------------------
-    for i in 0 ..< len(emoji):
+    for i in 0..emoji.high:
       # Assume that the size of each emoji is one Rune (4 bytes)
       let txt = runeSubStr(emojiCodepoints, emoji[i].index, 1)
       var emojiRect = Rectangle(x: pos.x, y: pos.y, width: fontEmoji.baseSize.float32,

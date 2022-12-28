@@ -1,4 +1,4 @@
-# ***************************************************************************************
+# ****************************************************************************************
 #
 # raylib [shaders] example - Texture Waves
 #
@@ -16,7 +16,7 @@
 #
 # Copyright (c) 2019 Anata (@anatagawa) and Ramon Santamaria (@raysan5)
 #
-# ***************************************************************************************
+# ****************************************************************************************
 
 import raylib, std/strformat
 
@@ -33,7 +33,7 @@ else:
 
 proc main =
   # Initialization
-  # -------------------------------------------------------------------------------------
+  # --------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [shaders] example - texture waves")
   defer: closeWindow() # Close window and OpenGL context
 
@@ -70,14 +70,14 @@ proc main =
   var seconds: float32 = 0
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # Main game loop
-  # -------------------------------------------------------------------------------------
+  # --------------------------------------------------------------------------------------
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
-    # -----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     seconds += getFrameTime()
     setShaderValue(shader, secondsLoc, seconds)
     # Draw
-    # -----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(RayWhite)
     beginShaderMode(shader)
@@ -85,5 +85,6 @@ proc main =
     drawTexture(texture, texture.width, 0, White)
     endShaderMode()
     endDrawing()
+    # ------------------------------------------------------------------------------------
 
 main()

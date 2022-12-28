@@ -22,7 +22,7 @@ proc main =
   # --------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [core] example - drop files")
 
-  var droppedFiles: seq[string]
+  var droppedFiles: seq[string] = @[]
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # --------------------------------------------------------------------------------------
   # Main game loop

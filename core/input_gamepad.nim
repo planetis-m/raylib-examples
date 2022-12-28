@@ -88,22 +88,18 @@ proc main =
         # Draw axis: left joystick
         drawCircle(259, 152, 39, Black)
         drawCircle(259, 152, 34, LightGray)
-        drawCircle(259 +
-            int32(getGamepadAxisMovement(0, LeftX)*20), 152 +
-            int32(getGamepadAxisMovement(0, LeftY)*20), 25, Black)
+        drawCircle(259 + int32(getGamepadAxisMovement(0, LeftX)*20),
+            152 + int32(getGamepadAxisMovement(0, LeftY)*20), 25, Black)
         # Draw axis: right joystick
         drawCircle(461, 237, 38, Black)
         drawCircle(461, 237, 33, LightGray)
-        drawCircle(461 +
-            int32(getGamepadAxisMovement(0, RightX)*20), 237 +
-            int32(getGamepadAxisMovement(0, RightY)*20), 25, Black)
+        drawCircle(461 + int32(getGamepadAxisMovement(0, RightX)*20),
+            237 + int32(getGamepadAxisMovement(0, RightY)*20), 25, Black)
         # Draw axis: left-right triggers
         drawRectangle(170, 30, 15, 70, Gray)
         drawRectangle(604, 30, 15, 70, Gray)
-        drawRectangle(170, 30, 15, int32((1 +
-            getGamepadAxisMovement(0, LeftTrigger))/2*70), Red)
-        drawRectangle(604, 30, 15, int32((1 +
-            getGamepadAxisMovement(0, RightTrigger))/2*70), Red)
+        drawRectangle(170, 30, 15, int32((1 + getGamepadAxisMovement(0, LeftTrigger))/2*70), Red)
+        drawRectangle(604, 30, 15, int32((1 + getGamepadAxisMovement(0, RightTrigger))/2*70), Red)
         #drawText(&"Xbox axis LT: {getGamepadAxisMovement(0, LeftTrigger):02.02f}", 10, 40, 10, Black)
         #drawText(&"Xbox axis RT: {getGamepadAxisMovement(0, RightTrigger):02.02f}", 10, 60, 10, Black)
       of PS3NameId:
@@ -131,15 +127,13 @@ proc main =
         # Draw axis: left joystick
         drawCircle(319, 255, 35, Black)
         drawCircle(319, 255, 31, LightGray)
-        drawCircle(319 +
-            int32(getGamepadAxisMovement(0, LeftX)*20), 255 +
-            int32(getGamepadAxisMovement(0, LeftY)*20), 25, Black)
+        drawCircle(319 + int32(getGamepadAxisMovement(0, LeftX)*20),
+            255 + int32(getGamepadAxisMovement(0, LeftY)*20), 25, Black)
         # Draw axis: right joystick
         drawCircle(475, 255, 35, Black)
         drawCircle(475, 255, 31, LightGray)
-        drawCircle(475 +
-            int32(getGamepadAxisMovement(0, RightX)*20), 255 +
-            int32(getGamepadAxisMovement(0, RightY)*20), 25, Black)
+        drawCircle(475 + int32(getGamepadAxisMovement(0, RightX)*20),
+            255 + int32(getGamepadAxisMovement(0, RightY)*20), 25, Black)
         # Draw axis: left-right triggers
         drawRectangle(169, 48, 15, 70, Gray)
         drawRectangle(611, 48, 15, 70, Gray)
@@ -159,5 +153,6 @@ proc main =
       drawText("GP1: NOT DETECTED", 10, 10, 10, Gray)
       drawTexture(texXboxPad, 0, 0, LightGray)
     endDrawing()
+    # ------------------------------------------------------------------------------------
 
 main()

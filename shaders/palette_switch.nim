@@ -1,4 +1,4 @@
-# ***************************************************************************************
+# ****************************************************************************************
 #
 # raylib [shaders] example - Color palette switch
 #
@@ -16,7 +16,7 @@
 #
 # Copyright (c) 2019 Marco Lizza (@MarcoLizza) and Ramon Santamaria (@raysan5)
 #
-# ***************************************************************************************
+# ****************************************************************************************
 
 import raylib, std/strformat
 
@@ -71,7 +71,7 @@ const
 
 proc main =
   # Initialization
-  # -------------------------------------------------------------------------------------
+  # --------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [shaders] example - color palette switch")
   defer: closeWindow() # Close window and OpenGL context
   # Load shader to be used on some parts drawing
@@ -85,10 +85,10 @@ proc main =
   const lineHeight = screenHeight div ColorsPerPalette
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # Main game loop
-  # -------------------------------------------------------------------------------------
+  # --------------------------------------------------------------------------------------
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
-    # -----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     if isKeyPressed(Right): inc currentPalette
     elif isKeyPressed(Left): dec currentPalette
 
@@ -98,7 +98,7 @@ proc main =
     # NOTE: We are sending RGB triplets w/o the alpha channel
     setShaderValueV(shader, paletteLoc, palettes[currentPalette])
     # Draw
-    # -----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(RayWhite)
     beginShaderMode(shader)
@@ -113,5 +113,6 @@ proc main =
     drawText(paletteText[currentPalette], 300, 15, 20, Red)
     drawFPS(700, 15)
     endDrawing()
+    # ------------------------------------------------------------------------------------
 
 main()
