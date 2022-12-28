@@ -118,7 +118,7 @@ proc main =
         imageFlipHorizontal(imCopy)
       else:
         discard
-      let pixels: CSeq[Color] = loadImageColors(imCopy) # Load pixel data from image (RGBA 32bit)
+      let pixels: Array[Color] = loadImageColors(imCopy) # Load pixel data from image (RGBA 32bit)
       updateTexture(texture, pixels.toOpenArray) # Update texture with new image data
       textureReload = false
     # ------------------------------------------------------------------------------------
