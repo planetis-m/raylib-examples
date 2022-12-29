@@ -31,8 +31,7 @@ proc main =
 
   var timePlayed: float32 = 0 # Time played normalized [0.0f..1.0f]
   var pause = false # Music playing paused
-  setTargetFPS(60)
-  # Set our game to run at 60 frames-per-second
+  setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # --------------------------------------------------------------------------------------
   # Main game loop
   while not windowShouldClose(): # Detect window close button or ESC key

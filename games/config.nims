@@ -18,7 +18,6 @@ when defined(emscripten):
   --threads:off
   --panics:on
   --define:noSignalHandler
-  from os import `/`, addFileExt
-  switch("passL", "-o " & "public" / projectName().addFileExt(".html"))
+  switch("passL", "-o public/" & projectName() & ".html")
   # Use raylib/src/shell.html or raylib/src/minshell.html
   # --passL:"--shell-file minshell.html"
