@@ -55,8 +55,7 @@ proc main =
   when defined(emscripten):
     emscriptenSetMainLoop(updateDrawFrame, 0, 1)
   else:
-    setTargetFPS(60)
-    # Set our game to run at 60 frames-per-second
+    setTargetFPS(60) # Set our game to run at 60 frames-per-second
     # ------------------------------------------------------------------------------------
     # Main game loop
     while not windowShouldClose(): # Detect window close button or ESC key
