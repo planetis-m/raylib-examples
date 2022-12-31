@@ -1,20 +1,20 @@
 # ****************************************************************************************
 #
-# raylib [shaders] example - Color palette switch
+#   raylib [shaders] example - Color palette switch
 #
-# NOTE: This example requires raylib OpenGL 3.3 or ES2 versions for shaders support,
-#       OpenGL 1.1 does not support shaders, recompile raylib to OpenGL 3.3 version.
+#   NOTE: This example requires raylib OpenGL 3.3 or ES2 versions for shaders support,
+#   OpenGL 1.1 does not support shaders, recompile raylib to OpenGL 3.3 version.
 #
-# NOTE: Shaders used in this example are #version 330 (OpenGL 3.3), to test this example
-#       on OpenGL ES 2.0 platforms (Android, Raspberry Pi, HTML5), use #version 100 shaders
-#       raylib comes with shaders ready for both versions, check raylib/shaders install folder
+#   NOTE: Shaders used in this example are #version 330 (OpenGL 3.3), to test this example
+#   on OpenGL ES 2.0 platforms (Android, Raspberry Pi, HTML5), use #version 100 shaders
+#   raylib comes with shaders ready for both versions, check raylib/shaders install folder
 #
-# This example has been created using raylib 2.3 (www.raylib.com)
-# raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
+#   This example has been created using raylib 2.3 (www.raylib.com)
+#   raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
 #
-# Example contributed by Marco Lizza (@MarcoLizza) and reviewed by Ramon Santamaria (@raysan5)
+#   Example contributed by Marco Lizza (@MarcoLizza) and reviewed by Ramon Santamaria (@raysan5)
 #
-# Copyright (c) 2019 Marco Lizza (@MarcoLizza) and Ramon Santamaria (@raysan5)
+#   Copyright (c) 2019 Marco Lizza (@MarcoLizza) and Ramon Santamaria (@raysan5)
 #
 # ****************************************************************************************
 

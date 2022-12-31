@@ -1,11 +1,11 @@
 # ****************************************************************************************
 #
-# raylib [shapes] example - collision area
+#   raylib [shapes] example - collision area
 #
-# This example has been created using raylib 2.5 (www.raylib.com)
-# raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
+#   This example has been created using raylib 2.5 (www.raylib.com)
+#   raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
 #
-# Copyright (c) 2013-2019 Ramon Santamaria (@raysan5)
+#   Copyright (c) 2013-2019 Ramon Santamaria (@raysan5)
 #
 # ****************************************************************************************
 

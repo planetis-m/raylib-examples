@@ -1,12 +1,12 @@
 # ****************************************************************************************
 #
-# raylib [core] example - Input Gesture Detection
+#   raylib [core] example - Input Gesture Detection
 #
-# This example has been created using raylib 1.4 (www.raylib.com)
-# raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
+#   This example has been created using raylib 1.4 (www.raylib.com)
+#   raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
 #
-# Copyright (c) 2016 Ramon Santamaria (@raysan5)
-# Converted in 2021 by greenfork
+#   Copyright (c) 2016 Ramon Santamaria (@raysan5)
+#   Converted in 2021 by greenfork
 #
 # ****************************************************************************************
 

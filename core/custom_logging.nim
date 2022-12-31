@@ -1,14 +1,14 @@
 # ****************************************************************************************
 #
-# raylib [core] example - Custom logging
+#   raylib [core] example - Custom logging
 #
-# This example has been created using raylib 2.1 (www.raylib.com)
-# raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
+#   This example has been created using raylib 2.1 (www.raylib.com)
+#   raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
 #
-# Example contributed by Pablo Marcos Oltra (@pamarcos) and reviewed by Ramon Santamaria (@raysan5)
+#   Example contributed by Pablo Marcos Oltra (@pamarcos) and reviewed by Ramon Santamaria (@raysan5)
 #
-# Copyright (c) 2018 Pablo Marcos Oltra (@pamarcos) and Ramon Santamaria (@raysan5)
-# Converted in 2021 by greenfork
+#   Copyright (c) 2018 Pablo Marcos Oltra (@pamarcos) and Ramon Santamaria (@raysan5)
+#   Converted in 2021 by greenfork
 #
 # ****************************************************************************************
 
