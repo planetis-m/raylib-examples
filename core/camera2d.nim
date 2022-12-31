@@ -1,13 +1,13 @@
 # ***************************************************************************************
 #
-# raylib [core] example - 2d camera
+#   raylib [core] example - 2d camera
 #
-# This example has been created using raylib 1.5 (www.raylib.com)
-# raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
+#   This example has been created using raylib 1.5 (www.raylib.com)
+#   raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
 #
-# Copyright (c) 2016 Ramon Santamaria (@raysan5)
-# Converted in 2020 by bones527
-# Adapted in 2021 by greenfork
+#   Copyright (c) 2016 Ramon Santamaria (@raysan5)
+#   Converted in 2020 by bones527
+#   Adapted in 2021 by greenfork
 #
 # ***************************************************************************************
 

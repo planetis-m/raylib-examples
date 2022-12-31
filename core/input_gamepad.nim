@@ -1,19 +1,19 @@
 # ****************************************************************************************
 #
-# raylib [core] example - Gamepad input
+#   raylib [core] example - Gamepad input
 #
-# NOTE: This example requires a Gamepad connected to the system
-#       raylib is configuRed to work with the following gamepads:
-#              - Xbox 360 Controller (Xbox 360, Xbox One)
-#              - PLAYSTATION(R)3 Controller
-#       Check raylib.h for buttons configuration
+#   NOTE: This example requires a Gamepad connected to the system
+#         raylib is configuRed to work with the following gamepads:
+#                - Xbox 360 Controller (Xbox 360, Xbox One)
+#                - PLAYSTATION(R)3 Controller
+#         Check raylib.h for buttons configuration
 #
-# Example originally created with raylib 1.1, last time updated with raylib 4.2
+#   Example originally created with raylib 1.1, last time updated with raylib 4.2
 #
-# Example licensed under an unmodified zlib/libpng license, which is an OSI-certified,
-# BSD-like license that allows static linking with closed source software
+#   Example licensed under an unmodified zlib/libpng license, which is an OSI-certified,
+#   BSD-like license that allows static linking with closed source software
 #
-# Copyright (c) 2013-2022 Ramon Santamaria (@raysan5)
+#   Copyright (c) 2013-2022 Ramon Santamaria (@raysan5)
 #
 # ****************************************************************************************
 

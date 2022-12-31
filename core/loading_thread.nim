@@ -1,12 +1,12 @@
 # ****************************************************************************************
 #
-# raylib example - loading thread
+#   raylib example - loading thread
 #
-# This example has been created using raylib 2.5 (www.raylib.com)
-# raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
+#   This example has been created using raylib 2.5 (www.raylib.com)
+#   raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
 #
-# Copyright (c) 2014-2019 Ramon Santamaria (@raysan5)
-# Converted in 2021 by greenfork
+#   Copyright (c) 2014-2019 Ramon Santamaria (@raysan5)
+#   Converted in 2021 by greenfork
 #
 # ****************************************************************************************
 
