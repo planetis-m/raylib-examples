@@ -60,6 +60,8 @@ proc main =
       inc framesCounter
       if dataLoaded.load:
         framesCounter = 0
+        joinThread(threadId)
+        traceLog(Info, "Loading thread terminated successfully")
         state = Finished
     of Finished:
       if isKeyPressed(Enter):
