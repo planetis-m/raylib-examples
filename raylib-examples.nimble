@@ -6,4 +6,4 @@ license       = "Public Domain"
 
 # Dependencies
 requires "naylib#e60afa79"
-requires "https://github.com/nim-lang/threading.git#49562fa"
+#requires "https://github.com/nim-lang/threading.git#49562fa"

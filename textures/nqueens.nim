@@ -38,7 +38,7 @@ proc initQueens(): Queens =
     result.upwardFree[i] = true
     result.downwardFree[i] = true
 
-proc placeQueen(x: var Queens, row, col: int) =
+proc placeQueen(x: var Queens; row, col: int) =
   # Insert a queen in the next row, in the given column.
   x.queenInRow[row] = col.int32
   x.colFree[col] = false

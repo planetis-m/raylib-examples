@@ -10,7 +10,7 @@
 #
 # ****************************************************************************************
 
-import std/times, threading/atomics, raylib
+import std/[times, atomics], raylib
 
 const
   screenWidth = 800
@@ -22,21 +22,20 @@ type
 
 var threadId: Thread[void] # Loading data thread id
 var dataLoaded: Atomic[bool] # Data Loaded completion indicator
-dataLoaded.store(false)
-var dataProgress: int32 = 0 # Data progress accumulator
+var dataProgress: Atomic[int32] # Data progress accumulator
 
 proc loadDataThread() {.thread.} =
   var timeCounter: int32 = 0 # Time counted in ms
-  var prevTime = cpuTime() # Previous time
+  let prevTime = cpuTime() # Previous time
   # We simulate data loading with a time counter for 5 seconds
   while timeCounter < 5000:
-    var currentTime = cpuTime() - prevTime
+    let currentTime = cpuTime() - prevTime
     timeCounter = currentTime.int32*1000
     # We accumulate time over a global variable to be used in
     # main thread as a progress bar
-    dataProgress = timeCounter div 10
+    dataProgress.store(timeCounter div 10, moRelaxed)
   # When data has finished loading, we set global variable
-  dataLoaded.store(true)
+  dataLoaded.store(true, moRelease)
 
 proc main =
   # Initialization
@@ -58,7 +57,7 @@ proc main =
         state = Loading
     of Loading:
       inc framesCounter
-      if dataLoaded.load:
+      if dataLoaded.load(moAcquire):
         framesCounter = 0
         joinThread(threadId)
         traceLog(Info, "Loading thread terminated successfully")
@@ -66,8 +65,8 @@ proc main =
     of Finished:
       if isKeyPressed(Enter):
         # Reset everything to launch again
-        dataLoaded.store(false)
-        dataProgress = 0
+        dataLoaded.store(false, moRelaxed)
+        dataProgress.store(0, moRelaxed)
         state = Waiting
     # ------------------------------------------------------------------------------------
     # Draw
@@ -78,7 +77,7 @@ proc main =
     of Waiting:
       drawText("PRESS ENTER to START LOADING DATA", 150, 170, 20, DarkGray)
     of Loading:
-      drawRectangle(150, 200, dataProgress, 60, SkyBlue)
+      drawRectangle(150, 200, dataProgress.load(moRelaxed), 60, SkyBlue)
       if (framesCounter div 15) mod 2 == 1:
         drawText("LOADING DATA...", 240, 210, 40, DarkBlue)
     of Finished:

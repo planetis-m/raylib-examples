@@ -63,5 +63,6 @@ proc main =
     drawText("PRESS SPACE TO RESTART MUSIC", 215, 250, 20, LightGray)
     drawText("PRESS P TO PAUSE/RESUME MUSIC", 208, 280, 20, LightGray)
     endDrawing()
+    # ------------------------------------------------------------------------------------
 
 main()
