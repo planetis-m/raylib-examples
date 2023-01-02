@@ -145,7 +145,7 @@ proc main =
       drawText(&"DETECTED AXIS [{getGamepadAxisCount(0)}]:", 10, 50, 10, Maroon)
       for i in 0 ..< getGamepadAxisCount(0):
         drawText(&"AXIS {i}: {getGamepadAxisMovement(0, i.GamepadAxis):.02f}", 20, 70 + 20*i.int32, 10, DarkGray)
-      if getGamepadButtonPressed() != None:
+      if getGamepadButtonPressed() != Unknown:
         drawText(&"DETECTED BUTTON: {getGamepadButtonPressed()}", 10, 430, 10, Red)
       else:
         drawText("DETECTED BUTTON: NONE", 10, 430, 10, Gray)
