@@ -20,22 +20,23 @@ type
   State = enum
     Waiting, Loading, Finished
 
-var threadId: Thread[void] # Loading data thread id
-var dataLoaded: Atomic[bool] # Data Loaded completion indicator
-var dataProgress: Atomic[int32] # Data progress accumulator
+var
+  threadId: Thread[void] # Loading data thread id
+  dataLoaded: Atomic[bool] # Data Loaded completion indicator
+  dataProgress: Atomic[int32] # Data progress accumulator
 
 proc loadDataThread() {.thread.} =
   var timeCounter: int32 = 0 # Time counted in ms
   let prevTime = cpuTime() # Previous time
   # We simulate data loading with a time counter for 5 seconds
   while timeCounter < 5000:
-    let currentTime = cpuTime() - prevTime
-    timeCounter = currentTime.int32*1000
+    let timeDuration = cpuTime() - prevTime
+    timeCounter = int32(timeDuration*1000)
     # We accumulate time over a global variable to be used in
     # main thread as a progress bar
     dataProgress.store(timeCounter div 10, moRelaxed)
   # When data has finished loading, we set global variable
-  dataLoaded.store(true, moRelease)
+  dataLoaded.store(true, moRelaxed)
 
 proc main =
   # Initialization
@@ -57,7 +58,7 @@ proc main =
         state = Loading
     of Loading:
       inc framesCounter
-      if dataLoaded.load(moAcquire):
+      if dataLoaded.load(moRelaxed):
         framesCounter = 0
         joinThread(threadId)
         traceLog(Info, "Loading thread terminated successfully")
