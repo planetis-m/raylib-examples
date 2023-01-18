@@ -53,7 +53,9 @@ proc main =
       camera.zoom += wheel*zoomIncrement
       if camera.zoom < zoomIncrement:
         camera.zoom = zoomIncrement
-
+    # ------------------------------------------------------------------------------------
+    # Draw
+    # ------------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(RayWhite)
 

@@ -29,6 +29,7 @@ proc main =
   let fxBoom = loadSound("resources/boom.wav")
   # Load explosion texture
   let explosion = loadTexture("resources/explosion.png")
+
   # Init variables for animation
   let frameWidth = float32(explosion.width div FramesPerLine) # Sprite one frame rectangle width
   let frameHeight = float32(explosion.height div Lines) # Sprite one frame rectangle height
