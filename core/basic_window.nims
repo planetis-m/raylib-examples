@@ -32,8 +32,8 @@ switch("amd64.linux.clang.options.always", "-march=x86-64 -I" & AndroidSysroot &
 when defined(android):
   --define:GraphicsApiOpenGlEs2
 
-  # switch("define", "AndroidApi=" & $AndroidApi)
-  # switch("define", "AndroidNdk=\"" & AndroidNdk) # Doesn't work!
+  switch("define", "AndroidApi=" & $AndroidApi)
+  switch("define", "AndroidNdk=" & AndroidNdk)
 
   --cpu:arm64
   --cc:clang
