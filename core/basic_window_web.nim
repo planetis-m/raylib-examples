@@ -62,8 +62,7 @@ proc main =
       updateDrawFrame()
   # De-Initialization
   # --------------------------------------------------------------------------------------
-  closeWindow()
-  # Close window and OpenGL context
+  closeWindow() # Close window and OpenGL context
   # --------------------------------------------------------------------------------------
 
 main()
