@@ -53,7 +53,9 @@ proc main =
     # Get normalized time played for current music stream
     timePlayed = getMusicTimePlayed(music)/getMusicTimeLength(music)
     if timePlayed > 1: timePlayed = 1 # Make sure time played is no longer than music
-
+    # ------------------------------------------------------------------------------------
+    # Draw
+    # ------------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(RayWhite)
     drawText("MUSIC SHOULD BE PLAYING!", 255, 150, 20, LightGray)
