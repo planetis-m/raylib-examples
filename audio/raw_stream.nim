@@ -87,7 +87,7 @@ proc main =
     if isMouseButtonDown(Left):
       let fp = mousePosition.y
       frequency = 40 + fp
-      let pan = mousePosition.x/screenWidth.float32
+      let pan = mousePosition.x/screenWidth
       setAudioStreamPan(stream, pan)
     if frequency != oldFrequency:
       # Compute wavelength. Limit size in both directions.

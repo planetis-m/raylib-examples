@@ -23,6 +23,7 @@
 #   Copyright (c) 2021 Ramon Santamaria (@raysan5)
 #
 # ****************************************************************************************
+{.passC: "-DSUPPORT_CUSTOM_FRAME_CONTROL=1".}
 
 import raylib, std/[lenientops, strformat]
 
