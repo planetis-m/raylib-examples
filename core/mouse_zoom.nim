@@ -56,24 +56,22 @@ proc main =
     # ------------------------------------------------------------------------------------
     # Draw
     # ------------------------------------------------------------------------------------
-    beginDrawing()
-    clearBackground(RayWhite)
+    drawing():
+      clearBackground(RayWhite)
 
-    beginMode2D(camera)
-    # Draw the 3d grid, rotated 90 degrees and centered around 0,0
-    # just so we have something in the XY plane
-    pushMatrix()
-    translatef(0, 25*50, 0)
-    rotatef(90, 1, 0, 0)
-    drawGrid(100, 50)
-    popMatrix()
-    # Draw a reference circle
-    drawCircle(100, 100, 50, Yellow)
-    endMode2D()
+      mode2D(camera):
+        # Draw the 3d grid, rotated 90 degrees and centered around 0,0
+        # just so we have something in the XY plane
+        pushMatrix()
+        translatef(0, 25*50, 0)
+        rotatef(90, 1, 0, 0)
+        drawGrid(100, 50)
+        popMatrix()
+        # Draw a reference circle
+        drawCircle(100, 100, 50, Yellow)
 
-    drawText("Mouse right button drag to move, mouse wheel to zoom", 10, 10, 20, Black)
-    endDrawing()
-    # ------------------------------------------------------------------------------------
+      drawText("Mouse right button drag to move, mouse wheel to zoom", 10, 10, 20, Black)
+      # ----------------------------------------------------------------------------------
   # De-Initialization
   # --------------------------------------------------------------------------------------
   closeWindow() # Close window and OpenGL context

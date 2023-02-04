@@ -23,9 +23,10 @@
 #   Copyright (c) 2021 Ramon Santamaria (@raysan5)
 #
 # ****************************************************************************************
-{.passC: "-DSUPPORT_CUSTOM_FRAME_CONTROL=1".}
 
 import raylib, std/[lenientops, strformat]
+
+{.passC: "-DSUPPORT_CUSTOM_FRAME_CONTROL=1".}
 
 const
   screenWidth = 800
@@ -90,7 +91,7 @@ proc main =
     if targetFPS > 0:
       waitTime = (1'f32/targetFPS) - updateDrawTime
       if waitTime > 0:
-        waitTime(waitTime.float32)
+        waitTime(waitTime)
         currentTime = getTime()
         deltaTime = float32(currentTime - previousTime)
     else:

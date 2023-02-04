@@ -46,7 +46,8 @@ proc main =
     # Update
     # ------------------------------------------------------------------------------------
     if isKeyPressed(Space):
-      if camera.projection == Perspective:
+      case camera.projection
+      of Perspective:
         camera.fovy = WidthOrthographic
         camera.projection = Orthographic
       else:
@@ -72,12 +73,13 @@ proc main =
         drawGrid(10, 1) # Draw a grid
 
       drawText("Press Spacebar to switch camera type", 10, getScreenHeight() - 30, 20, DarkGray)
-      if camera.projection == Orthographic:
+      case camera.projection
+      of Orthographic:
         drawText("ORTHOGRAPHIC", 10, 40, 20, Black)
-      elif camera.projection == Perspective:
+      of Perspective:
         drawText("PERSPECTIVE", 10, 40, 20, Black)
       drawFPS(10, 10)
-      # ------------------------------------------------------------------------------------
+      # ----------------------------------------------------------------------------------
   # De-Initialization
   # --------------------------------------------------------------------------------------
   closeWindow() # Close window and OpenGL context
