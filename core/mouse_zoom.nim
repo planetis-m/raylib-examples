@@ -58,7 +58,6 @@ proc main =
     # ------------------------------------------------------------------------------------
     drawing():
       clearBackground(RayWhite)
-
       mode2D(camera):
         # Draw the 3d grid, rotated 90 degrees and centered around 0,0
         # just so we have something in the XY plane

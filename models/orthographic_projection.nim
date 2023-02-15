@@ -58,7 +58,6 @@ proc main =
     # ------------------------------------------------------------------------------------
     drawing():
       clearBackground(RayWhite)
-
       mode3D(camera):
         drawCube(Vector3(x: -4, y: 0, z: 2), 2, 5, 2, Red)
         drawCubeWires(Vector3(x: -4, y: 0, z: 2), 2, 5, 2, Gold)

@@ -26,7 +26,7 @@ proc saveStorageValue(position: StorageData, value: int32) =
   # Save integer value to storage file (to defined position)
   # NOTE: Storage positions is directly related to file memory layout (4 bytes each integer)
   var fileData = readFile(StorageDataFile)
-  if fileData.len <= (position.ord*4):
+  if fileData.len <= position.ord*4:
     if fileData.len == 0:
       traceLog(Info, &"FILEIO: [{StorageDataFile}] File created successfully")
     # Increase data size up to position and store value

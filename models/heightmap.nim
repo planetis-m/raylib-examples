@@ -29,11 +29,11 @@ proc main =
 
   # Define our custom camera to look into our 3d world
   var camera = Camera(
-    position: Vector3(x: 18, y: 18, z: 18),
-    target: Vector3(x: 0, y: 0, z: 0),
-    up: Vector3(x: 0, y: 1, z: 0),
-    fovy: 45,
-    projection: Perspective
+    position: Vector3(x: 18, y: 18, z: 18), # Camera position
+    target: Vector3(x: 0, y: 0, z: 0),      # Camera looking at point
+    up: Vector3(x: 0, y: 1, z: 0),          # Camera up vector (rotation towards target)
+    fovy: 45,                               # Camera field-of-view Y
+    projection: Perspective                 # Camera projection type
   )
 
   var image = loadImage("resources/heightmap.png") # Load heightmap image (RAM)
@@ -45,14 +45,13 @@ proc main =
   let mapPosition = Vector3(x: -8, y: 0, z: -8) # Define model position
   reset(image) # Unload heightmap image from RAM, already uploaded to VRAM
 
-  setCameraMode(camera, Orbital) # Set an orbital camera mode
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # --------------------------------------------------------------------------------------
   # Main game loop
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # ------------------------------------------------------------------------------------
-    updateCamera(camera)
+    updateCamera(camera, Orbital) # Set an orbital camera mode
     # ------------------------------------------------------------------------------------
     # Draw
     # ------------------------------------------------------------------------------------
