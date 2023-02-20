@@ -21,10 +21,9 @@ proc main =
   initWindow(screenWidth, screenHeight, "raylib [audio] example - music playing (streaming)")
   defer: closeWindow() # Close window and OpenGL context
 
-  initAudioDevice()
+  initAudioDevice() # Initialize audio device
   defer: closeAudioDevice() # Close audio device (music streaming is automatically stopped)
 
-  # Initialize audio device
   let music = loadMusicStream("resources/country.mp3")
   # 1 second delay (device sampleRate*channels)
   playMusicStream(music)
