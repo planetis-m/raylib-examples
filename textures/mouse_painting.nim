@@ -40,7 +40,7 @@ proc main =
   # Define colorsRecs data (for every rectangle)
   var colorsRecs: array[MaxColorsCount, Rectangle]
   for i in 0..<MaxColorsCount:
-    colorsRecs[i] = Rectangle(x: 10 + 30 * i.float32 + 2 * i.float32, y: 10, width: 30, height: 30)
+    colorsRecs[i] = Rectangle(x: 10 + 30*i.float32 + 2*i.float32, y: 10, width: 30, height: 30)
   var colorSelected: int32 = 0
   var colorSelectedPrev: int32 = colorSelected
   var colorMouseHover: int32 = 0

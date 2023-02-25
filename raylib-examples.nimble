@@ -5,5 +5,5 @@ description   = "Raylib examples"
 license       = "Public Domain"
 
 # Dependencies
-requires "naylib#62e06bbe"
+requires "naylib#8cd6488"
 #requires "https://github.com/nim-lang/threading.git#49562fa"
