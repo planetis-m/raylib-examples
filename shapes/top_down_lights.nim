@@ -246,5 +246,9 @@ proc main =
     drawText("Right click to add new light", 10, 30, 10, DarkGreen)
     endDrawing()
     # ------------------------------------------------------------------------------------
+  # De-Initialization
+  # --------------------------------------------------------------------------------------
+  for i in 0..<MaxLights:
+    if lights[i].active: reset(lights[i].mask)
 
 main()
