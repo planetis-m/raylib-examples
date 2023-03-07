@@ -6,6 +6,7 @@
 #   raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
 #
 #   Copyright (c) 2019 Anata and Ramon Santamaria (@raysan5)
+#   Converted to Nim by Antonis Geralis (@planetis-m) in 2022
 #
 # ****************************************************************************************
 

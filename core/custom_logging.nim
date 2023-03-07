@@ -9,6 +9,7 @@
 #
 #   Copyright (c) 2018 Pablo Marcos Oltra (@pamarcos) and Ramon Santamaria (@raysan5)
 #   Converted in 2021 by greenfork
+#   Modified by Antonis Geralis (@planetis-m) in 2022
 #
 # ****************************************************************************************
 

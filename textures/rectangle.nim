@@ -7,6 +7,7 @@
 #
 #   Copyright (c) 2014 Ramon Santamaria (@raysan5)
 #   Adapted in 2021 by greenfork
+#   Modified by Antonis Geralis (@planetis-m) in 2022
 #
 # ****************************************************************************************
 

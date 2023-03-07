@@ -15,6 +15,7 @@
 #   Example contributed by Marco Lizza (@MarcoLizza) and reviewed by Ramon Santamaria (@raysan5)
 #
 #   Copyright (c) 2019 Marco Lizza (@MarcoLizza) and Ramon Santamaria (@raysan5)
+#   Converted to Nim by Antonis Geralis (@planetis-m) in 2022
 #
 # ****************************************************************************************
 

@@ -8,6 +8,7 @@
 #   Copyright (c) 2016 Ramon Santamaria (@raysan5)
 #   Converted in 2020 by bones527
 #   Adapted in 2021 by greenfork
+#   Modified by Antonis Geralis (@planetis-m) in 2022
 #
 # ***************************************************************************************
 
@@ -67,7 +68,7 @@ proc main =
     if camera.rotation > 40: camera.rotation = 40
     elif camera.rotation < -40: camera.rotation = -40
     # Camera zoom controls
-    camera.zoom += getMouseWheelMove() * 0.05'f32
+    camera.zoom += getMouseWheelMove()*0.05'f32
     if camera.zoom > 3: camera.zoom = 3
     elif camera.zoom < 0.1'f32: camera.zoom = 0.1'f32
     # Camera reset (zoom and rotation)

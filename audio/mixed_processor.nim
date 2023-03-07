@@ -10,6 +10,7 @@
 #   BSD-like license that allows static linking with closed source software
 #
 #   Copyright (c) 2023 hkc (@hatkidchan)
+#   Converted to Nim by Antonis Geralis (@planetis-m) in 2023
 #
 # ****************************************************************************************
 

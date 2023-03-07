@@ -9,6 +9,7 @@
 #
 #   Copyright (c) 2019 arvyy (@arvyy)
 #   Converted in 2021 by greenfork
+#   Modified by Antonis Geralis (@planetis-m) in 2022
 #
 # ****************************************************************************************
 

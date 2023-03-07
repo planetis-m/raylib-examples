@@ -10,15 +10,13 @@
 #   BSD-like license that allows static linking with closed source software
 #
 #   Copyright (c) 2022-2023 Jeffery Myers (@JeffM2501)
+#   Converted to Nim by Antonis Geralis (@planetis-m) in 2022
 #
 # ****************************************************************************************
 
 import raylib, raymath, rlgl, std/random
 
 const
-  screenWidth = 800
-  screenHeight = 450
-
   MaxBoxes = 20
   MaxShadows = MaxBoxes*3 # Each box can cast up to two shadow volumes for the edges it is away from, and one for the box itself
   MaxLights = 16
@@ -157,6 +155,10 @@ proc setupBoxes(boxes: var openArray[Rectangle]) =
 # Program main entry point
 # ----------------------------------------------------------------------------------------
 
+const
+  screenWidth = 800
+  screenHeight = 450
+
 proc main =
   # Initialization
   # --------------------------------------------------------------------------------------
@@ -235,9 +237,8 @@ proc main =
       for b in 0..boxes.high:
         if checkCollisionRecs(boxes[b], lights[0].bounds):
           drawRectangle(boxes[b], Purple)
-        drawRectangleLines(boxes[b].x.int32, boxes[b].y.int32,
-                           boxes[b].width.int32,
-                           boxes[b].height.int32, DarkBlue)
+        drawRectangleLines(boxes[b].x.int32, boxes[b].y.int32, boxes[b].width.int32,
+            boxes[b].height.int32, DarkBlue)
       drawText("(F1) Hide Shadow Volumes", 10, 50, 10, Green)
     else:
       drawText("(F1) Show Shadow Volumes", 10, 50, 10, Green)

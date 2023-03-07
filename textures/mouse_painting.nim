@@ -10,6 +10,7 @@
 #   BSD-like license that allows static linking with closed source software
 #
 #   Copyright (c) 2019-2022 Chris Dill (@MysteriousSpace) and Ramon Santamaria (@raysan5)
+#   Converted to Nim by Antonis Geralis (@planetis-m) in 2023
 #
 # ****************************************************************************************
 

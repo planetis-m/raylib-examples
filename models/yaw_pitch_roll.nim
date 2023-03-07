@@ -8,6 +8,7 @@
 #   Example contributed by Berni (@Berni8k) and reviewed by Ramon Santamaria (@raysan5)
 #
 #   Copyright (c) 2017-2021 Berni (@Berni8k) and Ramon Santamaria (@raysan5)
+#   Converted to Nim by Antonis Geralis (@planetis-m) in 2022
 #
 # ****************************************************************************************
 

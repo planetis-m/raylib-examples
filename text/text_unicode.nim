@@ -1,4 +1,4 @@
-# ***************************************************************************************
+# ****************************************************************************************
 #
 #   raylib [text] example - Using unicode with raylib
 #
@@ -8,8 +8,9 @@
 #   Example contributed by Vlad Adrian (@demizdor) and reviewed by Ramon Santamaria (@raysan5)
 #
 #   Copyright (c) 2019 Vlad Adrian (@demizdor) and Ramon Santamaria (@raysan5)
+#   Converted to Nim by Antonis Geralis (@planetis-m) in 2022
 #
-# ***************************************************************************************
+# ****************************************************************************************
 
 import raylib, std/[lenientops, unicode, random, strformat]
 
@@ -84,9 +85,9 @@ const
     toMsg("한국말 하실 줄 아세요?", "Korean")
   ]
 
-# ---------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 # Global variables
-# ---------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 
 type
   Emoji = object
@@ -98,9 +99,9 @@ var
   emoji: array[EmojiPerWidth*EmojiPerHeight, Emoji] # Arrays that holds the random emojis
   hovered, selected = -1
 
-# ---------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 # Module functions declaration
-# ---------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 
 proc randomizeEmoji() =
   # Fills the emoji array with random emoji (only those emojis present in fontEmoji)
@@ -224,13 +225,13 @@ proc drawTextBoxed(font: Font; text: string; rec: Rectangle; fontSize: float32;
   # Draw text using font inside rectangle limits
   drawTextBoxedSelectable(font, text, rec, fontSize, spacing, wordWrap, tint, 0, 0, White, White)
 
-# ---------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 # Main entry point
-# ---------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 
 proc main =
   # Initialization
-  # -------------------------------------------------------------------------------------
+  # --------------------------------------------------------------------------------------
   randomize()
   setConfigFlags(flags(Msaa4xHint, VsyncHint))
   initWindow(screenWidth, screenHeight, "raylib [text] example - unicode")
@@ -262,13 +263,13 @@ proc main =
     let mouse = getMousePosition()
     var pos = Vector2(x: 28.8, y: 10)
     hovered = -1
-    # -----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     # Draw
-    # -----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(RayWhite)
     # Draw random emojis in the background
-    # -----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     for i in 0..emoji.high:
       # Assume that the size of each emoji is one Rune (4 bytes)
       let txt = runeSubStr(emojiCodepoints, emoji[i].index, 1)
@@ -345,6 +346,6 @@ proc main =
     drawText("Each emoji is a unicode character from a font, not a texture... Press [SPACEBAR] to refresh",
         (screenWidth - 484) div 2, screenHeight - 16, 10, Gray)
     endDrawing()
-    # -----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
 
 main()
