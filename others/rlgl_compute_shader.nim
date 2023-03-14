@@ -22,14 +22,14 @@ import raylib, rlgl
 const
   # IMPORTANT: This must match gol*.glsl GOL_WIDTH constant.
   # This must be a multiple of 16 (check golLogic compute dispatch).
-  GolWidth = 768
+  GoLWidth = 768
 
   # Maximum amount of queued draw commands (squares draw from mouse down events).
   MaxBufferedTransferts = 48
 
 # Game Of Life Update Command
 type
-  GolUpdateCmd = object
+  GoLUpdateCmd = object
     x: uint32 # x coordinate of the gol command
     y: uint32 # y coordinate of the gol command
     w: uint32 # width of the filled zone
@@ -37,9 +37,9 @@ type
 
 # Game Of Life Update Commands SSBO
 type
-  GolUpdateSSBO = object
+  GoLUpdateSSBO = object
     count: uint32
-    commands: array[MaxBufferedTransferts, GolUpdateCmd]
+    commands: array[MaxBufferedTransferts, GoLUpdateCmd]
 
 # ----------------------------------------------------------------------------------------
 # Program main entry point
@@ -48,9 +48,9 @@ type
 proc main =
   # Initialization
   # --------------------------------------------------------------------------------------
-  initWindow(GolWidth, GolWidth, "raylib [rlgl] example - compute shader - game of life")
+  initWindow(GoLWidth, GoLWidth, "raylib [rlgl] example - compute shader - game of life")
   defer: closeWindow() # Close window and OpenGL context
-  let resolution = Vector2(x: GolWidth, y: GolWidth)
+  let resolution = Vector2(x: GoLWidth, y: GoLWidth)
   var brushSize: int32 = 8
   # Game of Life logic compute shader
   let golLogicCode = readFile("resources/shaders/glsl430/gol.glsl")
@@ -64,16 +64,16 @@ proc main =
   let golTransfertShader = compileShader(golTransfertCode, ComputeShader)
   let golTransfertProgram = loadComputeShaderProgram(golTransfertShader)
   # Load shader storage buffer object (SSBO), id returned
-  var ssboA = loadShaderBuffer(GolWidth*GolWidth*sizeof(uint32), nil, DynamicCopy)
-  var ssboB = loadShaderBuffer(GolWidth*GolWidth*sizeof(uint32), nil, DynamicCopy)
-  let ssboTransfert = loadShaderBuffer(sizeof(GolUpdateSSBO).uint32, nil, DynamicCopy)
-  var transfertBuffer = GolUpdateSSBO(count: 0)
+  var ssboA = loadShaderBuffer(GoLWidth*GoLWidth*sizeof(uint32), nil, DynamicCopy)
+  var ssboB = loadShaderBuffer(GoLWidth*GoLWidth*sizeof(uint32), nil, DynamicCopy)
+  let ssboTransfert = loadShaderBuffer(sizeof(GoLUpdateSSBO).uint32, nil, DynamicCopy)
+  var transfertBuffer = GoLUpdateSSBO(count: 0)
   # Create a white texture of the size of the window to update
   # each pixel of the window using the fragment shader: golRenderShader
-  var whiteImage = genImageColor(GolWidth, GolWidth, White)
+  var whiteImage = genImageColor(GoLWidth, GoLWidth, White)
   let whiteTex = loadTextureFromImage(whiteImage)
   reset(whiteImage)
-  setTargetFPS(60) # Set our game to run at 60 frames-per-second
+  # setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # --------------------------------------------------------------------------------------
   # Main game loop
   while not windowShouldClose():
@@ -83,7 +83,7 @@ proc main =
     if (isMouseButtonDown(Left) or isMouseButtonDown(Right)) and
         transfertBuffer.count < MaxBufferedTransferts:
       # Buffer a new command
-      transfertBuffer.commands[transfertBuffer.count] = GolUpdateCmd(
+      transfertBuffer.commands[transfertBuffer.count] = GoLUpdateCmd(
         x: getMouseX().uint32 - brushSize.uint32 div 2,
         y: getMouseY().uint32 - brushSize.uint32 div 2,
         w: brushSize.uint32,
@@ -92,7 +92,7 @@ proc main =
       inc(transfertBuffer.count)
     elif transfertBuffer.count > 0: # Process transfert buffer
       # Send SSBO buffer to GPU
-      updateShaderBuffer(ssboTransfert, addr transfertBuffer, sizeof(GolUpdateSSBO).uint32, 0)
+      updateShaderBuffer(ssboTransfert, addr transfertBuffer, sizeof(GoLUpdateSSBO).uint32, 0)
       # Process SSBO commands on GPU
       enableShader(golTransfertProgram)
       bindShaderBuffer(ssboA, 1)
@@ -106,7 +106,7 @@ proc main =
       enableShader(golLogicProgram)
       bindShaderBuffer(ssboA, 1)
       bindShaderBuffer(ssboB, 2)
-      computeShaderDispatch(GolWidth div 16, GolWidth div 16, 1)
+      computeShaderDispatch(GoLWidth div 16, GoLWidth div 16, 1)
       disableShader()
       # ssboA <-> ssboB
       swap(ssboA, ssboB)

@@ -39,7 +39,7 @@ proc main =
   # With a Wave loaded from file, after Sound is loaded, we can unload Wave
   # but in our case, Wave is embedded in executable, in program .data segment
   # we can not (and should not) try to free that private memory region
-  #unloadWave(wave) # Do not unload wave data!
+  #reset(wave) # Do not unload wave data!
 
   # Loaded in CPU memory (RAM) from source file (image_data.nim)
   # Same as: let image = loadImage("raylib_logo.png")
@@ -50,7 +50,7 @@ proc main =
   # With an Image loaded from file, after Texture is loaded, we can unload Image
   # but in our case, Image is embedded in executable, in program .data segment
   # we can not (and should not) try to free that private memory region
-  #unloadImage(image) # Do not unload image data!
+  #reset(image) # Do not unload image data!
 
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # --------------------------------------------------------------------------------------
