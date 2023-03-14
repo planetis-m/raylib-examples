@@ -118,7 +118,7 @@ proc drawGame =
   clearBackground(RayWhite)
   if not gameOver:
     drawCircle(floppy.position, floppy.radius.float32, DarkGray)
-    ##  Draw tubes
+    # Draw tubes
     for i in 0..<MaxTubes:
       drawRectangle(tubes[i*2].rec, Gray)
       drawRectangle(tubes[i*2 + 1].rec, Gray)
