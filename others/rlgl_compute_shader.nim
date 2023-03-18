@@ -52,28 +52,33 @@ proc main =
   defer: closeWindow() # Close window and OpenGL context
   let resolution = Vector2(x: GoLWidth, y: GoLWidth)
   var brushSize: int32 = 8
+
   # Game of Life logic compute shader
   let golLogicCode = readFile("resources/shaders/glsl430/gol.glsl")
   let golLogicShader = compileShader(golLogicCode, ComputeShader)
   let golLogicProgram = loadComputeShaderProgram(golLogicShader)
+
   # Game of Life logic render shader
   let golRenderShader = loadShader("", "resources/shaders/glsl430/gol_render.glsl")
   let resUniformLoc = getShaderLocation(golRenderShader, "resolution")
+
   # Game of Life transfert shader (CPU<->GPU download and upload)
   let golTransfertCode = readFile("resources/shaders/glsl430/gol_transfert.glsl")
   let golTransfertShader = compileShader(golTransfertCode, ComputeShader)
   let golTransfertProgram = loadComputeShaderProgram(golTransfertShader)
+
   # Load shader storage buffer object (SSBO), id returned
   var ssboA = loadShaderBuffer(GoLWidth*GoLWidth*sizeof(uint32), nil, DynamicCopy)
   var ssboB = loadShaderBuffer(GoLWidth*GoLWidth*sizeof(uint32), nil, DynamicCopy)
   let ssboTransfert = loadShaderBuffer(sizeof(GoLUpdateSSBO).uint32, nil, DynamicCopy)
   var transfertBuffer = GoLUpdateSSBO(count: 0)
+
   # Create a white texture of the size of the window to update
   # each pixel of the window using the fragment shader: golRenderShader
   var whiteImage = genImageColor(GoLWidth, GoLWidth, White)
   let whiteTex = loadTextureFromImage(whiteImage)
   reset(whiteImage)
-  # setTargetFPS(60) # Set our game to run at 60 frames-per-second
+
   # --------------------------------------------------------------------------------------
   # Main game loop
   while not windowShouldClose():
@@ -90,6 +95,7 @@ proc main =
         enabled: isMouseButtonDown(Left).uint32
       )
       inc(transfertBuffer.count)
+
     elif transfertBuffer.count > 0: # Process transfert buffer
       # Send SSBO buffer to GPU
       updateShaderBuffer(ssboTransfert, addr transfertBuffer, sizeof(GoLUpdateSSBO).uint32, 0)
@@ -101,6 +107,7 @@ proc main =
       # Each GPU unit will process a command!
       disableShader()
       transfertBuffer.count = 0
+
     else:
       # Process game of life logic
       enableShader(golLogicProgram)
@@ -110,6 +117,7 @@ proc main =
       disableShader()
       # ssboA <-> ssboB
       swap(ssboA, ssboB)
+
     bindShaderBuffer(ssboA, 1)
     setShaderValue(golRenderShader, resUniformLoc, resolution)
     # ------------------------------------------------------------------------------------
@@ -119,6 +127,7 @@ proc main =
       clearBackground(Blank)
       shaderMode(golRenderShader):
         drawTexture(whiteTex, 0, 0, White)
+
       drawRectangleLines(getMouseX() - brushSize div 2,
                          getMouseY() - brushSize div 2, brushSize, brushSize, Red)
       drawText("Use Mouse wheel to increase/decrease brush size", 10, 10, 20, White)
@@ -130,6 +139,7 @@ proc main =
   unloadShaderBuffer(ssboA)
   unloadShaderBuffer(ssboB)
   unloadShaderBuffer(ssboTransfert)
+
   # Unload compute shader programs
   unloadShaderProgram(golTransfertProgram)
   unloadShaderProgram(golLogicProgram)
