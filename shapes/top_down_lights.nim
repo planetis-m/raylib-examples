@@ -208,7 +208,7 @@ proc main =
         if lights[i].active:
           drawTexture(lights[i].mask.texture,
               Rectangle(x: 0, y: 0, width: getScreenWidth().float32, height: -getScreenHeight().float32),
-              vector2Zero(), White)
+              Vector2.zero, White)
       drawRenderBatchActive()
       # Go back to normal blend
       setBlendMode(Alpha)
@@ -221,11 +221,11 @@ proc main =
     # Draw the tile background
     drawTexture(backgroundTexture,
         Rectangle(x: 0, y: 0, width: getScreenWidth().float32, height: getScreenHeight().float32),
-        vector2Zero(), White)
+        Vector2.zero, White)
     # Overlay the shadows from all the lights
     drawTexture(lightMask.texture,
         Rectangle(x: 0, y: 0, width: getScreenWidth().float32, height: -getScreenHeight().float32),
-        vector2Zero(), colorAlpha(White, if showLines: 0.75'f32 else: 1.0'f32))
+        Vector2.zero, colorAlpha(White, if showLines: 0.75'f32 else: 1.0'f32))
     # Draw the lights
     for i in 0..<MaxLights:
       if lights[i].active:

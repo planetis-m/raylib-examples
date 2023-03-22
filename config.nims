@@ -1,4 +1,4 @@
 when not defined(emscripten):
   --define:GraphicsApiOpenGl33
-switch("warning", "CStringConv:off")
+warning("CStringConv", off)
 --experimental:overloadableEnums
