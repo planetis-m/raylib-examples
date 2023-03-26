@@ -18,11 +18,10 @@ const
   screenWidth = 800
   screenHeight = 450
 
+const
   EmojiPerWidth = 8
   EmojiPerHeight = 4
-
-# String containing 180 emoji codepoints
-const
+  # String containing 180 emoji codepoints
   emojiCodepoints = "🌀😀😂🤣😃😆😉😋😎😍😘😗😙😚🙂🤗🤩🤔🤨😐😑😶🙄😏😣😥😮🤐😯😪😫😴😌😛😝🤤😒😕🙃🤑😲🙁😖😞😟😤😢😭😦😩🤯😬😰😱😳🤪😵😡😠🤬😷🤒🤕🤢🤮🤧😇🤠🤫🤭🧐🤓😈👿👹👺💀👻👽👾🤖💩😺😸😹😻😽🙀😿🌾🌿🍀🍃🍇🍓🥝🍅🥥🥑🍆🥔🥕🌽🌶🥒🥦🍄🥜🌰🍞🥐🥖🥨🥞🧀🍖🍗🥩🥓🍔🍟🍕🌭🥪🌮🌯🥙🥚🍳🥘🍲🥣🥗🍿🥫🍱🍘🍝🍠🍢🍥🍡🥟🥡🍦🍪🎂🍰🥧🍫🍯🍼🥛🍵🍶🍾🍷🍻🥂🥃🥤🥢👁👅👄💋💘💓💗💙💛🧡💜🖤💝💟💌💤💢💣"
 
 type
