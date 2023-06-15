@@ -15,13 +15,11 @@ import raylib, std/strformat
 
 const
   screenSize = 600
-
   N = 8
   SquareSize = 75
 
 type
   QueensArr = array[N, int32]
-
   Queens = object
     queenInRow: QueensArr # column number of queen in each row
     colFree: array[N, bool]
