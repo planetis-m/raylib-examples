@@ -69,8 +69,8 @@ proc main =
       drawText("MODE: Angle between V1 and V2", 10, 10, 20, Black)
       drawLine(v0, v1, 2, Black)
       drawLine(v0, v2, 2, Red)
-      let startangle = 90 - lineAngle(v0, v1).radToDeg
-      drawCircleSector(v0, 40, startangle, angle + startangle, 32, fade(Green, 0.6))
+      let startAngle = 90 - lineAngle(v0, v1).radToDeg
+      drawCircleSector(v0, 40, startAngle, angle + startAngle, 32, fade(Green, 0.6))
       #drawCircleSector(v0, 40.0f, 90 - Vector2LineAngle(v0, v1)*RAD2DEG, angle, 32, fade(Green, 0.6))
     of LineAngle:
       drawText("MODE: Angle formed by line V1 to V2", 10, 10, 20, Black)
