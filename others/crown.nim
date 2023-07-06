@@ -9,13 +9,13 @@ const
 
 # Let's draw a Nim crown!
 const
-  crownSides = 8                                # Low-polygon version
-  centerAngle: float32 = Tau/crownSides         # Angle from the center of a circle
-  lowerRadius: float32 = 2                      # Lower crown circle
-  upperRadius: float32 = lowerRadius*1.4        # Upper crown circle
-  mainHeight: float32 = lowerRadius*0.8         # Height without teeth
-  toothHeight: float32 = mainHeight*1.3         # Height with teeth
-  toothSkew: float32 = 1.2                      # Little angle for teeth
+  crownSides = 8                           # Low-polygon version
+  centerAngle: float32 = Tau/crownSides    # Angle from the center of a circle
+  lowerRadius: float32 = 2                 # Lower crown circle
+  upperRadius = lowerRadius*1.4'f32        # Upper crown circle
+  mainHeight = lowerRadius*0.8'f32         # Height without teeth
+  toothHeight = mainHeight*1.3'f32         # Height with teeth
+  toothSkew: float32 = 1.2                 # Little angle for teeth
 
 proc main =
   var
@@ -43,23 +43,23 @@ proc main =
     fovy: 45,                              # Camera field-of-view apperture in Y (degrees)
     projection: Perspective                # Defines projection type, see CameraProjection
   )
-  var pause = false                 # Pausing the game will stop animation
+  var pause = false                  # Pausing the game will stop animation
 
-  setTargetFPS(60)                  # Set the game to run at 60 frames per second
+  setTargetFPS(60)                   # Set the game to run at 60 frames per second
 
   # Wait for Esc key press or when the window is closed
   while not windowShouldClose():
     if not pause:
-      updateCamera(camera, Orbital) # Set an orbital camera mode
+      updateCamera(camera, Orbital)  # Set an orbital camera mode
 
     if isKeyPressed(Space) or
-        isGestureDetected(Tap):     # Pressing Space will stop/resume animation
+        isGestureDetected(Tap):      # Pressing Space will stop/resume animation
       pause = not pause
 
-    drawing():                      # Use drawing functions inside this block
-      clearBackground(RayWhite)     # Set background color
+    drawing():                       # Use drawing functions inside this block
+      clearBackground(RayWhite)      # Set background color
 
-      mode3D(camera):               # Use 3D drawing functions inside this block
+      mode3D(camera):                # Use 3D drawing functions inside this block
         drawGrid(10, 1)
 
         for i in 0..<crownSides:
@@ -100,8 +100,8 @@ proc main =
 
       let
         text = "I AM NIM"
-        fontSize: int32 = 60
-        textWidth = measureText(text, fontSize)
+        fontSize: int32 = 40
+        textWidth = measureText("I AM NIM", fontSize)
         verticalPos = int32(getScreenHeight().float32*0.4'f32)
       drawText(text, (getScreenWidth() - textWidth) div 2,  # center
           (getScreenHeight() + verticalPos) div 2, fontSize, Black)
