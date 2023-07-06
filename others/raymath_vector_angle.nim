@@ -70,8 +70,7 @@ proc main =
       drawLine(v0, v1, 2, Black)
       drawLine(v0, v2, 2, Red)
       let startAngle = 90 - lineAngle(v0, v1).radToDeg
-      drawCircleSector(v0, 40, startAngle, angle + startAngle, 32, fade(Green, 0.6))
-      #drawCircleSector(v0, 40.0f, 90 - Vector2LineAngle(v0, v1)*RAD2DEG, angle, 32, fade(Green, 0.6))
+      drawCircleSector(v0, 40, startAngle, startAngle + angle - 360*float32(angle > 180), 32, fade(Green, 0.6))
     of LineAngle:
       drawText("MODE: Angle formed by line V1 to V2", 10, 10, 20, Black)
       drawLine(0, screenHeight div 2, screenWidth, screenHeight div 2, LightGray)
