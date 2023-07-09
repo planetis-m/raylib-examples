@@ -13,10 +13,6 @@
 
 import raylib, raymath, std/[math, strformat]
 
-# ----------------------------------------------------------------------------------------
-# Program main entry point
-# ----------------------------------------------------------------------------------------
-
 const
   screenWidth = 800
   screenHeight = 450
@@ -26,6 +22,10 @@ type
     Angle, LineAngle
 
 proc `not`(x: AngleMode): AngleMode = AngleMode(not x.bool)
+
+# ----------------------------------------------------------------------------------------
+# Program main entry point
+# ----------------------------------------------------------------------------------------
 
 proc main =
   # Initialization
@@ -51,13 +51,13 @@ proc main =
       v2 = getMousePosition()
       angle = angle(normalize(v1 - v0), normalize(v2 - v0)).radToDeg
     of LineAngle:
-      # ----------------------------------------------------------------------------------
-      # Draw
-      # ----------------------------------------------------------------------------------
       # Calculate angle defined by a two vectors line, in reference to horizontal line
       v1 = Vector2(x: screenWidth div 2, y: screenHeight div 2)
       v2 = getMousePosition()
       angle = lineAngle(v1, v2).radToDeg
+    # ------------------------------------------------------------------------------------
+    # Draw
+    # ------------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(White)
     if angleMode == Angle:
@@ -79,7 +79,7 @@ proc main =
     drawText("Press SPACE to change MODE", 460, 10, 20, DarkGray)
     drawText(&"ANGLE: {angle:2.2f}", 10, 40, 20, Lime)
     endDrawing()
-    # ----------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
   # De-Initialization
   # --------------------------------------------------------------------------------------
   closeWindow() # Close window and OpenGL context
