@@ -25,7 +25,7 @@
 #
 # ****************************************************************************************
 
-import raylib, std/[lenientops, strformat]
+import raylib, std/[lenientops, strformat, monotimes, os]
 
 {.passC: "-DSUPPORT_CUSTOM_FRAME_CONTROL=1".}
 
@@ -36,9 +36,9 @@ const
 proc main =
   initWindow(screenWidth, screenHeight, "raylib [core] example - custom frame control")
   # Custom timming variables
-  var previousTime = getTime() # Previous time measure
-  var currentTime = 0.0 # Current time measure
-  var updateDrawTime = 0.0 # Update + Draw time
+  var previousTime = getMonoTime().ticks # Previous time measure
+  var currentTime: int64 = 0 # Current time measure
+  var updateDrawTime: int64 = 0 # Update + Draw time
   var waitTime = 0.0 # Wait time (if target fps required)
   var deltaTime: float32 = 0 # Frame time (Update + Draw + Wait time)
   var timeCounter: float32 = 0 # Accumulative time counter (seconds)
@@ -60,10 +60,10 @@ proc main =
     if targetFPS < 0:
       targetFPS = 0
     if not pause:
-      position += 200 * deltaTime # We move at 200 pixels per second
+      position += 0.2 * deltaTime # We move at 200 pixels per second
       if position >= getScreenWidth():
         position = 0
-      timeCounter += deltaTime # We count time (seconds)
+      timeCounter += deltaTime # We count time (milliseconds)
     # ------------------------------------------------------------------------------------
     # Draw
     # ------------------------------------------------------------------------------------
@@ -72,7 +72,7 @@ proc main =
     for i in 0 ..< getScreenWidth() div 200:
       drawRectangle(200 * i, 0, 1, getScreenHeight(), SkyBlue)
     drawCircle(position.int32, getScreenHeight() div 2 - 25, 50, Red)
-    drawText(&"{timeCounter * 1000'f32:03.0f} ms", position.int32 - 40,
+    drawText(&"{timeCounter:03.0f} ms", position.int32 - 40,
              getScreenHeight() div 2 - 100, 20, Maroon)
     drawText(&"PosX: {position:03.0f}", position.int32 - 50,
              getScreenHeight() div 2 + 40, 20, Black)
@@ -81,22 +81,22 @@ proc main =
     drawText("PRESS SPACE to PAUSE MOVEMENT", 10, getScreenHeight() - 60, 20, Gray)
     drawText("PRESS UP | DOWN to CHANGE TARGET FPS", 10, getScreenHeight() - 30, 20, Gray)
     drawText(&"TARGET FPS: {targetFPS}", getScreenWidth() - 220, 10, 20, Lime)
-    drawText(&"CURRENT FPS: {int32(1'f32 / deltaTime)}", getScreenWidth() - 220, 40, 20, Green)
+    drawText(&"CURRENT FPS: {int32(1000'f32 / deltaTime)}", getScreenWidth() - 220, 40, 20, Green)
     endDrawing()
     # NOTE: In case raylib is configured to SUPPORT_CUSTOM_FRAME_CONTROL,
     # Events polling, screen buffer swap and frame time control must be managed by the user
     swapScreenBuffer()
     # Flip the back buffer to screen (front buffer)
-    currentTime = getTime()
+    currentTime = getMonoTime().ticks
     updateDrawTime = currentTime - previousTime
     if targetFPS > 0:
-      waitTime = (1'f32/targetFPS) - updateDrawTime
+      waitTime = (1000_000_000'f32/targetFPS) - updateDrawTime
       if waitTime > 0:
-        waitTime(waitTime)
-        currentTime = getTime()
-        deltaTime = float32(currentTime - previousTime)
+        sleep(int(waitTime / 1000_000))
+        currentTime = getMonoTime().ticks
+        deltaTime = float32(currentTime - previousTime) / 1000_000
     else:
-      deltaTime = updateDrawTime
+      deltaTime = updateDrawTime.float32 / 1000_000
     # Framerate could be variable
     previousTime = currentTime
   # De-Initialization
