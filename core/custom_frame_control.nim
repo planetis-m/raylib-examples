@@ -25,7 +25,7 @@
 #
 # ****************************************************************************************
 
-import raylib, std/[lenientops, strformat, monotimes, os]
+import raylib, std/[lenientops, strformat]
 
 {.passC: "-DSUPPORT_CUSTOM_FRAME_CONTROL=1".}
 
@@ -36,10 +36,10 @@ const
 proc main =
   initWindow(screenWidth, screenHeight, "raylib [core] example - custom frame control")
   # Custom timming variables
-  var previousTime = getMonoTime().ticks # Previous time measure
-  var currentTime: int64 = 0 # Current time measure
-  var updateDrawTime: int64 = 0 # Update + Draw time
-  var waitTime: int = 0 # Wait time (if target fps required)
+  var previousTime = getTime() # Previous time measure
+  var currentTime = 0.0 # Current time measure
+  var updateDrawTime = 0.0 # Update + Draw time
+  var waitTime = 0.0 # Wait time (if target fps required)
   var deltaTime: float32 = 0 # Frame time (Update + Draw + Wait time)
   var timeCounter: float32 = 0 # Accumulative time counter (seconds)
   var position: float32 = 0 # Circle position
@@ -87,16 +87,16 @@ proc main =
     # Events polling, screen buffer swap and frame time control must be managed by the user
     swapScreenBuffer()
     # Flip the back buffer to screen (front buffer)
-    currentTime = getMonoTime().ticks
+    currentTime = getTime()
     updateDrawTime = currentTime - previousTime
     if targetFPS > 0:
-      waitTime = (1000_000_000 div targetFPS - updateDrawTime) div 1000_000
+      waitTime = (1'f32/targetFPS) - updateDrawTime
       if waitTime > 0:
-        sleep(waitTime)
-        currentTime = getMonoTime().ticks
-        deltaTime = float32(currentTime - previousTime) / 1000_000_000
+        waitTime(waitTime)
+        currentTime = getTime()
+        deltaTime = float32(currentTime - previousTime)
     else:
-      deltaTime = updateDrawTime.float32 / 1000_000_000
+      deltaTime = updateDrawTime
     # Framerate could be variable
     previousTime = currentTime
   # De-Initialization
