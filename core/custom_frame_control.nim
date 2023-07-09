@@ -39,7 +39,7 @@ proc main =
   var previousTime = getMonoTime().ticks # Previous time measure
   var currentTime: int64 = 0 # Current time measure
   var updateDrawTime: int64 = 0 # Update + Draw time
-  var waitTime = 0.0 # Wait time (if target fps required)
+  var waitTime: int = 0 # Wait time (if target fps required)
   var deltaTime: float32 = 0 # Frame time (Update + Draw + Wait time)
   var timeCounter: float32 = 0 # Accumulative time counter (seconds)
   var position: float32 = 0 # Circle position
@@ -90,9 +90,9 @@ proc main =
     currentTime = getMonoTime().ticks
     updateDrawTime = currentTime - previousTime
     if targetFPS > 0:
-      waitTime = (1000_000_000'f32/targetFPS) - updateDrawTime
+      waitTime = (1000_000_000 div targetFPS - updateDrawTime) div 1000_000
       if waitTime > 0:
-        sleep(int(waitTime / 1000_000))
+        sleep(waitTime)
         currentTime = getMonoTime().ticks
         deltaTime = float32(currentTime - previousTime) / 1000_000_000
     else:
