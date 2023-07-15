@@ -1,6 +1,6 @@
 # ****************************************************************************************
 #
-#   raylib [others] example - Embedded files loading (Wave and Image)
+#   raylib [others] example - Weak files loading (Wave and Image)
 #
 #   Example originally created with raylib 3.0, last time updated with raylib 2.5
 #
@@ -24,14 +24,14 @@ const
 proc main =
   # Initialization
   # --------------------------------------------------------------------------------------
-  initWindow(screenWidth, screenHeight, "raylib [others] example - embedded files loading")
+  initWindow(screenWidth, screenHeight, "raylib [others] example - Weak files loading")
   defer: closeWindow() # Close window and OpenGL context
   initAudioDevice() # Initialize audio device
   defer: closeAudioDevice() # Close audio device
 
   # Loaded in CPU memory (RAM) from source file (audio_data.nim)
   # Same as: let wave = loadWave("sound.wav")
-  let wave = toEmbedded(AudioData, AudioFrameCount, AudioSampleRate, AudioSampleSize, AudioChannels)
+  let wave = toWeakWave(AudioData, AudioFrameCount, AudioSampleRate, AudioSampleSize, AudioChannels)
 
   # Wave converted to Sound to be played
   let sound = loadSoundFromWave(wave.Wave) # Convert proc argument to Wave
@@ -43,7 +43,7 @@ proc main =
 
   # Loaded in CPU memory (RAM) from source file (image_data.nim)
   # Same as: let image = loadImage("raylib_logo.png")
-  let image = toEmbedded(ImageData, ImageWidth, ImageHeight, ImageFormat)
+  let image = toWeakImage(ImageData, ImageWidth, ImageHeight, ImageFormat)
   # Image converted to Texture (VRAM) to be drawn
   let texture = loadTextureFromImage(image.Image) # Convert proc argument to Image
 

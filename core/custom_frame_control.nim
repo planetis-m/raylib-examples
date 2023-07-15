@@ -45,11 +45,11 @@ proc main =
   var position: float32 = 0 # Circle position
   var pause = false # Pause control flag
   var targetFPS: int32 = 60 # Our initial target fps
-  # -------------------------------------------------------------------------------------
+  # --------------------------------------------------------------------------------------
   # Main game loop
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
-    # ---------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------
     pollInputEvents() # Poll input events (SUPPORT_CUSTOM_FRAME_CONTROL)
     if isKeyPressed(Space):
       pause = not pause
