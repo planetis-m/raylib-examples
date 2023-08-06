@@ -67,9 +67,9 @@ proc main =
   # --------------------------------------------------------------------------------------
   for i in 1 ..< MaxSounds:
     unloadSoundAlias(soundArray[i])
-    reset(soundArray[i])
+    wasMoved(soundArray[i])
   # Unload sound aliases
-  # unloadSound(soundArray[0]) # Unload source sound data
+  reset(soundArray[0]) # Unload source sound data
   # --------------------------------------------------------------------------------------
 
 main()
