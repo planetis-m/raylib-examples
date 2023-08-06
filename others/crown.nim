@@ -3,12 +3,11 @@
 
 import std/math, raylib
 
+# Let's draw a Nim crown!
 const
   nimFg = getColor(0xffc200ff'u32)
   nimBg = getColor(0x17181fff'u32)
 
-# Let's draw a Nim crown!
-const
   crownSides = 8                           # Low-polygon version
   centerAngle: float32 = Tau/crownSides    # Angle from the center of a circle
   lowerRadius: float32 = 2                 # Lower crown circle
