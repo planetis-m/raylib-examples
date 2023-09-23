@@ -29,11 +29,11 @@ proc genMeshCustom(): Mesh =
   result.triangleCount = 1
   result.vertexCount = result.triangleCount*3
   result.vertices = cast[typeof(result.vertices)](
-      memAlloc(uint32(result.vertexCount*3*sizeof(float32))))  # 3 vertices, 3 coordinates each (x, y, z)
+      memAlloc(uint32(result.vertexCount*3*sizeof(float32)))) # 3 vertices, 3 coordinates each (x, y, z)
   result.texcoords = cast[typeof(result.texcoords)](
       memAlloc(uint32(result.vertexCount*2*sizeof(float32)))) # 3 vertices, 2 coordinates each (x, y)
   result.normals = cast[typeof(result.normals)](
-      memAlloc(uint32(result.vertexCount*3*sizeof(float32))))   # 3 vertices, 3 coordinates each (x, y, z)
+      memAlloc(uint32(result.vertexCount*3*sizeof(float32)))) # 3 vertices, 3 coordinates each (x, y, z)
 
   # Vertex at (0, 0, 0)
   result.vertices[0] = 0
