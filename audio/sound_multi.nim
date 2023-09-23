@@ -20,7 +20,8 @@ const
   MaxSounds = 10
 
 var
-  soundArray: array[MaxSounds, Sound]
+  sound: Sound
+  soundArray: array[MaxSounds, SoundAlias]
   currentSound: int32 = 0
 
 # ----------------------------------------------------------------------------------------
@@ -38,11 +39,11 @@ proc main =
   defer: closeAudioDevice() # Close audio device (music streaming is automatically stopped)
 
   # load the sound list
-  soundArray[0] = loadSound("resources/sound.wav")
+  sound = loadSound("resources/sound.wav")
   # Load WAV audio file into the first slot as the 'source' sound
   # this sound owns the sample data
-  for i in 1 ..< MaxSounds:
-    soundArray[i] = loadSoundAlias(soundArray[0])
+  for i in 0 ..< MaxSounds:
+    soundArray[i] = loadSoundAlias(sound)
     # Load an alias of the sound into slots 1-9. These do not own the sound data, but can be played
   currentSound = 0 # Set the sound list to the start
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
@@ -52,7 +53,7 @@ proc main =
     # Update
     # ------------------------------------------------------------------------------------
     if isKeyPressed(Space):
-      playSound(soundArray[currentSound])
+      playSound(Sound(soundArray[currentSound]))
       # play the next open sound slot
       inc(currentSound)
       # increment the sound slot
@@ -63,13 +64,5 @@ proc main =
     drawText("Press SPACE to PLAY a WAV sound!", 200, 180, 20, LightGray)
     endDrawing()
     # ------------------------------------------------------------------------------------
-  # De-Initialization
-  # --------------------------------------------------------------------------------------
-  for i in 1 ..< MaxSounds:
-    unloadSoundAlias(soundArray[i])
-    wasMoved(soundArray[i])
-  # Unload sound aliases
-  reset(soundArray[0]) # Unload source sound data
-  # --------------------------------------------------------------------------------------
 
 main()
