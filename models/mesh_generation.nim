@@ -20,7 +20,6 @@ const
   NumModels = 9
 
 proc memAlloc(size: uint32): pointer {.importc: "MemAlloc".}
-proc memFree(`ptr`: pointer) {.importc: "MemFree".}
 
 proc genMeshCustom(): Mesh =
   # Generate a simple triangle mesh from code
@@ -52,7 +51,7 @@ proc genMeshCustom(): Mesh =
   result.normals[3] = 0
   result.normals[4] = 1
   result.normals[5] = 0
-  result.texcoords[2] = 0.5'f32
+  result.texcoords[2] = 0.5
   result.texcoords[3] = 1
 
   # Vertex at (2, 0, 0)
