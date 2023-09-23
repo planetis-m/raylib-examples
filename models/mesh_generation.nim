@@ -87,7 +87,7 @@ proc main =
   models[2] = loadModelFromMesh(genMeshSphere(2, 32, 32))
   models[3] = loadModelFromMesh(genMeshHemiSphere(2, 16, 16))
   models[4] = loadModelFromMesh(genMeshCylinder(1, 2, 16))
-  models[5] = loadModelFromMesh(genMeshTorus(0.25'f32, 4, 16, 32))
+  models[5] = loadModelFromMesh(genMeshTorus(0.25, 4, 16, 32))
   models[6] = loadModelFromMesh(genMeshKnot(1, 2, 16, 128))
   models[7] = loadModelFromMesh(genMeshPoly(5, 2))
   models[8] = loadModelFromMesh(genMeshCustom())
@@ -143,8 +143,8 @@ proc main =
     drawModel(models[currentModel], position, 1, White)
     drawGrid(10, 1)
     endMode3D()
-    drawRectangle(30, 400, 310, 30, fade(SkyBlue, 0.5'f32))
-    drawRectangleLines(30, 400, 310, 30, fade(DarkBlue, 0.5'f32))
+    drawRectangle(30, 400, 310, 30, fade(SkyBlue, 0.5))
+    drawRectangleLines(30, 400, 310, 30, fade(DarkBlue, 0.5))
     drawText("MOUSE LEFT BUTTON to CYCLE PROCEDURAL MODELS", 40, 410, 10, Blue)
     case currentModel
     of 0:
