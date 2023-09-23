@@ -23,7 +23,7 @@ proc memAlloc(size: uint32): pointer {.importc: "MemAlloc".}
 
 proc genMeshCustom(): Mesh =
   # Generate a simple triangle mesh from code
-  privateAccess(typeof(Mesh))
+  privateAccess(Mesh)
   result = Mesh()
   result.triangleCount = 1
   result.vertexCount = result.triangleCount*3
