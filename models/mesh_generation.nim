@@ -91,15 +91,15 @@ proc main =
   models[7] = loadModelFromMesh(genMeshPoly(5, 2))
   models[8] = loadModelFromMesh(genMeshCustom())
   # Generated meshes could be exported as .obj files
-  # exportMesh(models[0].meshes[0], "plane.obj")
-  # exportMesh(models[1].meshes[0], "cube.obj")
-  # exportMesh(models[2].meshes[0], "sphere.obj")
-  # exportMesh(models[3].meshes[0], "hemisphere.obj")
-  # exportMesh(models[4].meshes[0], "cylinder.obj")
-  # exportMesh(models[5].meshes[0], "torus.obj")
-  # exportMesh(models[6].meshes[0], "knot.obj")
-  # exportMesh(models[7].meshes[0], "poly.obj")
-  # exportMesh(models[8].meshes[0], "custom.obj")
+  # discard exportMesh(models[0].meshes[0], "plane.obj")
+  # discard exportMesh(models[1].meshes[0], "cube.obj")
+  # discard exportMesh(models[2].meshes[0], "sphere.obj")
+  # discard exportMesh(models[3].meshes[0], "hemisphere.obj")
+  # discard exportMesh(models[4].meshes[0], "cylinder.obj")
+  # discard exportMesh(models[5].meshes[0], "torus.obj")
+  # discard exportMesh(models[6].meshes[0], "knot.obj")
+  # discard exportMesh(models[7].meshes[0], "poly.obj")
+  # discard exportMesh(models[8].meshes[0], "custom.obj")
   # Set checked texture as default diffuse component for all models material
   for i in 0..<NumModels:
     models[i].materials[0].maps[MaterialMapIndex.Diffuse].texture = texture
