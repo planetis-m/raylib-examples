@@ -43,7 +43,7 @@ var
 
 proc drawCurve =
   if showCurve:
-    drawLineBezierCubic(startPosition, endPosition, startPositionTangent, endPositionTangent, 2, Blue)
+    drawSplineSegmentBezierCubic(startPosition, endPosition, startPositionTangent, endPositionTangent, 2, Blue)
   drawLine(startPosition, startPositionTangent, SkyBlue)
   drawLine(endPosition, endPositionTangent, Purple)
   let mouse = getMousePosition()

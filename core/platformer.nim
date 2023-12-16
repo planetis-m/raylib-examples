@@ -1,6 +1,6 @@
 # ****************************************************************************************
 #
-#   raylib [core] example - 2d camera platformer
+#   raylib [core] example - 2D camera platformer
 #
 #   This example has been created using raylib 2.5 (www.raylib.com)
 #   raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
