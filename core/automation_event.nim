@@ -11,7 +11,6 @@
 #   Copyright (c) 2023 Ramon Santamaria (@raysan5)
 #   Converted in 2023 by Antonis Geralis (@planetis-m)
 #
-#
 # ****************************************************************************************
 
 import std/[lenientops, strformat], raylib, raymath
@@ -136,7 +135,17 @@ proc main =
 
   var frameCounter: uint32 = 0
   var playFrameCounter: uint32 = 0
-  var currentPlayFrame: uint32 = 0
+  var currentPlayFrame = 0
+
+  template resetScene() =
+    player.position = Vector2(x: 400, y: 280)
+    player.speed = 0
+    player.canJump = false
+
+    camera.target = player.position
+    camera.offset = Vector2(x: screenWidth/2'f32, y: screenHeight/2'f32)
+    camera.rotation = 0
+    camera.zoom = 1
 
   setTargetFPS(60)
   # Main game loop
@@ -159,15 +168,7 @@ proc main =
         eventPlaying = true
         playFrameCounter = 0
         currentPlayFrame = 0
-
-        player.position = Vector2(x: 400, y: 280)
-        player.speed = 0
-        player.canJump = false
-
-        camera.target = player.position
-        camera.offset = Vector2(x: screenWidth/2'f32, y: screenHeight/2'f32)
-        camera.rotation = 0
-        camera.zoom = 1
+        resetScene()
 
     updatePlayer(player, envItems, deltaTime)
     camera.zoom += getMouseWheelMove()*0.05'f32
@@ -176,15 +177,8 @@ proc main =
     elif camera.zoom < 0.25'f32:
       camera.zoom = 0.25
     if isKeyPressed(R):
-      # Reset game state
-      player.position = Vector2(x: 400, y: 280)
-      player.speed = 0
-      player.canJump = false
-
-      camera.target = player.position
-      camera.offset = Vector2(x: screenWidth/2'f32, y: screenHeight/2'f32)
-      camera.rotation = 0
-      camera.zoom = 1
+      # Reset game tate
+      resetScene()
 
     # Call update camera function
     updateCamera(camera, player, envItems,
@@ -198,36 +192,29 @@ proc main =
           stopAutomationEventRecording()
           eventRecording = false
           discard exportAutomationEventList(aelist, "automation.rae")
-          traceLog(Info, &"RECORDED FRAMES: {aelist.count}")
+          traceLog(Info, &"RECORDED FRAMES: {aelist.len}")
         else:
           setAutomationEventBaseFrame(180)
           startAutomationEventRecording()
           eventRecording = true
     elif isKeyPressed(A):
-      if not eventRecording and aelist.count > 0:
+      if not eventRecording and aelist.len > 0:
         # Reset scene state to play
         eventPlaying = true
         playFrameCounter = 0
         currentPlayFrame = 0
+        resetScene()
 
-        player.position = Vector2(x: 400, y: 280)
-        player.speed = 0
-        player.canJump = false
-
-        camera.target = player.position
-        camera.offset = Vector2(x: screenWidth/2'f32, y: screenHeight/2'f32)
-        camera.rotation = 0
-        camera.zoom = 1
     if eventPlaying:
       # NOTE: Multiple events could be executed in a single frame
-      while playFrameCounter == aelist.events[currentPlayFrame].frame:
+      while playFrameCounter == aelist[currentPlayFrame].frame:
         traceLog(Info, "PLAYING: PlayFrameCount: %i | currentPlayFrame: %i | Event Frame: %i, param: %i",
                  playFrameCounter, currentPlayFrame,
-                 aelist.events[currentPlayFrame].frame,
-                 aelist.events[currentPlayFrame].params[0])
-        playAutomationEvent(aelist.events[currentPlayFrame])
+                 aelist[currentPlayFrame].frame,
+                 aelist[currentPlayFrame].params[0])
+        playAutomationEvent(aelist[currentPlayFrame])
         inc(currentPlayFrame)
-        if currentPlayFrame == aelist.count:
+        if currentPlayFrame == aelist.len:
           eventPlaying = false
           currentPlayFrame = 0
           playFrameCounter = 0
@@ -271,7 +258,7 @@ proc main =
       drawRectangleLines(10, 160, 290, 30, fade(Maroon, 0.8))
       drawCircle(30, 175, 10, Maroon)
       if (frameCounter div 15) mod 2 == 1:
-        drawText(&"RECORDING EVENTS... [{aelist.count}]", 50, 170, 10, Maroon)
+        drawText(&"RECORDING EVENTS... [{aelist.len}]", 50, 170, 10, Maroon)
     elif eventPlaying:
       drawRectangle(10, 160, 290, 30, fade(Lime, 0.3))
       drawRectangleLines(10, 160, 290, 30, fade(DarkGreen, 0.8))

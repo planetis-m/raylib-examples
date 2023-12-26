@@ -72,10 +72,14 @@ proc updateLight(shader: Shader; light: Light) =
   setShaderValue(shader, light.enabledLoc, light.enabled)
   setShaderValue(shader, light.typeLoc, light.kind)
   # Send to shader light position values
-  var position: array[3, float32] = [light.position.x, light.position.y, light.position.z]
+  var position: array[3, float32] = [
+    light.position.x, light.position.y, light.position.z
+  ]
   setShaderValue(shader, light.positionLoc, position)
   # Send to shader light target position values
-  var target: array[3, float32] = [light.target.x, light.target.y, light.target.z]
+  var target: array[3, float32] = [
+    light.target.x, light.target.y, light.target.z
+  ]
   setShaderValue(shader, light.targetLoc, target)
   setShaderValue(shader, light.colorLoc, light.color)
   setShaderValue(shader, light.intensityLoc, light.intensity)
@@ -272,13 +276,11 @@ proc main =
   # --------------------------------------------------------------------------------------
   # Unbind (disconnect) shader from car.material[0]
   # to avoid UnloadMaterial() trying to unload it automatically
-  car.materials[0].shader = Shader()
-  reset(car.materials[0])
-  car.materials[0].maps = MaterialMapsPtr(nil)
+  # wasMoved(car.materials[0].shader)
+  # reset(car.materials[0])
 
-  floor.materials[0].shader = Shader()
-  reset(floor.materials[0])
-  floor.materials[0].maps = MaterialMapsPtr(nil)
+  # wasMoved(floor.materials[0].shader)
+  # reset(floor.materials[0])
   # --------------------------------------------------------------------------------------
 
 main()
