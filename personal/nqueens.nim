@@ -72,15 +72,13 @@ proc main =
   # Initialization
   # --------------------------------------------------------------------------------------
   initWindow(screenSize, screenSize, "raylib example - 8 queens puzzle")
-  defer: closeWindow() # Close window and OpenGL context
-
   let queenPiece = loadTexture("resources/wQ.png")
   var queens = initQueens()
   var solutions: seq[QueensArr] = @[]
   queens.solve(0, solutions)
+  setTargetFPS(60)
   # --------------------------------------------------------------------------------------
   # Main game loop
-  setTargetFPS(60)
   var index = 0
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
@@ -105,5 +103,8 @@ proc main =
     drawText("Press ENTER to continue", 15, 570, 20, Black)
     endDrawing()
     # ------------------------------------------------------------------------------------
+  # De-Initialization
+  # --------------------------------------------------------------------------------------
+  closeWindow() # Close window and OpenGL context
 
 main()

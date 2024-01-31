@@ -52,6 +52,7 @@ proc updatePlayer(player: var Player, envItems: openArray[EnvItem],
       hitObstacle = true
       player.speed = 0
       player.position.y = ei.rect.y
+      break
   if not hitObstacle:
     player.position.y += player.speed * delta
     player.speed += G * delta
@@ -246,6 +247,7 @@ proc main =
       height: 40
     )
     drawRectangle(playerRect, Red)
+    drawCircle(player.position.x.int32, player.position.y.int32, 5, Gold)
     endMode2D()
 
     drawText("Controls:", 20, 20, 10, Black)
