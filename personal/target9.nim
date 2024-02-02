@@ -105,7 +105,7 @@ proc handleInput() =
   if isKeyPressed(U):
     undoMove()
 
-proc drawBoxedText(text: string, rect: Rectangle, fontSize: int32, fgcolor: Color) =
+proc drawBoxedText(text: string, rect: Rectangle, fontSize: int32, fgColor: Color) =
   # Center text within a given rectangle
   let font = getFontDefault()
   let spacing = ceil(fontSize / 20'f32)
@@ -113,8 +113,9 @@ proc drawBoxedText(text: string, rect: Rectangle, fontSize: int32, fgcolor: Colo
   # Calculate centered position for text
   let pos = Vector2(
     x: rect.x + (rect.width - textSize.x) / 2,
-    y: rect.y + (rect.height - textSize.y) / 2)
-  drawText(font, text, pos, fontSize.float32, spacing, fgcolor)
+    y: rect.y + (rect.height - textSize.y) / 2
+  )
+  drawText(font, text, pos, fontSize.float32, spacing, fgColor)
 
 proc getTileRec(row, col: int32): Rectangle =
   # Calculate the rectangle for a specific tile
@@ -169,7 +170,7 @@ proc main() =
           getScreenHeight() div 2 - 20, 40, Green)
     else:
       drawText(&"Moves: {moves}", 10, 10, 20, DarkGray)
-    drawText(&"Press U to undo last move", 10, 420, 20, DarkGray)
+    drawText("Press U to undo last move", 10, 420, 20, DarkGray)
     endDrawing()
     # ------------------------------------------------------------------------------------
   # De-Initialization
