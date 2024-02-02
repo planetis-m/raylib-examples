@@ -15,7 +15,6 @@ const
 
 type
   Grid = array[TileCount, array[TileCount, int]] # Type for representing the grid of tiles
-
   Move = object
     row, col: int32
 
@@ -64,6 +63,13 @@ proc undoMove =
         grid[move.row][j] = (grid[move.row][j] + 9) mod 10
     dec moves # Update move count
 
+proc increaseRowAndColumn(row, col: int32) =
+  # Increment clicked tile and surrounding cells
+  for i in 0..<TileCount:
+    grid[i][col] = (grid[i][col] + 1) mod 10
+    if i != col:
+      grid[row][i] = (grid[row][i] + 1) mod 10
+
 proc handleInput() =
   # Handle mouse input and update game state accordingly
   if isMouseButtonPressed(Left):
@@ -80,12 +86,9 @@ proc handleInput() =
           selectedCol >= 0 and selectedCol < TileCount:
         # Save the current state before making a move
         pushMove(undoStack, selectedRow, selectedCol)
-        # Increment clicked tile and surrounding cells
-        for i in 0..<TileCount:
-          grid[i][selectedCol] = (grid[i][selectedCol] + 1) mod 10
-          if i != selectedCol:
-            grid[selectedRow][i] = (grid[selectedRow][i] + 1) mod 10
+        increaseRowAndColumn(selectedRow, selectedCol)
         inc moves # Update move count
+  # Check for undo command
   if isKeyPressed(U):
     undoMove()
 
@@ -110,13 +113,13 @@ proc getTileRec(row, col: int32): Rectangle =
 
 proc drawTilesGrid() =
   # Draw the grid of tiles and game elements
-  drawRectangle(TilemapOffset.x.int32, TilemapOffset.y.int32, TilemapWidth, TilemapWidth, DarkBlue)
+  drawRectangle(TilemapOffset.x.int32, TilemapOffset.y.int32, TilemapWidth, TilemapWidth, DarkBrown)
   for row in 0..<TileCount:
     for col in 0..<TileCount:
       # Apply different colors based on tile selection state
-      let tileColor = if row == selectedRow and col == selectedCol: fade(Blue, 0.8)
-                      elif row == selectedRow or col == selectedCol: fade(Blue, 0.4)
-                      else: fade(Blue, 0.1)
+      let tileColor = if row == selectedRow and col == selectedCol: fade(Brown, 0.8)
+                      elif row == selectedRow or col == selectedCol: fade(Brown, 0.4)
+                      else: fade(Brown, 0.1)
 
       drawRectangle(getTileRec(row.int32, col.int32), tileColor)
       # Draw text in each cell
@@ -141,10 +144,12 @@ proc main() =
     drawTilesGrid()
 
     if gameOver:
-      drawText("You Win!", getScreenWidth() div 2 - 80, getScreenHeight() div 2 - 20, 40, Green)
+      drawText("You Win!", getScreenWidth() div 2 - measureText("You Win!", 40) div 2,
+          getScreenHeight() div 2 - 20, 40, Green)
     else:
-      drawText(&"Moves: {moves}", 5, 5, 20, Black)
+      drawText(&"Moves: {moves}", 10, 10, 20, DarkGray)
 
+    drawText(&"Press U to undo last move", 10, 420, 20, DarkGray)
     endDrawing()
 
   closeWindow()
