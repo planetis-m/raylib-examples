@@ -16,8 +16,12 @@ const
 type
   Grid = array[TileCount, array[TileCount, int]] # Type for representing the grid of tiles
 
+  Move = object
+    row, col: int32
+
 var
   grid: Grid
+  undoStack: seq[Move]
   selectedRow, selectedCol: int32 = -1
   moves: int32 = 0 # Count player moves
   gameOver = false
@@ -46,9 +50,23 @@ proc checkWin(): bool =
         return false
   return true
 
+proc pushMove(stack: var seq[Move], row, col: int32) =
+  stack.add(Move(row: row, col: col))
+
+proc undoMove =
+  if undoStack.len > 0:
+    let move = undoStack.pop()
+    # Decrement chosen tile and surrounding cells
+    for i in 0..<TileCount:
+      grid[i][move.col] = (grid[i][move.col] + 9) mod 10
+    for j in 0..<TileCount:
+      if j != move.col:
+        grid[move.row][j] = (grid[move.row][j] + 9) mod 10
+    dec moves # Update move count
+
 proc handleInput() =
   # Handle mouse input and update game state accordingly
-  if isMouseButtonPressed(Left) and not gameOver:
+  if isMouseButtonPressed(Left):
     # Get mouse position relative to tilemap area
     let mousePos = getMousePosition() - TilemapOffset
     # Check if mouse is within tilemap bounds
@@ -60,12 +78,16 @@ proc handleInput() =
       # Ensure clicked tile is within grid bounds
       if selectedRow >= 0 and selectedRow < TileCount and
           selectedCol >= 0 and selectedCol < TileCount:
+        # Save the current state before making a move
+        pushMove(undoStack, selectedRow, selectedCol)
         # Increment clicked tile and surrounding cells
         for i in 0..<TileCount:
           grid[i][selectedCol] = (grid[i][selectedCol] + 1) mod 10
           if i != selectedCol:
             grid[selectedRow][i] = (grid[selectedRow][i] + 1) mod 10
         inc moves # Update move count
+  if isKeyPressed(U):
+    undoMove()
 
 proc drawBoxedText(text: string, rect: Rectangle, fontSize: int32, fgcolor: Color) =
   # Center text within a given rectangle
@@ -88,13 +110,13 @@ proc getTileRec(row, col: int32): Rectangle =
 
 proc drawTilesGrid() =
   # Draw the grid of tiles and game elements
-  drawRectangle(TilemapOffset.x.int32, TilemapOffset.y.int32, TilemapWidth, TilemapWidth, DarkBrown)
+  drawRectangle(TilemapOffset.x.int32, TilemapOffset.y.int32, TilemapWidth, TilemapWidth, DarkBlue)
   for row in 0..<TileCount:
     for col in 0..<TileCount:
       # Apply different colors based on tile selection state
-      let tileColor = if row == selectedRow and col == selectedCol: fade(Brown, 0.4)
-                      elif row == selectedRow or col == selectedCol: fade(Brown, 0.2)
-                      else: fade(Brown, 0.1)
+      let tileColor = if row == selectedRow and col == selectedCol: fade(Blue, 0.8)
+                      elif row == selectedRow or col == selectedCol: fade(Blue, 0.4)
+                      else: fade(Blue, 0.1)
 
       drawRectangle(getTileRec(row.int32, col.int32), tileColor)
       # Draw text in each cell
@@ -111,8 +133,7 @@ proc main() =
     # Handle mouse input and logic
     handleInput()
     # Check for win condition
-    if checkWin():
-      gameOver = true
+    gameOver = checkWin()
 
     beginDrawing()
     clearBackground(RayWhite)

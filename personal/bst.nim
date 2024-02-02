@@ -64,7 +64,7 @@ proc main =
   # Initialization
   # --------------------------------------------------------------------------------------
   # Set up the raylib window
-  # setConfigFlags(flags(Msaa4xHint))
+  setConfigFlags(flags(Msaa4xHint))
   initWindow(screenWidth, screenHeight, "raylib [core] example - binary search tree")
   randomize()
   # Create the binary search tree and insert some nodes
@@ -90,7 +90,7 @@ proc main =
     clearBackground(RayWhite)
     drawText("Press SPACE to insert a new node", 10, 10, 20, DarkGray)
     # Draw the binary search tree
-    drawNode(root, screenWidth div 2, 50, 20, 1, screenWidth div 4, 80)
+    drawNode(root, screenWidth div 2, 40, 20, 1, screenWidth div 4, 80)
     endDrawing()
     # ------------------------------------------------------------------------------------
   # De-Initialization
