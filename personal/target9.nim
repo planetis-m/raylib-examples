@@ -1,3 +1,16 @@
+# ****************************************************************************************
+#
+#   naylib example - target 9 puzzle game
+#
+#   Example originally created with naylib 5.1
+#
+#   Example licensed under an unmodified zlib/libpng license, which is an OSI-certified,
+#   BSD-like license that allows static linking with closed source software
+#
+#   Copyright (c) 2024 Antonis Geralis (@planetis-m)
+#
+# ****************************************************************************************
+
 import raylib, raymath, std/[strformat, math, lenientops, random]
 
 const
@@ -120,38 +133,47 @@ proc drawTilesGrid() =
       let tileColor = if row == selectedRow and col == selectedCol: fade(Brown, 0.8)
                       elif row == selectedRow or col == selectedCol: fade(Brown, 0.4)
                       else: fade(Brown, 0.1)
-
       drawRectangle(getTileRec(row.int32, col.int32), tileColor)
       # Draw text in each cell
       drawBoxedText($grid[row][col], getTileRec(row.int32, col.int32), 40, LightGray)
 
-proc main() =
-  # Initialize graphics and window
-  initWindow(screenWidth, screenHeight, "Target 9")
-  setTargetFPS(60)
-  # Initialize game state
-  randomize()
-  initGame()
-  while not windowShouldClose():
-    # Handle mouse input and logic
-    handleInput()
-    # Check for win condition
-    gameOver = checkWin()
+# ----------------------------------------------------------------------------------------
+# Program main entry point
+# ----------------------------------------------------------------------------------------
 
+proc main() =
+  # Initialization
+  # --------------------------------------------------------------------------------------
+  # Set up the raylib window
+  initWindow(screenWidth, screenHeight, "Target 9")
+  randomize()
+  # Initialize game state
+  initGame()
+  setTargetFPS(60)
+  # --------------------------------------------------------------------------------------
+  # Main game loop
+  while not windowShouldClose():
+    # Update
+    # ------------------------------------------------------------------------------------
+    handleInput() # Handle mouse input and logic
+    gameOver = checkWin() # Check for win condition
+    # ------------------------------------------------------------------------------------
+    # Draw
+    # ------------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(RayWhite)
     # Draw the grid and game elements
     drawTilesGrid()
-
     if gameOver:
       drawText("You Win!", getScreenWidth() div 2 - measureText("You Win!", 40) div 2,
           getScreenHeight() div 2 - 20, 40, Green)
     else:
       drawText(&"Moves: {moves}", 10, 10, 20, DarkGray)
-
     drawText(&"Press U to undo last move", 10, 420, 20, DarkGray)
     endDrawing()
-
-  closeWindow()
+    # ------------------------------------------------------------------------------------
+  # De-Initialization
+  # --------------------------------------------------------------------------------------
+  closeWindow() # Close window and OpenGL context
 
 main()
