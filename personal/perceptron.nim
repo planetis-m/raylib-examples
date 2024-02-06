@@ -14,7 +14,7 @@
 #
 # ****************************************************************************************
 
-import raylib, rlgl, std/[random, math, strformat]
+import raylib, rlgl, std/random
 
 const
   screenWidth = 800
@@ -74,8 +74,6 @@ proc main =
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # --------------------------------------------------------------------------------------
   # Main game loop
-  var sse: float32 = 0
-  var prevMse: float32 = 1000
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # ------------------------------------------------------------------------------------
@@ -87,13 +85,6 @@ proc main =
     perceptron.train(training[count], desired)
     # For animation, train one point at a time
     count = (count + 1) mod NumPoints
-    # Calculate the sum of squared errors
-    var sum = 0'f32
-    for i in 0 ..< 3:
-      sum += training[count][i] * perceptron.weights[i]
-    let error = desired.float32 - sum
-    if count == 0: sse = 0
-    sse += pow(error, 2)
     # ------------------------------------------------------------------------------------
     # Draw
     # ------------------------------------------------------------------------------------
@@ -101,14 +92,14 @@ proc main =
       clearBackground(RayWhite)
       # Reorient the canvas to match a traditional Cartesian plane
       mode2D(camera):
-        # # Cull the front-facing triangles to flip the y-axis of the camera
-        # setCullFace(FaceFront)
-        # # Save the current transformation matrix on a stack
-        # pushMatrix()
-        # # Translate the origin to the center of the screen
-        # translatef(screenWidth/2'f32, screenHeight/2'f32, 0)
-        # # Flip the y-axis by scaling it by -1.0
-        # scalef(1, -1, 1)
+        # Cull the front-facing triangles to flip the y-axis of the camera
+        setCullFace(FaceFront)
+        # Save the current transformation matrix on a stack
+        pushMatrix()
+        # Translate the origin to the center of the screen
+        translatef(screenWidth/2'f32, screenHeight/2'f32, 0)
+        # Flip the y-axis by scaling it by -1.0
+        scalef(1, -1, 1)
         # Draw the line
         drawLine(Vector2(x: -screenWidth/2'f32, y: f(-screenWidth/2'f32)),
             Vector2(x: screenWidth/2'f32, y: f(screenWidth/2'f32)), 2, Black)
@@ -118,16 +109,7 @@ proc main =
           let (x, y) = (dataPoint[0].int32, dataPoint[1].int32)
           drawCircle(x, y, 6, DarkGray)
           drawCircle(x, y, 4, if guess > 0: LightGray else: White)
-        # popMatrix()
-        # Draw the mean squared error
-        let mse = sse / (if count == 0: NumPoints else: count)
-        drawText(&"MSE: {mse:.3f}", screenWidth - 140, 10, 20, Black)
-        # Compare the current MSE with the previous MSE
-        if mse < prevMse:
-          drawText("Error is decreasing", 10, 10, 20, Green)
-        else:
-          drawText("Error is increasing", 10, 10, 20, Red)
-        prevMse = mse # Update the previous MSE
+        popMatrix()
     # ------------------------------------------------------------------------------------
   # De-Initialization
   # --------------------------------------------------------------------------------------
