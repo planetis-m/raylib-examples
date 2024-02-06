@@ -59,11 +59,13 @@ proc main =
   # Initialization
   # --------------------------------------------------------------------------------------
   # Set up the raylib window
+  setConfigFlags(flags(Msaa4xHint))
   initWindow(screenWidth, screenHeight, "raylib - perceptron")
   let camera = Camera2D(
     offset: Vector2(x: screenWidth div 2, y: screenHeight div 2),
     zoom: -1
   )
+  randomize()
   var perceptron = initPerceptron(0.0001) # The perceptron with a learning rate of 0.0001
   var training: array[NumPoints, array[3, float32]] # An array for training data
   var count: int32 = 0 # A counter to track training data points one by one
@@ -100,10 +102,9 @@ proc main =
         # Draw all the points and color according to the output of the perceptron
         for dataPoint in training.items:
           let guess = perceptron.feedForward(dataPoint)
-          if guess > 0:
-            drawCircle(dataPoint[0].int32, dataPoint[1].int32, 4, LightGray)
-          else:
-            drawCircle(dataPoint[0].int32, dataPoint[1].int32, 4, White)
+          let pos = Vector2(x: dataPoint[0], y: dataPoint[1])
+          drawCircle(pos, 6, DarkGray)
+          drawCircle(pos, 4, if guess > 0: LightGray else: White)
     # ------------------------------------------------------------------------------------
   # De-Initialization
   # --------------------------------------------------------------------------------------
