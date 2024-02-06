@@ -63,11 +63,15 @@ proc checkWin(): bool =
   return true
 
 proc pushMove(stack: var seq[Move], row, col: int32) =
+  selectedRow = row
+  selectedCol = col
   stack.add(Move(row: row, col: col))
 
 proc undoMove =
   if undoStack.len > 0:
     let move = undoStack.pop()
+    selectedRow = move.row
+    selectedCol = move.col
     # Decrement chosen tile and surrounding cells
     for i in 0..<TileCount:
       grid[i][move.col] = (grid[i][move.col] + 9) mod 10
@@ -83,24 +87,38 @@ proc increaseRowAndColumn(row, col: int32) =
     if i != col:
       grid[row][i] = (grid[row][i] + 1) mod 10
 
+proc getTileRec(row, col: int32): Rectangle =
+  # Calculate the rectangle for a specific tile
+  result = Rectangle(
+    x: TilemapOffset.x + (col + 1) * TileSpacing + col * TileWidth,
+    y: TilemapOffset.y + (row + 1) * TileSpacing + row * TileWidth,
+    width: TileWidth, height: TileWidth
+  )
+
 proc handleInput() =
   # Handle mouse input and update game state accordingly
   if isMouseButtonPressed(Left):
     # Get mouse position relative to tilemap area
-    let mousePos = getMousePosition() - TilemapOffset
+    let mousePos = getMousePosition()
     # Check if mouse is within tilemap bounds
-    if mousePos.x >= 0 and mousePos.x < TilemapWidth and
-        mousePos.y >= 0 and mousePos.y < TilemapWidth:
-      # Calculate row and column of clicked tile
-      selectedRow = int32(mousePos.y / (TileWidth + TileSpacing))
-      selectedCol = int32(mousePos.x / (TileWidth + TileSpacing))
-      # Ensure clicked tile is within grid bounds
-      if selectedRow >= 0 and selectedRow < TileCount and
-          selectedCol >= 0 and selectedCol < TileCount:
-        # Save the current state before making a move
-        pushMove(undoStack, selectedRow, selectedCol)
-        increaseRowAndColumn(selectedRow, selectedCol)
-        inc moves # Update move count
+    const GridRec = Rectangle(
+      x: TilemapOffset.x, y: TilemapOffset.y,
+      width: TilemapWidth, height: TilemapWidth
+    )
+    if checkCollisionPointRec(mousePos, GridRec):
+      # Loop through each tile in the grid
+      block outer:
+        for row in 0..<TileCount:
+          for col in 0..<TileCount:
+            # Get the rectangle for the current tile
+            let tileRec = getTileRec(row.int32, col.int32)
+            # Check if mouse is within the tile rectangle
+            if checkCollisionPointRec(mousePos, tileRec):
+              # Save the current state before making a move
+              pushMove(undoStack, row.int32, col.int32)
+              increaseRowAndColumn(row.int32, col.int32)
+              inc moves # Update move count
+              break outer
   # Check for undo command
   if isKeyPressed(U):
     undoMove()
@@ -116,14 +134,6 @@ proc drawBoxedText(text: string, rect: Rectangle, fontSize: int32, fgColor: Colo
     y: rect.y + (rect.height - textSize.y) / 2
   )
   drawText(font, text, pos, fontSize.float32, spacing, fgColor)
-
-proc getTileRec(row, col: int32): Rectangle =
-  # Calculate the rectangle for a specific tile
-  result = Rectangle(
-    x: TilemapOffset.x + (col + 1) * TileSpacing + col * TileWidth,
-    y: TilemapOffset.y + (row + 1) * TileSpacing + row * TileWidth,
-    width: TileWidth, height: TileWidth
-  )
 
 proc drawTilesGrid() =
   # Draw the grid of tiles and game elements
