@@ -65,7 +65,7 @@ proc main =
   # --------------------------------------------------------------------------------------
   # Set up the raylib window
   setConfigFlags(flags(Msaa4xHint))
-  initWindow(screenWidth, screenHeight, "raylib [core] example - binary search tree")
+  initWindow(screenWidth, screenHeight, "raylib example - binary search tree")
   randomize()
   # Create the binary search tree and insert some nodes
   var root: Node = nil

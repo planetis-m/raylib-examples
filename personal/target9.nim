@@ -156,7 +156,7 @@ proc main() =
   # Initialization
   # --------------------------------------------------------------------------------------
   # Set up the raylib window
-  initWindow(screenWidth, screenHeight, "Target 9")
+  initWindow(screenWidth, screenHeight, "rayilb example - target 9 puzzle")
   randomize()
   # Initialize game state
   initGame()
