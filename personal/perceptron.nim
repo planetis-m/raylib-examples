@@ -14,7 +14,7 @@
 #
 # ****************************************************************************************
 
-import raylib, std/random
+import raylib, rlgl, std/random
 
 const
   screenWidth = 800
@@ -62,8 +62,9 @@ proc main =
   setConfigFlags(flags(Msaa4xHint))
   initWindow(screenWidth, screenHeight, "raylib - perceptron")
   let camera = Camera2D(
-    offset: Vector2(x: screenWidth div 2, y: screenHeight div 2),
-    zoom: -1
+    # Move the origin to the center of the screen
+    offset: Vector2(x: screenWidth/2'f32, y: screenHeight/2'f32),
+    zoom: -1 # Flip both axis
   )
   randomize()
   var perceptron = initPerceptron(0.0001) # The perceptron with a learning rate of 0.0001
@@ -96,6 +97,11 @@ proc main =
       clearBackground(RayWhite)
       # Reorient the canvas to match a traditional Cartesian plane
       mode2D(camera):
+        # pushMatrix()
+        # # Translate the origin to the center of the screen
+        # translatef(screenWidth/2'f32, screenHeight/2'f32, 0)
+        # # Flip the y-axis by scaling it by -1.0
+        # scalef(1, -1, 1)
         # Draw the line
         drawLine(Vector2(x: -screenWidth/2'f32, y: f(-screenWidth/2'f32)),
             Vector2(x: screenWidth/2'f32, y: f(screenWidth/2'f32)), 2, Black)
@@ -105,6 +111,7 @@ proc main =
           let pos = Vector2(x: dataPoint[0], y: dataPoint[1])
           drawCircle(pos, 6, DarkGray)
           drawCircle(pos, 4, if guess > 0: LightGray else: White)
+        # popMatrix()
     # ------------------------------------------------------------------------------------
   # De-Initialization
   # --------------------------------------------------------------------------------------
