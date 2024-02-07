@@ -14,7 +14,7 @@
 #
 # ****************************************************************************************
 
-import raylib, rlgl, std/random
+import raylib, rlgl, std/random, os
 
 const
   screenWidth = 800
@@ -71,7 +71,7 @@ proc main =
     let x = rand(-screenWidth/2'f32..screenWidth/2'f32)
     let y = rand(-screenHeight/2'f32..screenHeight/2'f32)
     training[i] = [x, y, 1]
-  setTargetFPS(60) # Set our game to run at 60 frames-per-second
+  setTargetFPS(25) # Set our game to run at 25 frames-per-second
   # --------------------------------------------------------------------------------------
   # Main game loop
   while not windowShouldClose(): # Detect window close button or ESC key

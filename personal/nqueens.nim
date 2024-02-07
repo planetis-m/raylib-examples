@@ -29,6 +29,7 @@ type
 proc initQueens(): Queens =
   # The Queens object is set up as an empty configuration on a chessboard with N
   # cells in each row and column.
+  result = Queens()
   for i in 0..<N:
     result.queenInRow[i] = -1
     result.colFree[i] = true
