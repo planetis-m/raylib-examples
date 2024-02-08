@@ -1,8 +1,8 @@
-import raylib, std/[heapqueue, sets, hashes, math, random]
+import raylib, std/[heapqueue, sets, hashes, math, random, lenientops]
 
 const
   Rows = 50
-  Cols = 50
+  Cols = 25
 
   CellSize = 20
   WallChance = 4
@@ -12,6 +12,8 @@ const
 
   bgColor = Color(r: 45, g: 197, b: 244, a: 255)
   wlColor = Color(r: 112, g: 50, b: 126, a: 255)
+  frColor = Color(r: 240, g: 99, b: 164, a: 255)
+  dsColor = Color(r: 236, g: 1, b: 90, a: 255)
 
 type
   SpotIdx = distinct int32
@@ -51,25 +53,29 @@ proc heuristic(a, b: Spot): float32 =
 
 iterator neighbours(spot: Spot): SpotIdx =
   # Iterator to get the neighbours of a spot
-  if spot.i < Cols - 1:
+  if spot.i < Rows - 1:
     yield indexAt(spot.i + 1, spot.j)
   if spot.i > 0:
     yield indexAt(spot.i - 1, spot.j)
-  if spot.j < Rows - 1:
+  if spot.j < Cols - 1:
     yield indexAt(spot.i, spot.j + 1)
   if spot.j > 0:
     yield indexAt(spot.i, spot.j - 1)
   if spot.i > 0 and spot.j > 0:
     yield indexAt(spot.i - 1, spot.j - 1)
-  if spot.i < Cols - 1 and spot.j > 0:
+  if spot.i < Rows - 1 and spot.j > 0:
     yield indexAt(spot.i + 1, spot.j - 1)
-  if spot.i > 0 and spot.j < Rows - 1:
+  if spot.i > 0 and spot.j < Cols - 1:
     yield indexAt(spot.i - 1, spot.j + 1)
-  if spot.i < Cols - 1 and spot.j < Rows - 1:
+  if spot.i < Rows - 1 and spot.j < Cols - 1:
     yield indexAt(spot.i + 1, spot.j + 1)
 
 proc drawSpot(spot: Spot, col: Color) =
-  drawRectangle(spot.i*CellSize, spot.j*CellSize, CellSize - 1, CellSize - 1, col)
+  drawRectangle(spot.i*CellSize, spot.j*CellSize, CellSize - 4, CellSize - 4, col)
+
+proc drawWall(spot: Spot) =
+  drawCircle(Vector2(x: spot.i*CellSize + CellSize/2'f32, y: spot.j*CellSize + CellSize/2'f32),
+      CellSize/4'f32, wlColor)
 
 # ----------------------------------------------------------------------------------------
 # Program main entry point
@@ -99,7 +105,8 @@ proc main =
   frontier.push(FirstIdx)
   var discovered: HashSet[SpotIdx]
 
-  var current: SpotIdx
+  var currentIdx = InvalidIdx
+  var path: seq[Vector2] = @[] # use Vector2 type for the path
   setTargetFPS(25) # Set our game to run at 25 frames-per-second
   # --------------------------------------------------------------------------------------
   # Main game loop
@@ -107,18 +114,19 @@ proc main =
     # Update
     # ------------------------------------------------------------------------------------
     if frontier.len > 0 and not pathFound:
-      current = frontier.pop()
-      discovered.incl(current)
-      if current == LastIdx:
+      currentIdx = frontier.pop()
+      discovered.incl(currentIdx)
+      if currentIdx == LastIdx:
         pathFound = true
       else:
-        for neighborIdx in neighbours(grid[current]):
+        template current: untyped = grid[currentIdx]
+        for neighborIdx in neighbours(current):
           template neighbor: untyped = grid[neighborIdx]
-          if indexAt(neighbor.i, neighbor.j) notin discovered and not neighbor.wall:
-            let tempG = grid[current].g + heuristic(neighbor, grid[current])
+          if neighborIdx notin discovered and not neighbor.wall:
+            let tempG = current.g + heuristic(neighbor, current)
             # Is this a better path than before?
             var newPath = false;
-            if find(frontier, neighborIdx) >= 0:
+            if neighborIdx in frontier:
               if tempG < neighbor.g:
                 neighbor.g = tempG
                 newPath = true
@@ -129,9 +137,16 @@ proc main =
             # Yes, it's a better path
             if newPath:
               neighbor.f = neighbor.g + heuristic(neighbor, grid[LastIdx])
-              neighbor.previous = current
-    elif not pathFound:
-      echo "no solution"
+              neighbor.previous = currentIdx
+      path.setLen(0)
+      var tempIdx = currentIdx
+      while tempIdx != InvalidIdx:
+        template temp: untyped = grid[tempIdx]
+        path.add(Vector2(
+          x: temp.i*CellSize + CellSize/2'f32,
+          y: temp.j*CellSize + CellSize/2'f32)
+        )
+        tempIdx = temp.previous
     # ------------------------------------------------------------------------------------
     # Draw
     # ------------------------------------------------------------------------------------
@@ -139,21 +154,11 @@ proc main =
       clearBackground(bgColor)
       for i in FirstIdx.int32..LastIdx.int32:
         let spot = grid[SpotIdx(i)]
-        if spot.wall:
-          drawCircle(spot.i*CellSize + CellSize div 2, spot.j*CellSize + CellSize div 2,
-              CellSize/4'f32, wlColor)
+        if spot.wall: drawWall(spot)
       for i in 0..<len(frontier):
-        drawSpot(grid[frontier[i]], Color(r: 240, g: 99, b: 164, a: 255))
+        drawSpot(grid[frontier[i]], frColor)
       for i in items(discovered):
-        drawSpot(grid[i], Color(r: 236, g: 1, b: 90, a: 255))
-      var temp = current
-      var path: seq[Vector2] # use Vector2 type for the path
-      while temp != InvalidIdx:
-        path.add(Vector2(
-          x: grid[temp].i.float32*CellSize + CellSize/2'f32,
-          y: grid[temp].j.float32*CellSize + CellSize/2'f32)
-        )
-        temp = grid[temp].previous
+        drawSpot(grid[i], dsColor)
       # draw the path as a continuous line
       drawSplineLinear(path, CellSize/2'f32, Color(r: 252, g: 238, b: 33, a: 255))
     # ------------------------------------------------------------------------------------
