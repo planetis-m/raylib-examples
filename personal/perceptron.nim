@@ -14,7 +14,7 @@
 #
 # ****************************************************************************************
 
-import raylib, rlgl, std/random, os
+import raylib, rlgl, std/random
 
 const
   screenWidth = 800
