@@ -35,7 +35,6 @@ type
 const
   FirstIdx = SpotIdx(0) # Top-left corner
   LastIdx = SpotIdx(Rows*Cols-1) # Bottom-right corner
-  GoalIdx = LastIdx # Target spot
   InvalidIdx = SpotIdx(-1) # Invalid or nonexistent index
 
 # proc `<`(a, b: SpotIdx): bool {.borrow.}
@@ -106,16 +105,17 @@ proc main =
     grid[SpotIdx(i)] = Spot(
       i: x, j: y,
       previous: InvalidIdx,
-      f: 0, g: 0,
+      f: Inf, g: Inf,
       wall: bool(rand(10) < WallChance)
     )
   # Make sure the first and last spots are not walls
   grid[FirstIdx].wall = false
-  grid[GoalIdx].wall = false
+  grid[LastIdx].wall = false
   # Initialize the frontier queue and the discovered set
   var frontier: HeapQueue[SpotIdx]
   frontier.push(FirstIdx)
   var discovered: HashSet[SpotIdx]
+  discovered.incl(FirstIdx)
 
   var status = Processing
   var currentIdx = InvalidIdx
@@ -129,9 +129,8 @@ proc main =
     if frontier.len > 0 and status == Processing:
       # Pop the lowest f value spot from the frontier
       currentIdx = frontier.pop()
-      discovered.incl(currentIdx)
       # If it is the goal point, the path is found
-      if currentIdx == GoalIdx:
+      if currentIdx == LastIdx:
         status = Successful
       else:
         # Otherwise, check its neighbours
@@ -150,9 +149,10 @@ proc main =
               neighbor.g = tempG
               newPath = true
               frontier.push(neighborIdx)
+              discovered.incl(neighborIdx)
             # Yes, it's a better path
             if newPath:
-              neighbor.f = neighbor.g + heuristic(neighbor, grid[GoalIdx])
+              neighbor.f = neighbor.g + heuristic(neighbor, grid[LastIdx])
               neighbor.previous = currentIdx
       # Trace back the path from the current spot
       path.setLen(0)
