@@ -1,33 +1,35 @@
-import raylib, std/[heapqueue, sets, hashes, math, random, lenientops]
+import raylib, std/[heapqueue, sets, hashes, math, random, lenientops, options]
 
 const
   Rows = 50
   Cols = 25
 
-  CellSize = 20
-  WallChance = 4
+  CellSize = 20 # Width and height of each cell in pixels
+  WallChance = 4 # Percentage of cells that are walls
 
+const
   screenWidth = Rows*CellSize
   screenHeight = Cols*CellSize
 
-  bgColor = Color(r: 45, g: 197, b: 244, a: 255)
-  wlColor = Color(r: 112, g: 50, b: 126, a: 255)
-  frColor = Color(r: 240, g: 99, b: 164, a: 255)
-  dsColor = Color(r: 236, g: 1, b: 90, a: 255)
+const
+  bgColor = Color(r: 45, g: 197, b: 244, a: 255) # Background
+  wallColor = Color(r: 112, g: 50, b: 126, a: 255)
+  nextColor = Color(r: 240, g: 99, b: 164, a: 255)
+  doneColor = Color(r: 236, g: 1, b: 90, a: 255)
 
 type
-  SpotIdx = distinct int32
+  SpotIdx = distinct int32 # Index type of a spot in the grid
 
   Spot = object
     i, j: int32
-    previous: SpotIdx
+    previous: SpotIdx # Previous spot in the path
     wall: bool
-    g, f: float32 # cost from start, and total cost
+    g, f: float32 # Cost from start and total cost
 
 const
-  FirstIdx = SpotIdx(0)
-  LastIdx = SpotIdx(Rows*Cols-1)
-  InvalidIdx = SpotIdx(-1)
+  FirstIdx = SpotIdx(0) # Top-left corner
+  LastIdx = SpotIdx(Rows*Cols-1) # Bottom-right corner
+  InvalidIdx = SpotIdx(-1) # Invalid or nonexistent index
 
 # proc `<`(a, b: SpotIdx): bool {.borrow.}
 proc `==`(a, b: SpotIdx): bool {.borrow.}
@@ -48,11 +50,14 @@ proc indexAt(x, y: int32): SpotIdx {.inline.} =
   result = SpotIdx(x*Cols + y)
 
 proc heuristic(a, b: Spot): float32 =
-  # Calculate the heuristic between two spots using Euclidean distance
-  sqrt(float32((a.i - b.i)*(a.i - b.i) + (a.j - b.j)*(a.j - b.j)))
+  # Calculate the heuristic between two spots
+  result = sqrt(float32((a.i - b.i)*(a.i - b.i) + (a.j - b.j)*(a.j - b.j)))
+  # Alternatively, use the Manhattan distance as the heuristic
+  #result = float32(abs(a.i - b.i) + abs(a.j - b.j))
 
 iterator neighbours(spot: Spot): SpotIdx =
   # Iterator to get the neighbours of a spot
+  # Check the four cardinal directions
   if spot.i < Rows - 1:
     yield indexAt(spot.i + 1, spot.j)
   if spot.i > 0:
@@ -61,6 +66,7 @@ iterator neighbours(spot: Spot): SpotIdx =
     yield indexAt(spot.i, spot.j + 1)
   if spot.j > 0:
     yield indexAt(spot.i, spot.j - 1)
+  # Also check the four diagonals
   if spot.i > 0 and spot.j > 0:
     yield indexAt(spot.i - 1, spot.j - 1)
   if spot.i < Rows - 1 and spot.j > 0:
@@ -70,12 +76,13 @@ iterator neighbours(spot: Spot): SpotIdx =
   if spot.i < Rows - 1 and spot.j < Cols - 1:
     yield indexAt(spot.i + 1, spot.j + 1)
 
-proc drawSpot(spot: Spot, col: Color) =
-  drawRectangle(spot.i*CellSize, spot.j*CellSize, CellSize - 4, CellSize - 4, col)
-
-proc drawWall(spot: Spot) =
-  drawCircle(Vector2(x: spot.i*CellSize + CellSize/2'f32, y: spot.j*CellSize + CellSize/2'f32),
-      CellSize/4'f32, wlColor)
+proc drawSpot(spot: Spot, col: Option[Color]) =
+  # Draws a tile on the board with a given color
+  if spot.wall:
+    drawCircle(Vector2(x: spot.i*CellSize + CellSize/2'f32, y: spot.j*CellSize + CellSize/2'f32),
+        CellSize/4'f32, wallColor)
+  elif col.isSome:
+    drawRectangle(spot.i*CellSize, spot.j*CellSize, CellSize - 4, CellSize - 4, col.get())
 
 # ----------------------------------------------------------------------------------------
 # Program main entry point
@@ -88,7 +95,7 @@ proc main =
   setConfigFlags(flags(Msaa4xHint))
   initWindow(screenWidth, screenHeight, "raylib example - A* path finding")
   randomize()
-
+  # Initialize the grid
   for i in FirstIdx.int32..LastIdx.int32:
     let (x, y) = divmod(i, Cols)
     grid[SpotIdx(i)] = Spot(
@@ -97,10 +104,10 @@ proc main =
       f: 0, g: 0,
       wall: bool(rand(10) < WallChance)
     )
-
+  # Make sure the first and last spots are not walls
   grid[FirstIdx].wall = false
   grid[LastIdx].wall = false
-
+  # Initialize the frontier queue and the discovered set
   var frontier: HeapQueue[SpotIdx]
   frontier.push(FirstIdx)
   var discovered: HashSet[SpotIdx]
@@ -114,11 +121,14 @@ proc main =
     # Update
     # ------------------------------------------------------------------------------------
     if frontier.len > 0 and not pathFound:
+      # Pop the lowest f value spot from the frontier
       currentIdx = frontier.pop()
       discovered.incl(currentIdx)
+      # If it is the last spot, the path is found
       if currentIdx == LastIdx:
         pathFound = true
       else:
+        # Otherwise, check its neighbours
         template current: untyped = grid[currentIdx]
         for neighborIdx in neighbours(current):
           template neighbor: untyped = grid[neighborIdx]
@@ -138,6 +148,7 @@ proc main =
             if newPath:
               neighbor.f = neighbor.g + heuristic(neighbor, grid[LastIdx])
               neighbor.previous = currentIdx
+      # Trace back the path from the current spot
       path.setLen(0)
       var tempIdx = currentIdx
       while tempIdx != InvalidIdx:
@@ -152,14 +163,14 @@ proc main =
     # ------------------------------------------------------------------------------------
     drawing():
       clearBackground(bgColor)
+      # Draw the grid, frontier and discovered sets
       for i in FirstIdx.int32..LastIdx.int32:
-        let spot = grid[SpotIdx(i)]
-        if spot.wall: drawWall(spot)
+        drawSpot(grid[SpotIdx(i)], none(Color))
       for i in 0..<len(frontier):
-        drawSpot(grid[frontier[i]], frColor)
+        drawSpot(grid[frontier[i]], some(nextColor))
       for i in items(discovered):
-        drawSpot(grid[i], dsColor)
-      # draw the path as a continuous line
+        drawSpot(grid[i], some(doneColor))
+      # Draw the path as a continuous line
       drawSplineLinear(path, CellSize/2'f32, Color(r: 252, g: 238, b: 33, a: 255))
     # ------------------------------------------------------------------------------------
   # De-Initialization
