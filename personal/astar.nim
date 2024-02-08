@@ -16,6 +16,7 @@ const
   wallColor = Color(r: 112, g: 50, b: 126, a: 255)
   nextColor = Color(r: 240, g: 99, b: 164, a: 255)
   doneColor = Color(r: 236, g: 1, b: 90, a: 255)
+  pathColor = Color(r: 252, g: 238, b: 33, a: 255)
 
 type
   SpotIdx = distinct int32 # Index type of a spot in the grid
@@ -28,7 +29,7 @@ type
 
   PathFindingStatus = enum
     Processing,
-    Sucessful,
+    Successful,
     Failed,
 
 const
@@ -81,12 +82,12 @@ iterator neighbours(spot: Spot): SpotIdx =
     yield indexAt(spot.i + 1, spot.j + 1)
 
 proc drawSpot(spot: Spot, col: Option[Color]) =
-  # Draws a tile on the board with a given color
+  # Draws a cell on the board with a given color
   if spot.wall:
     drawCircle(Vector2(x: spot.i*CellSize + CellSize/2'f32, y: spot.j*CellSize + CellSize/2'f32),
         CellSize/4'f32, wallColor)
   elif col.isSome:
-    drawRectangle(spot.i*CellSize, spot.j*CellSize, CellSize - 4, CellSize - 4, col.get())
+    drawRectangle(spot.i*CellSize + 2, spot.j*CellSize + 2, CellSize - 4, CellSize - 4, col.get())
 
 # ----------------------------------------------------------------------------------------
 # Program main entry point
@@ -131,7 +132,7 @@ proc main =
       discovered.incl(currentIdx)
       # If it is the goal point, the path is found
       if currentIdx == GoalIdx:
-        status = Sucessful
+        status = Successful
       else:
         # Otherwise, check its neighbours
         template current: untyped = grid[currentIdx]
@@ -179,7 +180,11 @@ proc main =
       for i in items(discovered):
         drawSpot(grid[i], some(doneColor))
       # Draw the path as a continuous line
-      drawSplineBasis(path, CellSize/2'f32, Color(r: 252, g: 238, b: 33, a: 255))
+      drawSplineBasis(path, CellSize/2'f32, pathColor)
+      if status == Failed:
+        drawText("Pathfinding failed", 10, 10, 20, Red)
+      elif status == Successful:
+        drawText("Pathfinding succeeded", 10, 10, 20, Green)
     # ------------------------------------------------------------------------------------
   # De-Initialization
   # --------------------------------------------------------------------------------------
