@@ -30,7 +30,6 @@ const
   LastIdx = SpotIdx(Rows*Cols-1) # Bottom-right corner
   InvalidIdx = SpotIdx(-1) # Invalid or nonexistent index
 
-# proc `<`(a, b: SpotIdx): bool {.borrow.}
 proc `==`(a, b: SpotIdx): bool {.borrow.}
 proc hash(x: SpotIdx): Hash {.borrow.}
 
@@ -47,31 +46,29 @@ proc indexAt(x, y: int32): SpotIdx {.inline.} =
   result = SpotIdx(x*Cols + y)
 
 proc heuristic(a, b: Spot): float32 =
-  # Calculate the heuristic between two spots
+  # Calculate the heuristic between two spots with the Euclidean distance
   result = sqrt(float32((a.i - b.i)*(a.i - b.i) + (a.j - b.j)*(a.j - b.j)))
-  # Alternatively, use the Manhattan distance as the heuristic
-  #result = float32(abs(a.i - b.i) + abs(a.j - b.j))
 
 iterator neighbours(spot: Spot): SpotIdx =
-  # Iterator to get the neighbours of a spot
-  # Check the four cardinal directions
-  if spot.i < Rows - 1:
-    yield indexAt(spot.i + 1, spot.j)
-  if spot.i > 0:
-    yield indexAt(spot.i - 1, spot.j)
-  if spot.j < Cols - 1:
-    yield indexAt(spot.i, spot.j + 1)
-  if spot.j > 0:
-    yield indexAt(spot.i, spot.j - 1)
-  # Also check the four diagonals
-  if spot.i > 0 and spot.j > 0:
-    yield indexAt(spot.i - 1, spot.j - 1)
-  if spot.i < Rows - 1 and spot.j > 0:
-    yield indexAt(spot.i + 1, spot.j - 1)
-  if spot.i > 0 and spot.j < Cols - 1:
-    yield indexAt(spot.i - 1, spot.j + 1)
-  if spot.i < Rows - 1 and spot.j < Cols - 1:
-    yield indexAt(spot.i + 1, spot.j + 1)
+  # Iterator to get the valid neighbours of a spot
+  var
+    offsets = [ # Stores all eight directions (cardinal and diagonal)
+      (-1'i32, 0'i32), # Up
+      (1, 0),   # Down
+      (0, -1),  # Left
+      (0, 1),   # Right
+      (-1, 1),  # UpRight
+      (1, -1),  # DownLeft
+      (-1, -1), # UpLeft
+      (1, 1),   # DownRight
+    ]
+  shuffle(offsets) # Randomize the order of directions
+  for (dx, dy) in offsets.items:
+    let newX = spot.i + dx
+    let newY = spot.j + dy
+    # If neighbor is within grid boundaries
+    if isOnBoard(newX, newY):
+      yield indexAt(newX, newY) # Yield the neighbor's index
 
 proc drawSpot(spot: Spot, col: Option[Color]) =
   # Draws a cell on the board with a given color
@@ -92,7 +89,7 @@ proc main =
   setConfigFlags(flags(Msaa4xHint))
   initWindow(screenWidth, screenHeight, "raylib example - A* path finding")
   randomize()
-  # Initialize the grid
+  # Initialize the grid with random walls
   for i in FirstIdx.int32..LastIdx.int32:
     let (x, y) = divmod(i, Cols)
     grid[SpotIdx(i)] = Spot(
@@ -122,7 +119,7 @@ proc main =
       # Pop the lowest f value spot from the frontier
       currentIdx = frontier.pop()
       discovered.incl(currentIdx)
-      # If it is the goal point, the path is found
+      # Found the goal!
       if currentIdx == LastIdx:
         status = Successful
       else:
@@ -156,6 +153,7 @@ proc main =
           y: temp.j*CellSize + CellSize/2'f32)
         )
         tempIdx = temp.previous
+    # No more spots to explore
     elif status == Processing:
       status = Failed
       path.setLen(0)
