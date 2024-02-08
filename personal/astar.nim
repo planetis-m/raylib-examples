@@ -1,8 +1,8 @@
 import raylib, std/[heapqueue, sets, hashes, math, random, lenientops, options]
 
 const
-  Rows = 50
-  Cols = 25
+  Rows = 40
+  Cols = 24
 
   CellSize = 20 # Width and height of each cell in pixels
   WallChance = 4 # Percentage of cells that are walls
@@ -26,18 +26,22 @@ type
     wall: bool
     g, f: float32 # Cost from start and total cost
 
+  PathFindingStatus = enum
+    Processing,
+    Sucessful,
+    Failed,
+
 const
   FirstIdx = SpotIdx(0) # Top-left corner
   LastIdx = SpotIdx(Rows*Cols-1) # Bottom-right corner
+  GoalIdx = LastIdx # Target spot
   InvalidIdx = SpotIdx(-1) # Invalid or nonexistent index
 
 # proc `<`(a, b: SpotIdx): bool {.borrow.}
 proc `==`(a, b: SpotIdx): bool {.borrow.}
 proc hash(x: SpotIdx): Hash {.borrow.}
 
-var
-  grid: array[FirstIdx..LastIdx, Spot]
-  pathFound = false
+var grid: array[FirstIdx..LastIdx, Spot]
 
 proc `<`(a, b: SpotIdx): bool {.inline.} =
   grid[a].f < grid[b].f
@@ -46,7 +50,7 @@ proc isOnBoard(x, y: int32): bool {.inline.} =
   result = x >= 0 and y >= 0 and x < Rows and y < Cols
 
 proc indexAt(x, y: int32): SpotIdx {.inline.} =
-  assert isOnBoard(x, y)
+  doAssert isOnBoard(x, y)
   result = SpotIdx(x*Cols + y)
 
 proc heuristic(a, b: Spot): float32 =
@@ -106,27 +110,28 @@ proc main =
     )
   # Make sure the first and last spots are not walls
   grid[FirstIdx].wall = false
-  grid[LastIdx].wall = false
+  grid[GoalIdx].wall = false
   # Initialize the frontier queue and the discovered set
   var frontier: HeapQueue[SpotIdx]
   frontier.push(FirstIdx)
   var discovered: HashSet[SpotIdx]
 
+  var status = Processing
   var currentIdx = InvalidIdx
-  var path: seq[Vector2] = @[] # use Vector2 type for the path
+  var path: seq[Vector2] = @[] # Use Vector2 type for the path
   setTargetFPS(25) # Set our game to run at 25 frames-per-second
   # --------------------------------------------------------------------------------------
   # Main game loop
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # ------------------------------------------------------------------------------------
-    if frontier.len > 0 and not pathFound:
+    if frontier.len > 0 and status == Processing:
       # Pop the lowest f value spot from the frontier
       currentIdx = frontier.pop()
       discovered.incl(currentIdx)
-      # If it is the last spot, the path is found
-      if currentIdx == LastIdx:
-        pathFound = true
+      # If it is the goal point, the path is found
+      if currentIdx == GoalIdx:
+        status = Sucessful
       else:
         # Otherwise, check its neighbours
         template current: untyped = grid[currentIdx]
@@ -146,7 +151,7 @@ proc main =
               frontier.push(neighborIdx)
             # Yes, it's a better path
             if newPath:
-              neighbor.f = neighbor.g + heuristic(neighbor, grid[LastIdx])
+              neighbor.f = neighbor.g + heuristic(neighbor, grid[GoalIdx])
               neighbor.previous = currentIdx
       # Trace back the path from the current spot
       path.setLen(0)
@@ -158,6 +163,9 @@ proc main =
           y: temp.j*CellSize + CellSize/2'f32)
         )
         tempIdx = temp.previous
+    elif status == Processing:
+      status = Failed
+      path.setLen(0)
     # ------------------------------------------------------------------------------------
     # Draw
     # ------------------------------------------------------------------------------------
@@ -171,7 +179,7 @@ proc main =
       for i in items(discovered):
         drawSpot(grid[i], some(doneColor))
       # Draw the path as a continuous line
-      drawSplineLinear(path, CellSize/2'f32, Color(r: 252, g: 238, b: 33, a: 255))
+      drawSplineBasis(path, CellSize/2'f32, Color(r: 252, g: 238, b: 33, a: 255))
     # ------------------------------------------------------------------------------------
   # De-Initialization
   # --------------------------------------------------------------------------------------
