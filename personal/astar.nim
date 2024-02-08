@@ -115,7 +115,6 @@ proc main =
   var frontier: HeapQueue[SpotIdx]
   frontier.push(FirstIdx)
   var discovered: HashSet[SpotIdx]
-  discovered.incl(FirstIdx)
 
   var status = Processing
   var currentIdx = InvalidIdx
@@ -129,6 +128,7 @@ proc main =
     if status == Processing and frontier.len > 0:
       # Pop the lowest f value spot from the frontier
       currentIdx = frontier.pop()
+      discovered.incl(currentIdx)
       # If it is the goal point, the path is found
       if currentIdx == LastIdx:
         status = Successful
@@ -149,7 +149,6 @@ proc main =
               neighbor.g = tempG
               newPath = true
               frontier.push(neighborIdx)
-              discovered.incl(neighborIdx)
             # Yes, it's a better path
             if newPath:
               neighbor.f = neighbor.g + heuristic(neighbor, grid[LastIdx])
