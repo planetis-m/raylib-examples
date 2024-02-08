@@ -106,7 +106,7 @@ proc main =
       i: x, j: y,
       previous: InvalidIdx,
       f: Inf, g: Inf,
-      wall: bool(rand(10) < WallChance)
+      wall: bool(rand(10'i32) < WallChance)
     )
   # Make sure the first and last spots are not walls
   grid[FirstIdx].wall = false
@@ -126,7 +126,7 @@ proc main =
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # ------------------------------------------------------------------------------------
-    if frontier.len > 0 and status == Processing:
+    if status == Processing and frontier.len > 0:
       # Pop the lowest f value spot from the frontier
       currentIdx = frontier.pop()
       # If it is the goal point, the path is found
@@ -175,8 +175,8 @@ proc main =
       # Draw the grid, frontier and discovered sets
       for i in FirstIdx.int32..LastIdx.int32:
         drawSpot(grid[SpotIdx(i)], none(Color))
-      for i in 0..<len(frontier):
-        drawSpot(grid[frontier[i]], some(nextColor))
+      for i in items(frontier):
+        drawSpot(grid[i], some(nextColor))
       for i in items(discovered):
         drawSpot(grid[i], some(doneColor))
       # Draw the path as a continuous line
