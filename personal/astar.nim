@@ -11,13 +11,6 @@ const
   screenWidth = Rows*CellSize
   screenHeight = Cols*CellSize
 
-const
-  bgColor = Color(r: 45, g: 197, b: 244, a: 255) # Background
-  wallColor = Color(r: 112, g: 50, b: 126, a: 255)
-  nextColor = Color(r: 240, g: 99, b: 164, a: 255)
-  doneColor = Color(r: 236, g: 1, b: 90, a: 255)
-  pathColor = Color(r: 252, g: 238, b: 33, a: 255)
-
 type
   SpotIdx = distinct int32 # Index type of a spot in the grid
 
@@ -84,7 +77,7 @@ proc drawSpot(spot: Spot, col: Option[Color]) =
   # Draws a cell on the board with a given color
   if spot.wall:
     drawCircle(Vector2(x: spot.i*CellSize + CellSize/2'f32, y: spot.j*CellSize + CellSize/2'f32),
-        CellSize/4'f32, wallColor)
+        CellSize/4'f32, Violet)
   elif col.isSome:
     drawRectangle(spot.i*CellSize + 2, spot.j*CellSize + 2, CellSize - 4, CellSize - 4, col.get())
 
@@ -170,20 +163,18 @@ proc main =
     # Draw
     # ------------------------------------------------------------------------------------
     drawing():
-      clearBackground(bgColor)
+      clearBackground(SkyBlue)
       # Draw the grid, frontier and discovered sets
       for i in FirstIdx.int32..LastIdx.int32:
         drawSpot(grid[SpotIdx(i)], none(Color))
       for i in items(frontier):
-        drawSpot(grid[i], some(nextColor))
+        drawSpot(grid[i], some(Pink))
       for i in items(discovered):
-        drawSpot(grid[i], some(doneColor))
+        drawSpot(grid[i], some(Red))
       # Draw the path as a continuous line
-      drawSplineBasis(path, CellSize/2'f32, pathColor)
+      drawSplineBasis(path, CellSize/2'f32, Yellow)
       if status == Failed:
-        drawText("Pathfinding failed", 10, 10, 20, Red)
-      elif status == Successful:
-        drawText("Pathfinding succeeded", 10, 10, 20, Green)
+        drawText("Pathfinding failed", 10, 10, 20, DarkGray)
     # ------------------------------------------------------------------------------------
   # De-Initialization
   # --------------------------------------------------------------------------------------
