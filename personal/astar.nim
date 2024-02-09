@@ -95,10 +95,7 @@ proc retracePath(grid: array[FirstIdx..LastIdx, Spot], idx: SpotIdx, path: var s
 proc depthLimitedSearch(grid: var array[FirstIdx..LastIdx, Spot],
     frontier: var HeapQueue[SpotIdx], discovered: var HashSet[SpotIdx],
     currentIdx: var SpotIdx, threshold: var float32, status: var PathFindingStatus) =
-  frontier.clear()
-  frontier.push(FirstIdx)
-  discovered.clear()
-  while status == Processing and frontier.len > 0:
+  if status == Processing and frontier.len > 0:
     # Pop the lowest f value spot from the frontier
     currentIdx = frontier.pop()
     discovered.incl(currentIdx)
@@ -130,7 +127,7 @@ proc depthLimitedSearch(grid: var array[FirstIdx..LastIdx, Spot],
             neighbor.f = neighbor.g + heuristic(neighbor, grid[LastIdx])
             neighbor.previous = currentIdx
   # No more spots to explore
-  if status == Processing:
+  elif status == Processing:
     status = Failed
 
 # ----------------------------------------------------------------------------------------
@@ -175,14 +172,18 @@ proc main =
     # ------------------------------------------------------------------------------------
     if status == Processing:
       depthLimitedSearch(grid, frontier, discovered, currentIdx, threshold, status)
-    # Threshold exceeded, try higher threshold
-    if status == Incomplete:
-      status = Processing
     if status != Failed:
       # Trace back the path from the current spot
       retracePath(grid, currentIdx, path)
     else:
       path.setLen(0)
+    # Threshold exceeded, try higher threshold
+    if status == Incomplete:
+      status = Processing
+      # Reset search
+      frontier.clear()
+      frontier.push(FirstIdx)
+      discovered.clear()
     # ------------------------------------------------------------------------------------
     # Draw
     # ------------------------------------------------------------------------------------
