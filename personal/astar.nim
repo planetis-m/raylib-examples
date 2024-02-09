@@ -77,7 +77,8 @@ proc drawSpot(spot: Spot, col: Option[Color]) =
     drawCircle(Vector2(x: spot.i*CellSize + CellSize/2'f32, y: spot.j*CellSize + CellSize/2'f32),
         CellSize/4'f32, Violet)
   elif col.isSome:
-    drawRectangle(spot.i*CellSize + 2, spot.j*CellSize + 2, CellSize - 4, CellSize - 4, col.get())
+    drawRectangleRounded(Rectangle(x: spot.i*CellSize + 2'f32, y: spot.j*CellSize + 2'f32,
+        width: CellSize - 4, height: CellSize - 4), 0.4, 0, col.get())
 
 # ----------------------------------------------------------------------------------------
 # Program main entry point
@@ -121,7 +122,6 @@ proc main =
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # ------------------------------------------------------------------------------------
-    var minF: float32 = Inf
     if status == Processing and frontier.len > 0:
       # Pop the lowest f value spot from the frontier
       currentIdx = frontier.pop()
@@ -130,8 +130,9 @@ proc main =
       # Found the goal!
       if currentIdx == LastIdx:
         status = Successful
+      # Threshold exceeded, try higher threshold
       elif current.f > threshold:
-        threshold = minF
+        threshold = current.f
         status = Incomplete
       else:
         # Otherwise, check its neighbours
@@ -153,7 +154,6 @@ proc main =
             if newPath:
               neighbor.f = neighbor.g + heuristic(neighbor, grid[LastIdx])
               neighbor.previous = currentIdx
-              if neighbor.f < minF: minF = neighbor.f
       # Trace back the path from the current spot
       path.setLen(0)
       var tempIdx = currentIdx
@@ -168,7 +168,6 @@ proc main =
     elif status == Processing:
       status = Failed
       path.setLen(0)
-    # Threshold exceeded, try higher threshold
     if status == Incomplete:
       # Check the memory limit
       if frontier.len + discovered.len <= MemoryLimit:
