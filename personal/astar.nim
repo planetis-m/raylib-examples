@@ -90,6 +90,7 @@ proc main =
   setConfigFlags(flags(Msaa4xHint))
   initWindow(screenWidth, screenHeight, "raylib example - IDA* path finding")
   randomize()
+  const MemoryLimit = 400
   # Initialize the grid with random walls
   for i in FirstIdx.int32..LastIdx.int32:
     let (x, y) = divmod(i, Cols)
@@ -166,11 +167,16 @@ proc main =
       path.setLen(0)
     # Threshold exceeded, try higher threshold
     if status == Incomplete:
-      # Reset search
-      status = Processing
-      frontier.clear()
-      frontier.push(FirstIdx)
-      discovered.clear()
+      # Check the memory limit
+      if frontier.len + discovered.len <= MemoryLimit:
+        # Reset search
+        status = Processing
+        frontier.clear()
+        frontier.push(FirstIdx)
+        discovered.clear()
+      else:
+        status = Failed
+        path.setLen(0)
     # ------------------------------------------------------------------------------------
     # Draw
     # ------------------------------------------------------------------------------------
