@@ -47,8 +47,7 @@ proc indexAt(x, y: int32): SpotIdx {.inline.} =
   result = SpotIdx(x*Cols + y)
 
 proc heuristic(a, b: Spot): float32 =
-  # Calculate the heuristic between two spots with the Euclidean distance
-  # result = sqrt(float32((a.i - b.i)*(a.i - b.i) + (a.j - b.j)*(a.j - b.j)))
+  # Calculate the heuristic between two spots
   result = float32(abs(a.i - b.i) + abs(a.j - b.j))
 
 iterator neighbours(spot: Spot): SpotIdx =
@@ -89,7 +88,7 @@ proc main =
   # --------------------------------------------------------------------------------------
   # Set up the raylib window
   setConfigFlags(flags(Msaa4xHint))
-  initWindow(screenWidth, screenHeight, "raylib example - A* path finding")
+  initWindow(screenWidth, screenHeight, "raylib example - IDA* path finding")
   randomize()
   # Initialize the grid with random walls
   for i in FirstIdx.int32..LastIdx.int32:
