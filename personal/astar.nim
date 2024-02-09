@@ -43,11 +43,11 @@ proc isOnBoard(x, y: int32): bool {.inline.} =
   result = x >= 0 and y >= 0 and x < Rows and y < Cols
 
 proc indexAt(x, y: int32): SpotIdx {.inline.} =
-  doAssert isOnBoard(x, y)
+  assert isOnBoard(x, y)
   result = SpotIdx(x*Cols + y)
 
 proc heuristic(a, b: Spot): float32 =
-  # Calculate the heuristic between two spots
+  # Calculate the heuristic between two spots with the Manhattan distance
   result = float32(abs(a.i - b.i) + abs(a.j - b.j))
 
 iterator neighbours(spot: Spot): SpotIdx =
