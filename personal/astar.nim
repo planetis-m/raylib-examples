@@ -80,56 +80,6 @@ proc drawSpot(spot: Spot, col: Option[Color]) =
   elif col.isSome:
     drawRectangle(spot.i*CellSize + 2, spot.j*CellSize + 2, CellSize - 4, CellSize - 4, col.get())
 
-proc retracePath(grid: array[FirstIdx..LastIdx, Spot], idx: SpotIdx, path: var seq[Vector2]) =
-  # Retraces the path from the end point to the start
-  path.setLen(0)
-  var tempIdx = idx
-  while tempIdx != InvalidIdx:
-    template temp: untyped = grid[tempIdx]
-    path.add(Vector2(
-      x: temp.i*CellSize + CellSize/2'f32,
-      y: temp.j*CellSize + CellSize/2'f32)
-    )
-    tempIdx = temp.previous
-
-proc depthLimitedSearch(grid: var array[FirstIdx..LastIdx, Spot],
-    frontier: var HeapQueue[SpotIdx], discovered: var HashSet[SpotIdx],
-    currentIdx: var SpotIdx, threshold: var float32, status: var PathFindingStatus) =
-  if status == Processing and frontier.len > 0:
-    # Pop the lowest f value spot from the frontier
-    currentIdx = frontier.pop()
-    discovered.incl(currentIdx)
-    template current: untyped = grid[currentIdx]
-    # Found the goal!
-    if currentIdx == LastIdx:
-      status = Successful
-    elif current.f > threshold:
-      threshold = current.f
-      status = Incomplete
-    else:
-      # Otherwise, check its neighbours
-      for neighborIdx in neighbours(current):
-        template neighbor: untyped = grid[neighborIdx]
-        if neighborIdx notin discovered and not neighbor.wall:
-          let tempG = current.g + heuristic(neighbor, current)
-          # Is this a better path than before?
-          var newPath = false;
-          if neighborIdx in frontier:
-            if tempG < neighbor.g:
-              neighbor.g = tempG
-              newPath = true
-          else:
-            neighbor.g = tempG
-            newPath = true
-            frontier.push(neighborIdx)
-          # Yes, it's a better path
-          if newPath:
-            neighbor.f = neighbor.g + heuristic(neighbor, grid[LastIdx])
-            neighbor.previous = currentIdx
-  # No more spots to explore
-  elif status == Processing:
-    status = Failed
-
 # ----------------------------------------------------------------------------------------
 # Program main entry point
 # ----------------------------------------------------------------------------------------
@@ -151,8 +101,6 @@ proc main =
       wall: bool(rand(10'i32) < WallChance)
     )
   # Make sure the first and last spots are not walls
-  grid[FirstIdx].g = 0
-  grid[FirstIdx].f = grid[FirstIdx].g + heuristic(grid[FirstIdx], grid[LastIdx])
   grid[FirstIdx].wall = false
   grid[LastIdx].wall = false
   # Initialize the frontier queue and the discovered set
@@ -170,17 +118,55 @@ proc main =
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # ------------------------------------------------------------------------------------
-    if status == Processing:
-      depthLimitedSearch(grid, frontier, discovered, currentIdx, threshold, status)
-    if status != Failed:
+    if status == Processing and frontier.len > 0:
+      # Pop the lowest f value spot from the frontier
+      currentIdx = frontier.pop()
+      discovered.incl(currentIdx)
+      template current: untyped = grid[currentIdx]
+      # Found the goal!
+      if currentIdx == LastIdx:
+        status = Successful
+      elif current.f > threshold:
+        threshold = current.f
+        status = Incomplete
+      else:
+        # Otherwise, check its neighbours
+        for neighborIdx in neighbours(current):
+          template neighbor: untyped = grid[neighborIdx]
+          if neighborIdx notin discovered and not neighbor.wall:
+            let tempG = current.g + heuristic(neighbor, current)
+            # Is this a better path than before?
+            var newPath = false;
+            if neighborIdx in frontier:
+              if tempG < neighbor.g:
+                neighbor.g = tempG
+                newPath = true
+            else:
+              neighbor.g = tempG
+              newPath = true
+              frontier.push(neighborIdx)
+            # Yes, it's a better path
+            if newPath:
+              neighbor.f = neighbor.g + heuristic(neighbor, grid[LastIdx])
+              neighbor.previous = currentIdx
       # Trace back the path from the current spot
-      retracePath(grid, currentIdx, path)
-    else:
+      path.setLen(0)
+      var tempIdx = currentIdx
+      while tempIdx != InvalidIdx:
+        template temp: untyped = grid[tempIdx]
+        path.add(Vector2(
+          x: temp.i*CellSize + CellSize/2'f32,
+          y: temp.j*CellSize + CellSize/2'f32)
+        )
+        tempIdx = temp.previous
+    # No more spots to explore
+    elif status == Processing:
+      status = Failed
       path.setLen(0)
     # Threshold exceeded, try higher threshold
     if status == Incomplete:
-      status = Processing
       # Reset search
+      status = Processing
       frontier.clear()
       frontier.push(FirstIdx)
       discovered.clear()
