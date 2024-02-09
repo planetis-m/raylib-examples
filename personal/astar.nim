@@ -101,6 +101,8 @@ proc main =
       wall: bool(rand(10'i32) < WallChance)
     )
   # Make sure the first and last spots are not walls
+  grid[FirstIdx].g = 0
+  grid[FirstIdx].f = grid[FirstIdx].g + heuristic(grid[FirstIdx], grid[LastIdx])
   grid[FirstIdx].wall = false
   grid[LastIdx].wall = false
   # Initialize the frontier queue and the discovered set
@@ -111,7 +113,7 @@ proc main =
   var status = Processing
   var currentIdx = InvalidIdx
   var path: seq[Vector2] = @[] # Use Vector2 type for the path
-  var threshold = heuristic(grid[FirstIdx], grid[LastIdx]) # Initial threshold
+  var threshold = grid[FirstIdx].f # Initial threshold
   setTargetFPS(25) # Set our game to run at 25 frames-per-second
   # --------------------------------------------------------------------------------------
   # Main game loop
