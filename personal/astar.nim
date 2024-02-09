@@ -1,3 +1,16 @@
+# ****************************************************************************************
+#
+#   raylib example - IDA* path finding
+#
+#   Example originally created with naylib 5.2
+#
+#   Example licensed under an unmodified zlib/libpng license, which is an OSI-certified,
+#   BSD-like license that allows static linking with closed source software
+#
+#   Copyright (c) 2024 Antonis Geralis (@planetis-m)
+#
+# ****************************************************************************************
+
 import raylib, std/[heapqueue, sets, hashes, math, random, lenientops, options, fenv]
 
 const
@@ -143,7 +156,7 @@ proc main =
           if neighborIdx notin discovered and not neighbor.wall:
             let tempG = current.g + heuristic(neighbor, current)
             # Is this a better path than before?
-            var newPath = false;
+            var newPath = false
             if neighborIdx in frontier:
               if tempG < neighbor.g:
                 neighbor.g = tempG
