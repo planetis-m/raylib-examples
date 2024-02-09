@@ -90,7 +90,8 @@ proc main =
   setConfigFlags(flags(Msaa4xHint))
   initWindow(screenWidth, screenHeight, "raylib example - IDA* path finding")
   randomize()
-  const MemoryLimit = 400
+  # When reached fail the search to prevent memory problems
+  const MemoryLimit = 420
   # Initialize the grid with random walls
   for i in FirstIdx.int32..LastIdx.int32:
     let (x, y) = divmod(i, Cols)
@@ -120,6 +121,7 @@ proc main =
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # ------------------------------------------------------------------------------------
+    var minF: float32 = Inf
     if status == Processing and frontier.len > 0:
       # Pop the lowest f value spot from the frontier
       currentIdx = frontier.pop()
@@ -129,7 +131,7 @@ proc main =
       if currentIdx == LastIdx:
         status = Successful
       elif current.f > threshold:
-        threshold = current.f
+        threshold = minF
         status = Incomplete
       else:
         # Otherwise, check its neighbours
@@ -151,6 +153,7 @@ proc main =
             if newPath:
               neighbor.f = neighbor.g + heuristic(neighbor, grid[LastIdx])
               neighbor.previous = currentIdx
+              if neighbor.f < minF: minF = neighbor.f
       # Trace back the path from the current spot
       path.setLen(0)
       var tempIdx = currentIdx
