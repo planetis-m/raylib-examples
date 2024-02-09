@@ -1,4 +1,4 @@
-import raylib, std/[heapqueue, sets, hashes, math, random, lenientops, options]
+import raylib, std/[heapqueue, sets, hashes, math, random, lenientops, options, fenv]
 
 const
   Rows = 40
@@ -99,7 +99,7 @@ proc main =
     grid[SpotIdx(i)] = Spot(
       i: x, j: y,
       previous: InvalidIdx,
-      f: Inf, g: Inf,
+      f: maximumPositiveValue(float32), g: maximumPositiveValue(float32),
       wall: bool(rand(10'i32) < WallChance)
     )
   # Make sure the first and last spots are not walls
