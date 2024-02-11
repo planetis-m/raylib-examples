@@ -68,7 +68,7 @@ proc solve(x: var Queens; row: int; solutions: var seq[QueensArr]) =
 
 proc animateQueenPlacement(queenPiece: Texture, row, oldCol, newCol, count: int32) =
   # Animation for placing a queen
-  if count < AnimationFrames:
+  if count <= AnimationFrames:
     let x = expoInOut(count.float32, oldCol.float32*SquareSize,
         float32(newCol - oldCol)*SquareSize, AnimationFrames)
     drawTexture(queenPiece, x.int32, row*SquareSize, White)
