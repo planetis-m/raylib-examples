@@ -17,7 +17,7 @@ const
   screenSize = 600
   N = 8
   SquareSize = 75
-  AnimationFrames = 60
+  AnimationFrames = 20
 
 type
   QueensArr = array[N, int32]
@@ -66,13 +66,12 @@ proc solve(x: var Queens; row: int; solutions: var seq[QueensArr]) =
         x.solve(row + 1, solutions)
         x.removeQueen(row, col)
 
-proc animateQueenPlacement(queenPiece: Texture, row, oldCol, newCol: int32, count: var int32) =
+proc animateQueenPlacement(queenPiece: Texture, row, oldCol, newCol, count: int32) =
   # Animation for placing a queen
   if count < AnimationFrames:
-    let x = cubicInOut(count.float32, oldCol.float32*SquareSize,
+    let x = expoInOut(count.float32, oldCol.float32*SquareSize,
         float32(newCol - oldCol)*SquareSize, AnimationFrames)
     drawTexture(queenPiece, x.int32, row*SquareSize, White)
-    inc count
   else:
     drawTexture(queenPiece, newCol*SquareSize, row*SquareSize, White)
 
@@ -92,14 +91,15 @@ proc main =
   # --------------------------------------------------------------------------------------
   # Main game loop
   var index = 0
-  var frameCounter: int32 = 0
+  var framesCounter: int32 = 0
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # ------------------------------------------------------------------------------------
+    inc framesCounter
     if isKeyPressed(Enter):
       inc index
       if index >= solutions.len: index = 0
-      frameCounter = 0
+      framesCounter = 0
     # ------------------------------------------------------------------------------------
     # Draw
     # ------------------------------------------------------------------------------------
@@ -112,9 +112,9 @@ proc main =
     # Draw the queens with animation
     for row in 0..<N:
       # Get previous queen position
-      let oldCol = solutions[(index - 1) mod solutions.len][row]
+      let oldCol = solutions[if index > 0: index - 1 else: solutions.high][row]
       let newCol = solutions[index][row]
-      animateQueenPlacement(queenPiece, row.int32, oldCol, newCol, frameCounter)
+      animateQueenPlacement(queenPiece, row.int32, oldCol, newCol, framesCounter)
     drawText(&"Solution {index+1}", 420, 10, 30, Black)
     drawText("Press ENTER to continue", 15, 570, 20, Black)
     endDrawing()
