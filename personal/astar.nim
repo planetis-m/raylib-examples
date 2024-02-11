@@ -60,11 +60,11 @@ proc indexAt(x, y: int32): SpotIdx {.inline.} =
   result = SpotIdx(x*Cols + y)
 
 proc heuristic(a, b: Spot): float32 =
-  # Calculate the heuristic between two spots with the Manhattan distance
+  # Calculate the heuristic between two cells with the Manhattan distance
   result = float32(abs(a.i - b.i) + abs(a.j - b.j))
 
-iterator neighbours(spot: Spot): SpotIdx =
-  # Iterator to get the valid neighbours of a spot
+iterator neighbors(spot: Spot): SpotIdx =
+  # Iterator to get the valid neighbors of a cell
   const
     offsets = [ # Stores all eight directions (cardinal and diagonal)
       (-1'i32, 0'i32), # Up
@@ -89,7 +89,7 @@ proc drawSpot(spot: Spot, col: Option[Color]) =
   if spot.wall:
     drawCircle(Vector2(x: spot.i*CellSize + CellSize/2'f32, y: spot.j*CellSize + CellSize/2'f32),
         CellSize/4'f32, Violet)
-  elif col.isSome:
+  elif col.isSome():
     drawRectangleRounded(Rectangle(x: spot.i*CellSize + 2'f32, y: spot.j*CellSize + 2'f32,
         width: CellSize - 4, height: CellSize - 4), 0.4, 0, col.get())
 
@@ -104,7 +104,7 @@ proc main =
   setConfigFlags(flags(Msaa4xHint))
   initWindow(screenWidth, screenHeight, "raylib example - IDA* path finding")
   randomize()
-  # When reached fail the search to prevent memory problems
+  # If reached fail the search to prevent memory problems
   const MemoryLimit = 420
   # Initialize the grid with random walls
   for i in FirstIdx.int32..LastIdx.int32:
@@ -115,9 +115,10 @@ proc main =
       f: maximumPositiveValue(float32), g: maximumPositiveValue(float32),
       wall: bool(rand(10'i32) < WallChance)
     )
-  # Make sure the first and last spots are not walls
+  # Set the starting spot's g and f values
   grid[FirstIdx].g = 0
   grid[FirstIdx].f = grid[FirstIdx].g + heuristic(grid[FirstIdx], grid[LastIdx])
+  # Make sure the first and last cells are not walls
   grid[FirstIdx].wall = false
   grid[LastIdx].wall = false
   # Initialize the frontier queue and the discovered set
@@ -126,7 +127,7 @@ proc main =
   var discovered: HashSet[SpotIdx]
 
   var status = Processing
-  var currentIdx = InvalidIdx
+  var currentIdx = InvalidIdx # Index of the current node being explored
   var path: seq[Vector2] = @[] # Use Vector2 type for the path
   var threshold = grid[FirstIdx].f # Initial threshold
   setTargetFPS(25) # Set our game to run at 25 frames-per-second
@@ -150,8 +151,8 @@ proc main =
         threshold = current.f
         status = Incomplete
       else:
-        # Otherwise, check its neighbours
-        for neighborIdx in neighbours(current):
+        # Otherwise, check its neighbors
+        for neighborIdx in neighbors(current):
           template neighbor: untyped = grid[neighborIdx]
           if neighborIdx notin discovered and not neighbor.wall:
             let tempG = current.g + heuristic(neighbor, current)
