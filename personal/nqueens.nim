@@ -95,11 +95,12 @@ proc main =
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # ------------------------------------------------------------------------------------
-    inc framesCounter
     if isKeyPressed(Enter):
       inc index
       if index >= solutions.len: index = 0
       framesCounter = 0
+    if framesCounter <= AnimationFrames:
+      inc framesCounter
     # ------------------------------------------------------------------------------------
     # Draw
     # ------------------------------------------------------------------------------------
