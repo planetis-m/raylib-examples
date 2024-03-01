@@ -38,7 +38,7 @@ proc main =
   initWindow(screenWidth, screenHeight, "raylib [shaders] example - texture waves")
   defer: closeWindow() # Close window and OpenGL context
 
-  # Load texture texture to apply shaders
+  # Load texture to apply shaders
   let texture = loadTexture("resources/space.png")
 
   # Load shader and setup location points and values

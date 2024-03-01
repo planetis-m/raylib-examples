@@ -22,8 +22,6 @@ const
   shaderCode = """
 #version 330
 
-#define PI 3.1415926
-
 // Input vertex attributes (from vertex shader)
 in vec2 fragTexCoord;
 in vec4 fragColor;
@@ -40,7 +38,7 @@ out vec4 finalColor;
 const float vignetteOpacity = 1;
 const float scanLineOpacity = 0.5;
 const float curvature = 10;
-const float distortion = 0.06;
+const float distortion = 0.1;
 const float gamma = 1.2;
 
 vec2 curveRemapUV(float curvature) {
@@ -63,7 +61,7 @@ vec4 scanLineIntensity(float uv, float resolution, float opacity) {
 }
 
 vec4 distortIntensity(vec2 uv, float time, float distortion) {
-  vec2 rg = sin(uv.xy*10.0 + time)*distortion + 1.0;
+  vec2 rg = sin(uv*10.0 + time)*distortion + 1.0;
   float b = sin((uv.x + uv.y)*10.0 + time)*distortion + 1.0;
   return vec4(rg, b, 1.0);
 }
@@ -121,7 +119,6 @@ proc main =
     # Begin shader mode
     beginShaderMode(shader)
     drawTexture(texture, 0, 0, White)
-    # drawRectangleGradientH(0, 0, screenWidth, screenHeight, Maroon, Gold)
     endShaderMode()
     endDrawing()
     # ------------------------------------------------------------------------------------

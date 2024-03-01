@@ -11,7 +11,7 @@
 #
 # ****************************************************************************************
 
-import raylib, std/[heapqueue, sets, hashes, math, random, lenientops, options, fenv]
+import raylib, std/[heapqueue, sets, hashes, math, random, lenientops, options, fenv, assertions]
 
 const
   Rows = 40
