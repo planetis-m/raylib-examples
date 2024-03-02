@@ -39,9 +39,10 @@ const float vignetteOpacity = 1;
 const float scanLineOpacity = 0.5;
 const float curvature = 10;
 const float distortion = 0.1;
-const float gamma = 1.2;
+const float gammaInput = 2.4;
+const float gammaOutput = 2.2;
 
-vec2 curveRemapUV(float curvature) {
+vec2 curveRemapUV() {
   vec2 uv = fragTexCoord*2.0-1.0;
   vec2 offset = abs(uv.yx)/curvature;
   uv = uv + uv*offset*offset;
@@ -60,24 +61,29 @@ vec4 scanLineIntensity(float uv, float resolution, float opacity) {
   return vec4(vec3(pow(intensity, opacity)), 1.0);
 }
 
-vec4 distortIntensity(vec2 uv, float time, float distortion) {
+vec4 distortIntensity(vec2 uv, float time) {
   vec2 rg = sin(uv*10.0 + time)*distortion + 1.0;
   float b = sin((uv.x + uv.y)*10.0 + time)*distortion + 1.0;
   return vec4(rg, b, 1.0);
 }
 
-vec4 gammaCorrection(vec4 color) {
-  return vec4(pow(color.rgb, vec3(1.0/gamma)), 1.0);
+vec4 gammaInputCorrection(vec4 color) {
+  return vec4(pow(color.rgb, vec3(gammaInput)), 1.0);
+}
+
+vec4 gammaOutputCorrection(vec4 color) {
+  return vec4(pow(color.rgb, vec3(1.0/gammaOutput)), 1.0);
 }
 
 void main() {
-  vec2 uv = curveRemapUV(curvature);
+  vec2 uv = curveRemapUV();
   vec4 baseColor = texture(texture0, uv);
   baseColor *= vignetteIntensity(uv, size, vignetteOpacity);
-  //baseColor *= scanLineIntensity(uv.x, size.x, scanLineOpacity);
+  baseColor = gammaInputCorrection(baseColor);
+  baseColor *= scanLineIntensity(uv.x, size.x, scanLineOpacity);
   baseColor *= scanLineIntensity(uv.y, size.y, scanLineOpacity);
-  baseColor *= distortIntensity(uv, seconds, distortion);
-  baseColor = gammaCorrection(baseColor);
+  baseColor = gammaOutputCorrection(baseColor);
+  baseColor *= distortIntensity(uv, seconds);
 
   if (uv.x < 0.0 || uv.y < 0.0 || uv.x > 1.0 || uv.y > 1.0) {
     finalColor = vec4(0.0, 0.0, 0.0, 1.0);
