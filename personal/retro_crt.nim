@@ -41,6 +41,7 @@ const float curvature = 10;
 const float distortion = 0.1;
 const float gammaInput = 2.4;
 const float gammaOutput = 2.2;
+const float brightness = 1.5;
 
 vec2 curveRemapUV() {
   vec2 uv = fragTexCoord*2.0-1.0;
@@ -83,6 +84,7 @@ void main() {
   baseColor *= scanLineIntensity(uv.x, size.x, scanLineOpacity);
   baseColor *= scanLineIntensity(uv.y, size.y, scanLineOpacity);
   baseColor = gammaOutputCorrection(baseColor);
+  baseColor *= vec4(vec3(brightness), 1.0);
   baseColor *= distortIntensity(uv, seconds);
 
   if (uv.x < 0.0 || uv.y < 0.0 || uv.x > 1.0 || uv.y > 1.0) {
