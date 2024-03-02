@@ -51,46 +51,38 @@ vec2 curveRemapUV() {
   return uv;
 }
 
-vec4 vignetteIntensity(vec2 uv, vec2 resolution, float opacity) {
+vec3 vignetteIntensity(vec2 uv, vec2 resolution, float opacity) {
   float intensity = uv.x*uv.y*(1.0 - uv.x)*(1.0 - uv.y);
-  return vec4(vec3(clamp(pow(resolution.x*intensity, opacity), 0.0, 1.0)), 1.0);
+  return vec3(clamp(pow(resolution.x*intensity, opacity), 0.0, 1.0));
 }
 
-vec4 scanLineIntensity(float uv, float resolution, float opacity) {
+vec3 scanLineIntensity(float uv, float resolution, float opacity) {
   float intensity = sin(uv*resolution*2.0);
   intensity = ((0.5*intensity) + 0.5)*0.9 + 0.1;
-  return vec4(vec3(pow(intensity, opacity)), 1.0);
+  return vec3(pow(intensity, opacity));
 }
 
-vec4 distortIntensity(vec2 uv, float time) {
+vec3 distortIntensity(vec2 uv, float time) {
   vec2 rg = sin(uv*10.0 + time)*distortion + 1.0;
   float b = sin((uv.x + uv.y)*10.0 + time)*distortion + 1.0;
-  return vec4(rg, b, 1.0);
-}
-
-vec4 gammaInputCorrection(vec4 color) {
-  return vec4(pow(color.rgb, vec3(gammaInput)), 1.0);
-}
-
-vec4 gammaOutputCorrection(vec4 color) {
-  return vec4(pow(color.rgb, vec3(1.0/gammaOutput)), 1.0);
+  return vec3(rg, b);
 }
 
 void main() {
   vec2 uv = curveRemapUV();
-  vec4 baseColor = texture(texture0, uv);
+  vec3 baseColor = texture(texture0, uv).rgb;
   baseColor *= vignetteIntensity(uv, size, vignetteOpacity);
-  baseColor = gammaInputCorrection(baseColor);
+  baseColor *= distortIntensity(uv, seconds);
+  baseColor = pow(baseColor, vec3(gammaInput)); // gamma correction
   baseColor *= scanLineIntensity(uv.x, size.x, scanLineOpacity);
   baseColor *= scanLineIntensity(uv.y, size.y, scanLineOpacity);
-  baseColor = gammaOutputCorrection(baseColor);
-  baseColor *= vec4(vec3(brightness), 1.0);
-  baseColor *= distortIntensity(uv, seconds);
+  baseColor = pow(baseColor, vec3(1.0/gammaOutput)); // gamma correction
+  baseColor *= vec3(brightness);
 
   if (uv.x < 0.0 || uv.y < 0.0 || uv.x > 1.0 || uv.y > 1.0) {
     finalColor = vec4(0.0, 0.0, 0.0, 1.0);
   } else {
-    finalColor = baseColor;
+    finalColor = vec4(baseColor, 1.0);
   }
 }
 """
