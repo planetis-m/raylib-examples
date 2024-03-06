@@ -227,7 +227,7 @@ proc main =
   setShaderValue(shader, getShaderLocation(shader, "size"), screenSize)
   # Draw the background colors to the background texture
   textureMode(background):
-    for i in 0..<MapWidth*MapWidth:
+    for i in 0..<MapWidth*MapHeight:
       let (y, x) = divmod(i, MapWidth) # In Tiled: y*Width + x
       let pos = Vector2(x: x.float32*TileSize, y: y.float32*TileSize)
       drawRectangle(pos, Vector2(x: TileSize, y: TileSize), BgColors[i])
@@ -242,7 +242,7 @@ proc main =
   var count: array[Race, int8]
   # --------------------------------------------------------------------------------------
   # Main game loop
-  setTargetFPS(6) # Set our game to run at 60 frames-per-second
+  setTargetFPS(2) # Set our game to run at 60 frames-per-second
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # ------------------------------------------------------------------------------------
