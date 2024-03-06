@@ -50,6 +50,7 @@ proc hash(x: SpotIdx): Hash {.borrow.}
 var grid: array[FirstIdx..LastIdx, Spot]
 
 proc `<`(a, b: SpotIdx): bool {.inline.} =
+  # Used to maintain the heap property
   grid[a].f < grid[b].f
 
 proc isOnBoard(x, y: int32): bool {.inline.} =
