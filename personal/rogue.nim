@@ -68,7 +68,7 @@ const
 const
   TileSize = 12 # in pixels
   TilesetWidth = 16 # in tiles
-  # Set the source coordinates for each tile
+  # Set the source coordinates for each tile in the tileset
   Tileset = block:
     var tileset: array[1..TilesetWidth*TilesetWidth, tuple[x, y: int16]]
     # Calculate tile coordinates from index
@@ -84,21 +84,21 @@ const
   AttackPower = 3
 
 type
-  TileIdx = distinct int32 # Index type of a tile in the grid
+  TileIdx = distinct int32
   UnitIdx = distinct int32
 
   Race = enum
     Elf, Goblin
 
   Unit = object
-    cell: TileIdx
+    cell: TileIdx # Index of the tile the unit is on
     health: int16
     race: Race
 
   Tile = object
     position: tuple[x, y: int16]
-    npc: UnitIdx
-    wall: bool
+    npc: UnitIdx # Index of the unit on the tile (if any)
+    wall: bool # Is the tile a wall?
 
   Tiles = array[TileIdx(MapWidth*MapHeight), Tile]
   Units = seq[Unit]
@@ -159,8 +159,8 @@ proc cmp(a, b: TileIdx): int {.inline.} =
   result = a.int32 - b.int32
 
 proc inssort(a: var seq[Unit]) =
-  # Performs an in-place insertion sort on a sequence of units.
-  # It sorts the units based on their cell indices in reading order.
+  # Sorts the units based on their cell indices in reading order.
+  # Uses the insertion sort algorithm
   for i in 1..high(a):
     let value = a[i]
     var j = i
@@ -199,6 +199,7 @@ type
     ElfVictory,
     ElfDefeat,
     Running,
+    Uninitialized,
 
 # Game Screen properties
 const
@@ -236,20 +237,22 @@ proc main =
   # Declare the frontier queue and the discovered set for pathfinding
   var frontier: HeapQueue[TileIdx]
   var discovered: HashSet[TileIdx]
-  # Count the number of units for each race
-  var count: array[Race, int8]
-  for unit in units.items:
-    inc count[unit.race]
   # Initialize the round counter and the battle simulation status
   var round: int32 = 0
-  var status = Running
+  var status = Uninitialized
+  var count: array[Race, int8]
   # --------------------------------------------------------------------------------------
   # Main game loop
-  setTargetFPS(24) # Set our game to run at 60 frames-per-second
+  setTargetFPS(1) # Set our game to run at 60 frames-per-second
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # ------------------------------------------------------------------------------------
-    if status == Running:
+    if status == Uninitialized:
+      # Count the number of units for each race
+      for unit in units.items:
+        inc count[unit.race]
+      status = Running
+    elif status == Running:
       # Remove dead units from the units seq
       for i in countdown(high(units), 0):
         if units[i].health <= 0:
