@@ -188,7 +188,7 @@ proc `<`(a, b: TileIdx): bool {.inline.} =
     return false
   if cmp(planning[a].goal, planning[b].goal) < 0:
     return true
-  if cmp(planning[a].goal, planning[b].goal) < 0:
+  if cmp(planning[a].goal, planning[b].goal) > 0:
     return false
   return cmp(a, b) < 0
 
@@ -208,6 +208,8 @@ const
   screenWidth = MapWidth*TileSize*WindowScale
   screenHeight = MapHeight*TileSize*WindowScale
 
+proc `$`(x: UnitIdx): string {.borrow.}
+proc `$`(x: TileIdx): string {.borrow.}
 proc main =
   # Initialization
   # --------------------------------------------------------------------------------------
@@ -243,7 +245,7 @@ proc main =
   var count: array[Race, int8]
   # --------------------------------------------------------------------------------------
   # Main game loop
-  setTargetFPS(1) # Set our game to run at 60 frames-per-second
+  setTargetFPS(24) # Set our game to run at 60 frames-per-second
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # ------------------------------------------------------------------------------------
@@ -289,7 +291,7 @@ proc main =
             discovered.clear()
             planning.fill(PathPlanning(
               goal: NilTileIdx,
-              f: maximumPositiveValue(float32), g: maximumPositiveValue(float32)
+              g: maximumPositiveValue(float32), f: maximumPositiveValue(float32)
             ))
             # Find all enemy units and add their neighboring open positions to the frontier
             for target in units.items:
@@ -326,30 +328,31 @@ proc main =
                       if newPath:
                         neighbor.f = neighbor.g + heuristic(tiles[unit.cell].position, tiles[neighborIdx].position)
                         neighbor.goal = current.goal
-                # Find the best neighboring position to move to
-                var bestGoal = NilTileIdx
-                var bestG = maximumPositiveValue(float32)
-                var bestNeighbor = NilTileIdx
-                for neighborIdx in neighbors(unit.cell):
-                  if isOpenPosition(tiles, neighborIdx) and (neighbor.g < bestG or
-                      (neighbor.g == bestG and cmp(neighbor.goal, bestGoal) < 0)):
-                    bestGoal = neighbor.goal
-                    bestG = neighbor.g
-                    bestNeighbor = neighborIdx
-                if bestNeighbor != NilTileIdx:
-                  # Move the unit to the best neighboring position
-                  tiles[unit.cell].npc = NilUnitIdx
-                  unit.cell = bestNeighbor
-                  tiles[unit.cell].npc = UnitIdx(i)
-                  # Update the target to the enemy unit with the lowest health in range
-                  var minHealth = high(int16)
-                  for neighborIdx in neighbors(unit.cell):
-                    let idx = tiles[neighborIdx].npc
-                    template target: untyped = units[idx.int]
-                    if idx != NilUnitIdx:
-                      if target.race != unit.race and minHealth > target.health:
-                        minHealth = target.health
-                        targetIdx = idx
+            # Find the best neighboring position to move to
+            var bestGoal = NilTileIdx
+            var bestG = maximumPositiveValue(float32)
+            var bestNeighbor = NilTileIdx
+            for neighborIdx in neighbors(unit.cell):
+              template neighbor: untyped = planning[neighborIdx]
+              if isOpenPosition(tiles, neighborIdx) and (neighbor.g < bestG or
+                  (neighbor.g == bestG and cmp(neighbor.goal, bestGoal) < 0)):
+                bestGoal = neighbor.goal
+                bestG = neighbor.g
+                bestNeighbor = neighborIdx
+            if bestNeighbor != NilTileIdx:
+              # Move the unit to the best neighboring position
+              tiles[unit.cell].npc = NilUnitIdx
+              unit.cell = bestNeighbor
+              tiles[unit.cell].npc = UnitIdx(i)
+              # Update the target to the enemy unit with the lowest health in range
+              var minHealth = high(int16)
+              for neighborIdx in neighbors(unit.cell):
+                let idx = tiles[neighborIdx].npc
+                if idx != NilUnitIdx:
+                  template target: untyped = units[idx.int]
+                  if target.race != unit.race and minHealth > target.health:
+                    minHealth = target.health
+                    targetIdx = idx
           if targetIdx != NilUnitIdx:
             # If a target is found, attack the target
             template target: untyped = units[targetIdx.int]
