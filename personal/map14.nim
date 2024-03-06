@@ -1,4 +1,3 @@
-
 const
   col00 = Black
   col01 = Color(r: 99, g: 42, b: 123, a: 255)
