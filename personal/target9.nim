@@ -90,8 +90,8 @@ proc increaseRowAndColumn(row, col: int32) =
 proc getTileRec(row, col: int32): Rectangle =
   # Calculate the rectangle for a specific tile
   result = Rectangle(
-    x: TilemapOffset.x + (col + 1) * TileSpacing + col * TileWidth,
-    y: TilemapOffset.y + (row + 1) * TileSpacing + row * TileWidth,
+    x: TilemapOffset.x + (col + 1)*TileSpacing + col*TileWidth,
+    y: TilemapOffset.y + (row + 1)*TileSpacing + row*TileWidth,
     width: TileWidth, height: TileWidth
   )
 
