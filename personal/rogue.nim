@@ -208,8 +208,6 @@ const
   screenWidth = MapWidth*TileSize*WindowScale
   screenHeight = MapHeight*TileSize*WindowScale
 
-proc `$`(x: UnitIdx): string {.borrow.}
-proc `$`(x: TileIdx): string {.borrow.}
 proc main =
   # Initialization
   # --------------------------------------------------------------------------------------
@@ -245,7 +243,7 @@ proc main =
   var count: array[Race, int8]
   # --------------------------------------------------------------------------------------
   # Main game loop
-  setTargetFPS(24) # Set our game to run at 60 frames-per-second
+  setTargetFPS(6) # Set our game to run at 60 frames-per-second
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # ------------------------------------------------------------------------------------
@@ -382,7 +380,7 @@ proc main =
           let rec = Rectangle(x: tileX.float32, y: tileY.float32, width: TileSize, height: TileSize)
           let idx = tile.npc
           template unit: untyped = units[idx.int]
-          if idx == NilUnitIdx: # or unit.health <= 0
+          if idx == NilUnitIdx:
             drawTexture(tileset, rec, pos, FgColors[i.int])
           else:
             # Draw the entity tile if any
