@@ -108,14 +108,16 @@ proc cmp(a, b: TileIdx): int {.inline.} =
 
 proc `<`(a, b: TileIdx): bool {.inline.} = cmp(a, b) < 0
 
-proc inssort(a: var seq[Unit]) =
+proc inssort(a: var seq[Unit]): bool =
   # Sorts the units based on their cell indices in reading order.
   # Uses the insertion sort algorithm
+  result = false
   for i in 1..high(a):
     let value = a[i]
     var j = i
     while j > 0 and value.cell < a[j-1].cell:
       a[j] = a[j-1]
+      result = true
       dec j
     a[j] = value
 
@@ -178,7 +180,7 @@ proc main =
   # Load the CRT shader
   let shader = loadShader("", "resources/shaders/retro_crt.fs")
   # Set the shader uniform for the screen size.
-  let screenSize = [screenWidth.float32, screenHeight.float32]
+  let screenSize = Vector2(x: screenWidth, y: screenHeight)
   setShaderValue(shader, getShaderLocation(shader, "size"), screenSize)
   # Draw the background colors to the background texture
   textureMode(background):
@@ -214,11 +216,12 @@ proc main =
           # Repair the location of the moved item
           if i <= high(units): tiles[units[i].cell].npc = UnitIdx(i)
       # Sort the units in reading order
-      units.inssort()
+      let work = units.inssort()
       # Update the unit indices on the tiles
-      for i in 0..high(units):
-        # if units[i].cell != NilTileIdx:
-        tiles[units[i].cell].npc = UnitIdx(i)
+      if work:
+        for i in 0..high(units):
+          # if units[i].cell != NilTileIdx:
+          tiles[units[i].cell].npc = UnitIdx(i)
       # Iterate in reading order
       for i in 0..high(units):
         template unit: untyped = units[i]
