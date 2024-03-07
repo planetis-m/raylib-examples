@@ -331,14 +331,14 @@ proc main =
           template tile: untyped = tiles[TileIdx(i)]
           let (x, y) = tile.position
           let pos = Vector2(x: x.float32*TileSize, y: y.float32*TileSize)
-          let (tileX, tileY) = Tileset[Map[i]]
-          let rec = Rectangle(x: tileX.float32, y: tileY.float32, width: TileSize, height: TileSize)
           let idx = tile.npc
           if idx == NilUnitIdx:
+            let (tileX, tileY) = Tileset[Map[i]]
+            let rec = Rectangle(x: tileX.float32, y: tileY.float32, width: TileSize, height: TileSize)
             drawTexture(tileset, rec, pos, FgColors[i.int])
           else:
-            template unit: untyped = units[idx.int]
             # Draw the entity tile if any
+            template unit: untyped = units[idx.int]
             let (entX, entY) = Tileset[if unit.race == Elf: 142 else: 123]
             let rec = Rectangle(x: entX.float32, y: entY.float32, width: TileSize, height: TileSize)
             drawTexture(tileset, rec, pos, if unit.race == Elf: col15 else: col17)
