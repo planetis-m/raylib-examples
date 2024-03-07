@@ -46,5 +46,15 @@ const
     col2, col2, col2, col2, col2, col2, col1,
     col2, col2, col2, col2, col1, col2, col1,
     col2, col2, col2, col2, col2, col2, col2,
-    col1, col1, col1, col1, col1, col2, col2
+    col1, col1, col1, col1, col1, col2, col2,
   ]
+  Walls: array[MapWidth*MapHeight, bool] = [
+    true, true, true, true, true, true, true,
+    true, false, false, false, false, false, true,
+    true, false, true, false, false, false, true,
+    true, false, false, true, true, false, true,
+    true, false, false, false, true, false, true,
+    true, false, false, false, true, false, true,
+    true, true, true, true, true, true, true,
+  ]
+

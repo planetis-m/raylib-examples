@@ -106,18 +106,22 @@ proc cmp(a, b: TileIdx): int {.inline.} =
   # Returns a negative value if a < b, 0 if a == b, and a positive value if a > b
   result = a.int32 - b.int32
 
+proc `<`(a, b: TileIdx): bool {.inline.} = cmp(a, b) < 0
+
 proc inssort(a: var seq[Unit]) =
   # Sorts the units based on their cell indices in reading order.
   # Uses the insertion sort algorithm
   for i in 1..high(a):
     let value = a[i]
     var j = i
-    while j > 0 and cmp(value.cell, a[j-1].cell) < 0:
+    while j > 0 and value.cell < a[j-1].cell:
       a[j] = a[j-1]
       dec j
     a[j] = value
 
 type
+  TilePriority = distinct TileIdx # Special type for use in the heapqueue
+
   PathPlanning = object
     goal: TileIdx
     g, f: float32 # Cost from start and total cost
@@ -125,20 +129,22 @@ type
 proc `==`(a, b: TileIdx): bool {.borrow.}
 proc hash(x: TileIdx): Hash {.borrow.}
 
+proc `==`(a, b: TilePriority): bool {.borrow.}
+
 # Stores the path planning information for each tile on the map
 var planning: array[TileIdx(MapWidth*MapHeight), PathPlanning]
 
-proc `<`(a, b: TileIdx): bool {.inline.} =
+proc `<`(a, b: TilePriority): bool {.inline.} =
   # Used to maintain the heap property
   if planning[a].f < planning[b].f:
     return true
   if planning[a].f > planning[b].f:
     return false
-  if cmp(planning[a].goal, planning[b].goal) < 0:
+  if planning[a].goal < planning[b].goal:
     return true
-  if cmp(planning[a].goal, planning[b].goal) > 0:
+  if planning[a].goal > planning[b].goal:
     return false
-  return cmp(a, b) < 0
+  return a.TileIdx < b.TileIdx
 
 proc `not`(x: Race): Race = Race(not x.bool)
 
@@ -183,7 +189,7 @@ proc main =
   # Parse the map data
   var (tiles, units) = parseMap(Map, Entities)
   # Declare the frontier queue and the discovered set for pathfinding
-  var frontier: HeapQueue[TileIdx]
+  var frontier: HeapQueue[TilePriority]
   var discovered: HashSet[TileIdx]
   # Initialize the round counter and the battle simulation status
   var round: int32 = 0
@@ -249,10 +255,10 @@ proc main =
                     neighbor.goal = neighborIdx
                     neighbor.g = 0
                     neighbor.f = heuristic(tiles[unit.cell].position, tiles[neighborIdx].position)
-                    frontier.push(neighborIdx)
+                    frontier.push(neighborIdx.TilePriority)
                 # Simultaneously plans backwards from all goal positions to the unit
                 while frontier.len > 0:
-                  let currentIdx = frontier.pop()
+                  let currentIdx = frontier.pop().TileIdx
                   discovered.incl(currentIdx)
                   template current: untyped = planning[currentIdx]
                   # Check the neighbors of the current position
@@ -261,16 +267,16 @@ proc main =
                       let tempG = current.g + 1
                       # Is this a better path than before?
                       var newPath = false
-                      if neighborIdx in frontier:
+                      if neighborIdx.TilePriority in frontier:
                         # Break ties with path length, then goal positions and then positions
                         if tempG < neighbor.g or
-                            (tempG == neighbor.g and cmp(current.goal, neighbor.goal) < 0):
+                            (tempG == neighbor.g and current.goal < neighbor.goal):
                           neighbor.g = tempG
                           newPath = true
                       else:
                         neighbor.g = tempG
                         newPath = true
-                        frontier.push(neighborIdx)
+                        frontier.push(neighborIdx.TilePriority)
                       # Yes, it's a better path
                       if newPath:
                         neighbor.f = neighbor.g + heuristic(tiles[unit.cell].position, tiles[neighborIdx].position)
@@ -282,7 +288,7 @@ proc main =
             for neighborIdx in neighbors(unit.cell):
               template neighbor: untyped = planning[neighborIdx]
               if isOpenPosition(tiles, neighborIdx) and (neighbor.g < bestG or
-                  (neighbor.g == bestG and cmp(neighbor.goal, bestGoal) < 0)):
+                  (neighbor.g == bestG and neighbor.goal < bestGoal)):
                 bestGoal = neighbor.goal
                 bestG = neighbor.g
                 bestNeighbor = neighborIdx
