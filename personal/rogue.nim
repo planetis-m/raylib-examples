@@ -108,16 +108,14 @@ proc cmp(a, b: TileIdx): int {.inline.} =
 
 proc `<`(a, b: TileIdx): bool {.inline.} = cmp(a, b) < 0
 
-proc inssort(a: var seq[Unit]): bool =
+proc inssort(a: var seq[Unit]) =
   # Sorts the units based on their cell indices in reading order.
   # Uses the insertion sort algorithm
-  result = false
   for i in 1..high(a):
     let value = a[i]
     var j = i
     while j > 0 and value.cell < a[j-1].cell:
       a[j] = a[j-1]
-      result = true
       dec j
     a[j] = value
 
@@ -199,7 +197,7 @@ proc main =
   var count: array[Race, int8]
   # --------------------------------------------------------------------------------------
   # Main game loop
-  setTargetFPS(2) # Set our game to run at 60 frames-per-second
+  setTargetFPS(2) # Set our game to run at 2 frames-per-second
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # ------------------------------------------------------------------------------------
@@ -216,12 +214,11 @@ proc main =
           # Repair the location of the moved item
           if i <= high(units): tiles[units[i].cell].npc = UnitIdx(i)
       # Sort the units in reading order
-      let work = units.inssort()
+      units.inssort()
       # Update the unit indices on the tiles
-      if work:
-        for i in 0..high(units):
-          # if units[i].cell != NilTileIdx:
-          tiles[units[i].cell].npc = UnitIdx(i)
+      for i in 0..high(units):
+        # if units[i].cell != NilTileIdx:
+        tiles[units[i].cell].npc = UnitIdx(i)
       # Iterate in reading order
       for i in 0..high(units):
         template unit: untyped = units[i]
