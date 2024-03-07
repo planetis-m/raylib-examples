@@ -120,7 +120,7 @@ proc inssort(a: var seq[Unit]) =
     a[j] = value
 
 type
-  TilePriority = distinct TileIdx # Special type for use in the heapqueue
+  TilePriority = distinct TileIdx # Special type for use with the heapqueue
 
   PathPlanning = object
     goal: TileIdx
@@ -228,8 +228,8 @@ proc main =
           break
         elif unit.health > 0:
           var targetIdx = NilUnitIdx
-          # Check if there's an enemy unit in range
-          # and find the target with the lowest health
+          # Check if there're enemy units in range
+          # and target the one with the lowest health
           var minHealth = high(int16)
           for neighborIdx in neighbors(unit.cell):
             let idx = tiles[neighborIdx].npc
@@ -239,7 +239,7 @@ proc main =
                 minHealth = target.health
                 targetIdx = idx
           if targetIdx == NilUnitIdx:
-            # Clear the frontier, discovered set, and reset the path planning
+            # Clear the frontier, discovered set, and reset the path planning data
             frontier.clear()
             discovered.clear()
             planning.fill(PathPlanning(
