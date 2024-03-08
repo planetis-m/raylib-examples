@@ -180,14 +180,19 @@ proc main =
   # Set the shader uniform for the screen size.
   let screenSize = Vector2(x: screenWidth, y: screenHeight)
   setShaderValue(shader, getShaderLocation(shader, "size"), screenSize)
-  # Draw the background colors to the background texture
-  textureMode(background):
-    for i in 0..<MapWidth*MapHeight:
-      let (y, x) = divmod(i, MapWidth) # In Tiled: y*Width + x
-      let pos = Vector2(x: x.float32*TileSize, y: y.float32*TileSize)
-      drawRectangle(pos, Vector2(x: TileSize, y: TileSize), BgColors[i])
   # Parse the map data
   var (tiles, units) = parseMap(Map, Entities)
+  # Iterate over each tile in the map and draw the corresponding textures
+  textureMode(background):
+    for i in 0..<MapWidth*MapHeight:
+      template tile: untyped = tiles[TileIdx(i)]
+      let (x, y) = tile.position
+      let pos = Vector2(x: x.float32*TileSize, y: y.float32*TileSize)
+      # Draw the background colors
+      drawRectangle(pos, Vector2(x: TileSize, y: TileSize), BgColors[i])
+      let (tileX, tileY) = Tileset[Map[i]]
+      let rec = Rectangle(x: tileX.float32, y: tileY.float32, width: TileSize, height: TileSize)
+      drawTexture(tileset, rec, pos, FgColors[i.int])
   # Declare the frontier queue and the discovered set for pathfinding
   var frontier: HeapQueue[TilePriority]
   var discovered: HashSet[TileIdx]
@@ -326,22 +331,16 @@ proc main =
         let src = Rectangle(x: 0, y: 0, width: background.texture.width.float32,
             height: -background.texture.height.float32)
         drawTexture(background.texture, src, Vector2(x: 0, y: 0), White)
-        # Iterate over each tile in the map and draw the corresponding textures
-        for i in 0..<MapWidth*MapHeight:
-          template tile: untyped = tiles[TileIdx(i)]
+        # Iterate over each unit and draw the corresponding textures
+        for unit in units:
+          template tile: untyped = tiles[unit.cell]
           let (x, y) = tile.position
           let pos = Vector2(x: x.float32*TileSize, y: y.float32*TileSize)
-          let idx = tile.npc
-          if idx == NilUnitIdx:
-            let (tileX, tileY) = Tileset[Map[i]]
-            let rec = Rectangle(x: tileX.float32, y: tileY.float32, width: TileSize, height: TileSize)
-            drawTexture(tileset, rec, pos, FgColors[i.int])
-          else:
-            # Draw the entity tile if any
-            template unit: untyped = units[idx.int]
-            let (entX, entY) = Tileset[if unit.race == Elf: 142 else: 123]
-            let rec = Rectangle(x: entX.float32, y: entY.float32, width: TileSize, height: TileSize)
-            drawTexture(tileset, rec, pos, if unit.race == Elf: col15 else: col17)
+          # Draw the background color again to mask the background
+          drawRectangle(pos, Vector2(x: TileSize, y: TileSize), BgColors[unit.cell.int])
+          let (entX, entY) = Tileset[if unit.race == Elf: 142 else: 123]
+          let rec = Rectangle(x: entX.float32, y: entY.float32, width: TileSize, height: TileSize)
+          drawTexture(tileset, rec, pos, if unit.race == Elf: col15 else: col17)
     drawing():
       clearBackground(Black)
       shaderMode(shader):
