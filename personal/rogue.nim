@@ -107,6 +107,7 @@ proc cmp(a, b: TileIdx): int {.inline.} =
   result = a.int32 - b.int32
 
 proc `<`(a, b: TileIdx): bool {.inline.} = cmp(a, b) < 0
+proc `<`(a, b: Unit): bool {.inline.} = a.cell < b.cell
 
 proc inssort(a: var seq[Unit]) =
   # Sorts the units based on their cell indices in reading order.
@@ -114,8 +115,8 @@ proc inssort(a: var seq[Unit]) =
   for i in 1..high(a):
     let value = a[i]
     var j = i
-    while j > 0 and value.cell < a[j-1].cell:
-      a[j] = a[j-1]
+    while j > 0 and value < a[j - 1]:
+      a[j] = a[j - 1]
       dec j
     a[j] = value
 
@@ -157,7 +158,7 @@ type
 
 # Game Screen properties
 const
-  WindowScale = 4
+  WindowScale = 3
 
   screenWidth = MapWidth*TileSize*WindowScale
   screenHeight = MapHeight*TileSize*WindowScale
@@ -188,11 +189,11 @@ proc main =
       template tile: untyped = tiles[TileIdx(i)]
       let (x, y) = tile.position
       let pos = Vector2(x: x.float32*TileSize, y: y.float32*TileSize)
-      # Draw the background colors
+      # Draw the background color
       drawRectangle(pos, Vector2(x: TileSize, y: TileSize), BgColors[i])
       let (tileX, tileY) = Tileset[Map[i]]
       let rec = Rectangle(x: tileX.float32, y: tileY.float32, width: TileSize, height: TileSize)
-      drawTexture(tileset, rec, pos, FgColors[i.int])
+      drawTexture(tileset, rec, pos, FgColors[i])
   # Declare the frontier queue and the discovered set for pathfinding
   var frontier: HeapQueue[TilePriority]
   var discovered: HashSet[TileIdx]
