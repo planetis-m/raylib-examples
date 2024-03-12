@@ -173,7 +173,7 @@ proc main =
   # Load the tileset image
   let tileset = loadTexture("resources/lambdarogue.png")
   # Create RenderTexture2D objects for rendering to textures
-  # target is used for the main rendering, and background is used for the background colors
+  # target is used for rendering the units, and background for the map
   let target = loadRenderTexture(screenWidth, screenHeight)
   let background = loadRenderTexture(screenWidth, screenHeight)
   # Load the CRT shader
@@ -218,7 +218,8 @@ proc main =
         if units[i].health <= 0:
           units.del(i)
           # Repair the location of the moved item
-          if i <= high(units): tiles[units[i].cell].npc = UnitIdx(i)
+          if i <= high(units):
+            tiles[units[i].cell].npc = UnitIdx(i)
       # Sort the units in reading order
       units.inssort()
       # Update the unit indices on the tiles
