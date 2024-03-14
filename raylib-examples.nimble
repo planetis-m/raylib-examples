@@ -5,4 +5,4 @@ description   = "Raylib examples"
 license       = "Public Domain"
 
 # Dependencies
-requires "naylib
+requires "naylib"
