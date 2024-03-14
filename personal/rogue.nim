@@ -81,6 +81,14 @@ proc parseMap(map, entities: array[MapWidth*MapHeight, int16]): (Tiles, Units) =
     tiles[TileIdx(i)].wall = Walls[i]
   result = (tiles, units)
 
+proc healthToAlpha(health: float32): float32 =
+  if health < 10:
+    return 0.2
+  elif health >= 10 and health < 110:
+    return 0.5
+  else:
+    return 1.0
+
 proc `==`(a, b: UnitIdx): bool {.borrow.}
 
 iterator neighbors(index: TileIdx): TileIdx =
@@ -342,7 +350,8 @@ proc main =
           drawRectangle(pos, Vector2(x: TileSize, y: TileSize), BgColors[unit.cell.int])
           let (entX, entY) = Tileset[if unit.race == Elf: 142 else: 123]
           let rec = Rectangle(x: entX.float32, y: entY.float32, width: TileSize, height: TileSize)
-          drawTexture(tileset, rec, pos, if unit.race == Elf: col15 else: col17)
+          drawTexture(tileset, rec, pos, fade(if unit.race == Elf: col15 else: col17,
+              healthToAlpha(unit.health.float32)))
     drawing():
       clearBackground(Black)
       shaderMode(shader):
