@@ -82,6 +82,8 @@ proc parseMap(map, entities: array[MapWidth*MapHeight, int16]): (Tiles, Units) =
   result = (tiles, units)
 
 proc healthToAlpha(health: float32): float32 =
+  # Converts a unit's health value to the alpha parameter of
+  # the fade function in three steps
   if health < 10:
     return 0.2
   elif health >= 10 and health < 110:
