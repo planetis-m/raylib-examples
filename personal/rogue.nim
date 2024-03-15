@@ -83,11 +83,11 @@ proc parseMap(map, entities: array[MapWidth*MapHeight, int16]): (Tiles, Units) =
 
 proc healthToAlpha(health: float32): float32 =
   # Converts a unit's health value to the alpha parameter of
-  # the fade function in three steps
+  # the fade function in two steps
   if health < 10:
     return 0.2
-  elif health >= 10 and health < 110:
-    return 0.5
+  elif health < 110:
+    return 0.6
   else:
     return 1.0
 
@@ -168,7 +168,7 @@ type
 
 # Game Screen properties
 const
-  WindowScale = 3
+  WindowScale = 4
 
   screenWidth = MapWidth*TileSize*WindowScale
   screenHeight = MapHeight*TileSize*WindowScale
