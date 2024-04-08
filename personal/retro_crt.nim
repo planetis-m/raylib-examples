@@ -35,9 +35,9 @@ uniform float seconds;
 out vec4 finalColor;
 
 // NOTE: values should be passed from code
-const float vignetteOpacity = 1;
+const float vignetteOpacity = 1.0;
 const float scanLineOpacity = 0.5;
-const float curvature = 10;
+const float curvature = 10.0;
 const float distortion = 0.1;
 const float gammaInput = 2.4;
 const float gammaOutput = 2.2;

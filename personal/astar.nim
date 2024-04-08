@@ -11,7 +11,7 @@
 #
 # ****************************************************************************************
 
-import raylib, std/[heapqueue, sets, hashes, math, random, lenientops, options, fenv, assertions]
+import raylib, std/[heapqueue, sets, hashes, math, random, lenientops, options, fenv]
 
 const
   Rows = 40
@@ -57,7 +57,6 @@ proc isOnBoard(x, y: int32): bool {.inline.} =
   result = x >= 0 and y >= 0 and x < Rows and y < Cols
 
 proc indexAt(x, y: int32): SpotIdx {.inline.} =
-  assert isOnBoard(x, y)
   result = SpotIdx(x*Cols + y)
 
 proc heuristic(a, b: Spot): float32 =

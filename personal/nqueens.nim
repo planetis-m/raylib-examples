@@ -66,7 +66,7 @@ proc solve(x: var Queens; row: int; solutions: var seq[QueensArr]) =
         x.solve(row + 1, solutions)
         x.removeQueen(row, col)
 
-proc animateQueenPlacement(queenPiece: Texture, row, oldCol, newCol, count: int32) =
+proc animateQueenPlacement(queenPiece: Texture; row, oldCol, newCol, count: int32) =
   # Animation for placing a queen
   if count <= AnimationFrames:
     let x = expoInOut(count.float32, oldCol.float32*SquareSize,

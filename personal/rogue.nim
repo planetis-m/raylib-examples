@@ -100,7 +100,7 @@ iterator neighbors(index: TileIdx): TileIdx =
     -MapWidth.int32, -1, 1, MapWidth
   ]
   for x in offsets.items:
-    # Relies on the fact that the map's borders are walls
+    # Relies on the fact that the map's borders are all walls
     yield TileIdx(index.int32 + x)
 
 proc isOpenPosition(tiles: Tiles, index: TileIdx): bool {.inline.} =
