@@ -147,7 +147,7 @@ proc main =
       # Threshold exceeded, try higher threshold
       elif current.f > threshold:
         # Update threshold to the current f, representing the minimum in the frontier queue,
-        # allowing exploring higher-cost paths in the next IDA* iteration
+        # allowing higher-cost paths to be explored in the next IDA* iteration
         threshold = current.f
         status = Incomplete
       else:

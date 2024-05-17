@@ -15,7 +15,7 @@ when defined(emscripten):
     --clang.cpp.exe:emcc
     --clang.cpp.linkerexe:emcc
   --mm:orc
-  --threads:off
+  --threads:on
   --panics:on
   --define:noSignalHandler
   --passL:"-o public/index.html"

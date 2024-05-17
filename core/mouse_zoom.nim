@@ -18,6 +18,10 @@ const
   screenWidth = 800
   screenHeight = 450
 
+type
+  ZoomMode = enum
+    MouseWheel, MouseMove
+
 # ----------------------------------------------------------------------------------------
 # Program main entry point
 # ----------------------------------------------------------------------------------------
@@ -27,6 +31,7 @@ proc main =
   # --------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [core] example - 2d camera mouse zoom")
   var camera = Camera2D(zoom: 1)
+  var zoomMode = MouseWheel
 
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # --------------------------------------------------------------------------------------
@@ -34,26 +39,48 @@ proc main =
   while not windowShouldClose(): # Detect window close button or ESC key
     # Update
     # ------------------------------------------------------------------------------------
+    if isKeyPressed(One): zoomMode = MouseWheel
+    elif isKeyPressed(Two): zoomMode = MouseMove
     # Translate based on mouse right click
     if isMouseButtonDown(Right):
       var delta = getMouseDelta()
       delta /= -camera.zoom
       camera.target += delta
 
-    let wheel = getMouseWheelMove()
-    if wheel != 0:
-      # Get the world point that is under the mouse
-      let mouseWorldPos = getScreenToWorld2D(getMousePosition(), camera)
-      # Set the offset to where the mouse is
-      camera.offset = getMousePosition()
-      # Set the target to match, so that the camera maps the world space point
-      # under the cursor to the screen space point under the cursor at any zoom
-      camera.target = mouseWorldPos
-      # Zoom increment
-      let zoomIncrement: float32 = 0.125
-      camera.zoom += wheel*zoomIncrement
-      if camera.zoom < zoomIncrement:
-        camera.zoom = zoomIncrement
+    if zoomMode == MouseWheel:
+      let wheel = getMouseWheelMove()
+      if wheel != 0:
+        # Get the world point that is under the mouse
+        let mouseWorldPos = getScreenToWorld2D(getMousePosition(), camera)
+        # Set the offset to where the mouse is
+        camera.offset = getMousePosition()
+        # Set the target to match, so that the camera maps the world space point
+        # under the cursor to the screen space point under the cursor at any zoom
+        camera.target = mouseWorldPos
+        # Zoom increment
+        var scaleFactor = 1 + (0.25*abs(wheel))
+        if wheel < 0: scaleFactor = 1/scaleFactor
+        camera.zoom = clamp(camera.zoom*scaleFactor, 0.125, 64)
+    else:
+      # Zoom based on mouse left click
+      if isMouseButtonPressed(Left):
+        # Get the world point that is under the mouse
+        let mouseWorldPos = getScreenToWorld2D(getMousePosition(), camera)
+
+        # Set the offset to where the mouse is
+        camera.offset = getMousePosition()
+
+        # Set the target to match, so that the camera maps the world space point
+        # under the cursor to the screen space point under the cursor at any zoom
+        camera.target = mouseWorldPos
+
+      if isMouseButtonDown(Left):
+        # Zoom increment
+        let deltaX = getMouseDelta().x
+        var scaleFactor = 1 + (0.01*abs(deltaX))
+        if deltaX < 0:
+          scaleFactor = 1/scaleFactor
+        camera.zoom = clamp(camera.zoom*scaleFactor, 0.125, 64)
     # ------------------------------------------------------------------------------------
     # Draw
     # ------------------------------------------------------------------------------------
@@ -68,9 +95,12 @@ proc main =
         drawGrid(100, 50)
         popMatrix()
         # Draw a reference circle
-        drawCircle(100, 100, 50, Yellow)
+        drawCircle(getScreenWidth() div 2, getScreenHeight() div 2, 50, Maroon)
 
-      drawText("Mouse right button drag to move, mouse wheel to zoom", 10, 10, 20, Black)
+      if zoomMode == MouseWheel:
+        drawText("Mouse right button drag to move, mouse wheel to zoom", 10, 10, 20, Black)
+      else:
+        drawText("Mouse right button drag to move, mouse press and move to zoom", 10, 10, 20, DarkGray)
       # ----------------------------------------------------------------------------------
   # De-Initialization
   # --------------------------------------------------------------------------------------
