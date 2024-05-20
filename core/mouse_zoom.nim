@@ -98,7 +98,7 @@ proc main =
         drawCircle(getScreenWidth() div 2, getScreenHeight() div 2, 50, Maroon)
 
       if zoomMode == MouseWheel:
-        drawText("Mouse right button drag to move, mouse wheel to zoom", 10, 10, 20, Black)
+        drawText("Mouse right button drag to move, mouse wheel to zoom", 10, 10, 20, DarkGray)
       else:
         drawText("Mouse right button drag to move, mouse press and move to zoom", 10, 10, 20, DarkGray)
       # ----------------------------------------------------------------------------------
