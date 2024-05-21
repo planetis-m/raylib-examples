@@ -33,7 +33,7 @@ proc main =
   )
 
   var model = loadModel("resources/models/plane.obj") # Load model
-  let texture = loadTexture("resources/models/plane_diffuse.png") # Load model texture
+  var texture = loadTexture("resources/models/plane_diffuse.png") # Load model texture
   model.materials[0].maps[MaterialMapIndex.Diffuse].texture = texture # Set map diffuse texture
 
   var
