@@ -279,15 +279,5 @@ proc main =
     drawFPS(10, 10)
     endDrawing()
     # ------------------------------------------------------------------------------------
-  # De-Initialization
-  # --------------------------------------------------------------------------------------
-  # Unbind (disconnect) shader from car.material[0]
-  # to avoid UnloadMaterial() trying to unload it automatically
-  # wasMoved(car.materials[0].shader)
-  # reset(car.materials[0])
-
-  # wasMoved(floor.materials[0].shader)
-  # reset(floor.materials[0])
-  # --------------------------------------------------------------------------------------
 
 main()
