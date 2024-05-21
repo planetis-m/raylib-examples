@@ -167,10 +167,10 @@ proc main =
   # There could be more complex models consisting of multiple meshes and
   # multiple materials defined for those meshes... but always 1 mesh = 1 material
   var car = loadModel("resources/models/old_car_new.glb")
-  var carAlbedoTex = loadTexture("resources/old_car_d.png")
-  var carMetalnessTex = loadTexture("resources/old_car_mra.png")
-  var carNormalTex = loadTexture("resources/old_car_n.png")
-  var carEmissionTex = loadTexture("resources/old_car_e.png")
+  let carAlbedoTex = loadTexture("resources/old_car_d.png")
+  let carMetalnessTex = loadTexture("resources/old_car_mra.png")
+  let carNormalTex = loadTexture("resources/old_car_n.png")
+  let carEmissionTex = loadTexture("resources/old_car_e.png")
   # Assign already setup PBR shader to model.materials[0], used by models.meshes[0]
   car.materials[0].shader = shader
   # Setup materials[0].maps default parameters
@@ -189,9 +189,9 @@ proc main =
   let carTextureTiling = Vector2(x: 0.5, y: 0.5)
   # Load floor model mesh and assign material parameters
   var floor = loadModel("resources/models/plane.glb")
-  var floorAlbedoTex = loadTexture("resources/road_a.png")
-  var floorMetalnessTex = loadTexture("resources/road_mra.png")
-  var floorNormalTex = loadTexture("resources/road_n.png")
+  let floorAlbedoTex = loadTexture("resources/road_a.png")
+  let floorMetalnessTex = loadTexture("resources/road_mra.png")
+  let floorNormalTex = loadTexture("resources/road_n.png")
   # Assign material shader for our floor model, same PBR shader
   floor.materials[0].shader = shader
   floor.materials[0].maps[Albedo].color = White

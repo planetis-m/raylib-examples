@@ -38,7 +38,7 @@ proc main =
   )
 
   var image = loadImage("resources/heightmap.png") # Load heightmap image (RAM)
-  var texture = loadTextureFromImage(image) # Convert image to texture (VRAM)
+  let texture = loadTextureFromImage(image) # Convert image to texture (VRAM)
   let mesh = genMeshHeightmap(image, Vector3(x: 16, y: 8, z: 16)) # Generate heightmap mesh (RAM and VRAM)
   var model = loadModelFromMesh(mesh) # Load model from generated mesh
   model.materials[0].maps[MaterialMapIndex.Diffuse].texture = texture # Set map diffuse texture
