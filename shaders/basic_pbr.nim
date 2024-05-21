@@ -167,6 +167,10 @@ proc main =
   # There could be more complex models consisting of multiple meshes and
   # multiple materials defined for those meshes... but always 1 mesh = 1 material
   var car = loadModel("resources/models/old_car_new.glb")
+  let carAlbedoTex = loadTexture("resources/old_car_d.png")
+  let carMetalnessTex = loadTexture("resources/old_car_mra.png")
+  let carNormalTex = loadTexture("resources/old_car_n.png")
+  let carEmissionTex = loadTexture("resources/old_car_e.png")
   # Assign already setup PBR shader to model.materials[0], used by models.meshes[0]
   car.materials[0].shader = shader
   # Setup materials[0].maps default parameters
@@ -176,15 +180,18 @@ proc main =
   car.materials[0].maps[Occlusion].value = 1
   car.materials[0].maps[Emission].color = Color(r: 255, g: 162, b: 0, a: 255)
   # Setup materials[0].maps default textures
-  car.materials[0].maps[Albedo].texture = loadTexture("resources/old_car_d.png")
-  car.materials[0].maps[Metalness].texture = loadTexture("resources/old_car_mra.png")
-  car.materials[0].maps[Normal].texture = loadTexture("resources/old_car_n.png")
-  car.materials[0].maps[Emission].texture = loadTexture("resources/old_car_e.png")
+  car.materials[0].maps[Albedo].texture = carAlbedoTex
+  car.materials[0].maps[Metalness].texture = carMetalnessTex
+  car.materials[0].maps[Normal].texture = carNormalTex
+  car.materials[0].maps[Emission].texture = carEmissionTex
   # Old car model texture tiling parameter can be stored in the Material struct if required (CURRENTLY NOT USED)
   # NOTE: Material.params[4] are available for generic parameters storage (float)
   let carTextureTiling = Vector2(x: 0.5, y: 0.5)
   # Load floor model mesh and assign material parameters
   var floor = loadModel("resources/models/plane.glb")
+  let floorAlbedoTex = loadTexture("resources/road_a.png")
+  let floorMetalnessTex = loadTexture("resources/road_mra.png")
+  let floorNormalTex = loadTexture("resources/road_n.png")
   # Assign material shader for our floor model, same PBR shader
   floor.materials[0].shader = shader
   floor.materials[0].maps[Albedo].color = White
@@ -192,9 +199,9 @@ proc main =
   floor.materials[0].maps[Roughness].value = 0
   floor.materials[0].maps[Occlusion].value = 1
   floor.materials[0].maps[Emission].color = Black
-  floor.materials[0].maps[Albedo].texture = loadTexture("resources/road_a.png")
-  floor.materials[0].maps[Metalness].texture = loadTexture("resources/road_mra.png")
-  floor.materials[0].maps[Normal].texture = loadTexture("resources/road_n.png")
+  floor.materials[0].maps[Albedo].texture = floorAlbedoTex
+  floor.materials[0].maps[Metalness].texture = floorMetalnessTex
+  floor.materials[0].maps[Normal].texture = floorNormalTex
   # Floor texture tiling parameter
   let floorTextureTiling = Vector2(x: 0.5, y: 0.5)
   # Create some lights

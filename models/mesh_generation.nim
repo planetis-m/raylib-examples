@@ -78,7 +78,7 @@ proc main =
   defer: closeWindow() # Close window and OpenGL context
   # We generate a checked image for texturing
   var checked = genImageChecked(2, 2, 1, 1, Red, Green)
-  var texture = loadTextureFromImage(checked)
+  let texture = loadTextureFromImage(checked)
   reset(checked)
   var models: array[NumModels, Model]
   models[0] = loadModelFromMesh(genMeshPlane(2, 2, 5, 5))
