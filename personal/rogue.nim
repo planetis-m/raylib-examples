@@ -16,74 +16,75 @@ import raylib, std/[algorithm, math, heapqueue, sets, hashes, fenv]
 # Include 14x14 map data
 include map14
 
-# Type alias for tile coordinates
-type TileCoord = tuple[x, y: int16]
-
-# Function to calculate tile coordinates from index
-func getTileCoords(index: int16): TileCoord =
-  let (y, x) = divmod(index, TilesetWidth)
-  result = (x*TileSize, y*TileSize)
-
 # Tileset properties
 const
   TileSize = 12 # in pixels
   TilesetWidth = 16 # in tiles
   TilesetSize = TilesetWidth*TilesetWidth
-  # Set the source coordinates for each tile in the tileset
-  Tileset = block:
-    var tileset: array[1..TilesetSize, TileCoord]
+
+# Function to calculate tile coordinates from index
+func getTilesetCoords(index: int16): (int16, int16) =
+  let (y, x) = divmod(index, TilesetWidth)
+  result = (x*TileSize, y*TileSize)
+
+# Create lookup table (LUT) for tileset coordinates
+const
+  TilesetLUT = block:
+    var lut: array[1..TilesetSize, tuple[x, y: int16]]
     # Assign coordinates to each tile
     for i in 1..TilesetSize:
-      tileset[i] = getTileCoords(int16(i - 1))
-    tileset
+      lut[i] = getTilesetCoords(int16(i - 1))
+    lut
 
+# Game constants
 const
   AttackPower = 3
 
+# Type definitions for game entities and map tiles
 type
-  TileIdx = distinct int32
+  CellIdx = distinct int32
   UnitIdx = distinct int32
 
   Race = enum
     Elf, Goblin
 
   Unit = object
-    cell: TileIdx # Index of the tile the unit is on
+    cell: CellIdx # Index of the cell the unit is on
     health: int16
     race: Race
 
-  Tile = object
+  Cell = object
     position: tuple[x, y: int16]
-    npc: UnitIdx # Index of the unit on the tile (if any)
-    wall: bool # Is the tile a wall?
+    unit: UnitIdx # Index of the unit on the cell (if any)
+    wall: bool # Is the cell a wall?
 
-  Tiles = array[TileIdx(MapWidth*MapHeight), Tile]
+  Cells = array[CellIdx(MapWidth*MapHeight), Cell]
   Units = seq[Unit]
 
 const
   NilUnitIdx = UnitIdx(-1) # Invalid unit index
-  NilTileIdx = TileIdx(-1) # Invalid tile index
+  NilCellIdx = CellIdx(-1) # Invalid tile index
 
-proc parseMap(map, entities: array[MapWidth*MapHeight, int16]): (Tiles, Units) =
-  var tiles: Tiles
+proc parseMap(map, entities: array[MapWidth*MapHeight, int16]): (Cells, Units) =
+  var tiles: Cells
   var units: seq[Unit] = @[]
   var count: int32 = 0
   for i in 0..<MapWidth*MapHeight:
     # Calculate the row and column of the tile
     let (y, x) = divmod(i.int16, MapWidth)
-    tiles[TileIdx(i)].position = (x, y)
+    tiles[CellIdx(i)].position = (x, y)
     case entities[i]
     of 142: # Stalker (Elf)
-      units.add(Unit(race: Elf, cell: TileIdx(i), health: 200))
-      tiles[TileIdx(i)].npc = UnitIdx(count)
+      units.add(Unit(race: Elf, cell: CellIdx(i), health: 200))
+      tiles[CellIdx(i)].unit = UnitIdx(count)
       inc count
     of 123: # Zombie (Goblin)
-      units.add(Unit(race: Goblin, cell: TileIdx(i), health: 200))
-      tiles[TileIdx(i)].npc = UnitIdx(count)
+      units.add(Unit(race: Goblin, cell: CellIdx(i), health: 200))
+      tiles[CellIdx(i)].unit = UnitIdx(count)
       inc count
     else:
-      tiles[TileIdx(i)].npc = NilUnitIdx # No unit is present
-    tiles[TileIdx(i)].wall = Walls[i]
+      tiles[CellIdx(i)].unit = NilUnitIdx # No unit is present
+    tiles[CellIdx(i)].wall = Walls[i]
   result = (tiles, units)
 
 proc healthToAlpha(health: float32): float32 =
@@ -98,7 +99,7 @@ proc healthToAlpha(health: float32): float32 =
 
 proc `==`(a, b: UnitIdx): bool {.borrow.}
 
-iterator neighbors(index: TileIdx): TileIdx =
+iterator neighbors(index: CellIdx): CellIdx =
   # Returns the neighboring tile indices of a given tile index
   const offsets = [ # Stores all cardinal directions
     # Up, Left, Right, Down,
@@ -106,22 +107,22 @@ iterator neighbors(index: TileIdx): TileIdx =
   ]
   for x in offsets.items:
     # Relies on the fact that the map's borders are all walls
-    yield TileIdx(index.int32 + x)
+    yield CellIdx(index.int32 + x)
 
-proc isOpenPosition(tiles: Tiles, index: TileIdx): bool {.inline.} =
+proc isOpenPosition(tiles: Cells, index: CellIdx): bool {.inline.} =
   # Checks if a given tile index represents an open position
-  result = not tiles[index].wall and tiles[index].npc == NilUnitIdx
+  result = not tiles[index].wall and tiles[index].unit == NilUnitIdx
 
 proc heuristic(a, b: tuple[x, y: int16]): float32 {.inline.} =
   # Calculate the heuristic between two positions using the Euclidean distance formula
   result = sqrt(float32((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y)))
 
-proc cmp(a, b: TileIdx): int {.inline.} =
+proc cmp(a, b: CellIdx): int {.inline.} =
   # Compares two tile indices in reading order
   # Returns a negative value if a < b, 0 if a == b, and a positive value if a > b
   result = a.int32 - b.int32
 
-proc `<`(a, b: TileIdx): bool {.inline.} = cmp(a, b) < 0
+proc `<`(a, b: CellIdx): bool {.inline.} = cmp(a, b) < 0
 proc `<`(a, b: Unit): bool {.inline.} = a.cell < b.cell
 
 proc inssort(a: var seq[Unit]) =
@@ -136,19 +137,19 @@ proc inssort(a: var seq[Unit]) =
     a[j] = value
 
 type
-  TilePriority = distinct TileIdx # Special type for use with the heapqueue
+  TilePriority = distinct CellIdx # Special type for use with the heapqueue
 
   PathPlanning = object
-    goal: TileIdx
+    goal: CellIdx
     g, f: float32 # Cost from start and total cost
 
-proc `==`(a, b: TileIdx): bool {.borrow.}
-proc hash(x: TileIdx): Hash {.borrow.}
+proc `==`(a, b: CellIdx): bool {.borrow.}
+proc hash(x: CellIdx): Hash {.borrow.}
 
 proc `==`(a, b: TilePriority): bool {.borrow.}
 
 # Stores the path planning information for each tile on the map
-var planning: array[TileIdx(MapWidth*MapHeight), PathPlanning]
+var planning: array[CellIdx(MapWidth*MapHeight), PathPlanning]
 
 proc `<`(a, b: TilePriority): bool {.inline.} =
   # Used to maintain the heap property
@@ -160,7 +161,7 @@ proc `<`(a, b: TilePriority): bool {.inline.} =
     return true
   if planning[a].goal > planning[b].goal:
     return false
-  return a.TileIdx < b.TileIdx
+  return a.CellIdx < b.CellIdx
 
 proc `not`(x: Race): Race = Race(not x.bool)
 
@@ -201,18 +202,18 @@ proc main =
   # Iterate over each tile in the map and draw the corresponding textures
   beginTextureMode(background)
   for i in 0..<MapWidth*MapHeight:
-    template tile: untyped = tiles[TileIdx(i)]
+    template tile: untyped = tiles[CellIdx(i)]
     let (x, y) = tile.position
     let pos = Vector2(x: x.float32*TileSize, y: y.float32*TileSize)
     # Draw the background color
     drawRectangle(pos, Vector2(x: TileSize, y: TileSize), BgColors[i])
-    let (tileX, tileY) = Tileset[Map[i]]
+    let (tileX, tileY) = TilesetLUT[Map[i]]
     let rec = Rectangle(x: tileX.float32, y: tileY.float32, width: TileSize, height: TileSize)
     drawTexture(tileset, rec, pos, FgColors[i])
   endTextureMode()
   # Declare the frontier queue and the discovered set for pathfinding
   var frontier: HeapQueue[TilePriority]
-  var discovered: HashSet[TileIdx]
+  var discovered: HashSet[CellIdx]
   # Initialize the round counter and the battle simulation status
   var round: int32 = 0
   var status = Uninitialized
@@ -235,13 +236,13 @@ proc main =
           units.del(i)
           # Repair the location of the moved item
           if i <= high(units):
-            tiles[units[i].cell].npc = UnitIdx(i)
+            tiles[units[i].cell].unit = UnitIdx(i)
       # Sort the units in reading order
       units.inssort()
       # Update the unit indices on the tiles
       for i in 0..high(units):
-        # if units[i].cell != NilTileIdx:
-        tiles[units[i].cell].npc = UnitIdx(i)
+        # if units[i].cell != NilCellIdx:
+        tiles[units[i].cell].unit = UnitIdx(i)
       # Iterate in reading order
       for i in 0..high(units):
         template unit: untyped = units[i]
@@ -255,7 +256,7 @@ proc main =
           # and target the one with the lowest health
           var minHealth = high(int16)
           for neighborIdx in neighbors(unit.cell):
-            let idx = tiles[neighborIdx].npc
+            let idx = tiles[neighborIdx].unit
             if idx != NilUnitIdx:
               template target: untyped = units[idx.int]
               if target.race != unit.race and minHealth > target.health:
@@ -266,7 +267,7 @@ proc main =
             frontier.clear()
             discovered.clear()
             planning.fill(PathPlanning(
-              goal: NilTileIdx,
+              goal: NilCellIdx,
               g: maximumPositiveValue(float32), f: maximumPositiveValue(float32)
             ))
             # Find all enemy units and add their neighboring open positions to the frontier
@@ -274,14 +275,14 @@ proc main =
               if target.health > 0 and target.race != unit.race:
                 template neighbor: untyped = planning[neighborIdx]
                 for neighborIdx in neighbors(target.cell):
-                  if neighbor.goal == NilTileIdx and isOpenPosition(tiles, neighborIdx):
+                  if neighbor.goal == NilCellIdx and isOpenPosition(tiles, neighborIdx):
                     neighbor.goal = neighborIdx
                     neighbor.g = 0
                     neighbor.f = heuristic(tiles[unit.cell].position, tiles[neighborIdx].position)
                     frontier.push(neighborIdx.TilePriority)
                 # Simultaneously plans backwards from all goal positions to the unit
                 while frontier.len > 0:
-                  let currentIdx = frontier.pop().TileIdx
+                  let currentIdx = frontier.pop().CellIdx
                   discovered.incl(currentIdx)
                   template current: untyped = planning[currentIdx]
                   # Check the neighbors of the current position
@@ -305,9 +306,9 @@ proc main =
                         neighbor.f = neighbor.g + heuristic(tiles[unit.cell].position, tiles[neighborIdx].position)
                         neighbor.goal = current.goal
             # Find the best neighboring position to move to
-            var bestGoal = NilTileIdx
+            var bestGoal = NilCellIdx
             var bestG = maximumPositiveValue(float32)
-            var bestNeighbor = NilTileIdx
+            var bestNeighbor = NilCellIdx
             for neighborIdx in neighbors(unit.cell):
               template neighbor: untyped = planning[neighborIdx]
               if isOpenPosition(tiles, neighborIdx) and (neighbor.g < bestG or
@@ -315,15 +316,15 @@ proc main =
                 bestGoal = neighbor.goal
                 bestG = neighbor.g
                 bestNeighbor = neighborIdx
-            if bestNeighbor != NilTileIdx:
+            if bestNeighbor != NilCellIdx:
               # Move the unit to the best neighboring position
-              tiles[unit.cell].npc = NilUnitIdx
+              tiles[unit.cell].unit = NilUnitIdx
               unit.cell = bestNeighbor
-              tiles[unit.cell].npc = UnitIdx(i)
+              tiles[unit.cell].unit = UnitIdx(i)
               # Update the target to the enemy unit with the lowest health in range
               var minHealth = high(int16)
               for neighborIdx in neighbors(unit.cell):
-                let idx = tiles[neighborIdx].npc
+                let idx = tiles[neighborIdx].unit
                 if idx != NilUnitIdx:
                   template target: untyped = units[idx.int]
                   if target.race != unit.race and minHealth > target.health:
@@ -337,8 +338,8 @@ proc main =
               # Reduce the team count
               dec count[target.race]
               # Clear out the targets location
-              tiles[target.cell].npc = NilUnitIdx
-              #target.cell = NilTileIdx
+              tiles[target.cell].unit = NilUnitIdx
+              #target.cell = NilCellIdx
       inc round
     # ------------------------------------------------------------------------------------
     # Draw
@@ -356,7 +357,7 @@ proc main =
       let pos = Vector2(x: x.float32*TileSize, y: y.float32*TileSize)
       # Draw the background color again to mask the background
       drawRectangle(pos, Vector2(x: TileSize, y: TileSize), BgColors[unit.cell.int])
-      let (entX, entY) = Tileset[if unit.race == Elf: 142 else: 123]
+      let (entX, entY) = TilesetLUT[if unit.race == Elf: 142 else: 123]
       let rec = Rectangle(x: entX.float32, y: entY.float32, width: TileSize, height: TileSize)
       drawTexture(tileset, rec, pos, fade(if unit.race == Elf: col15 else: col17,
           healthToAlpha(unit.health.float32)))
