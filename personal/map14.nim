@@ -23,6 +23,10 @@ const
   col21 = Color(r: 130, g: 83, b: 65, a: 255)
 
 const
+  ElfColor = col15
+  GoblinColor = col17
+
+const
   MapWidth = 14
   MapHeight = 14
   Map: array[MapWidth*MapHeight, int16] = [

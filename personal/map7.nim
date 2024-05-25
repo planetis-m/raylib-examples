@@ -6,6 +6,10 @@ const
   col5 = Color(r: 78, g: 131, b: 87, a: 255) # DarkSage
 
 const
+  ElfColor = col4
+  GoblinColor = col5
+
+const
   # Map used for testing
   MapWidth = 7 # Width in tiles
   MapHeight = 7 # Height in tiles
@@ -57,4 +61,3 @@ const
     true, false, false, false, true, false, true,
     true, true, true, true, true, true, true,
   ]
-

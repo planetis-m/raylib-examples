@@ -13,7 +13,7 @@
 
 import raylib, std/[algorithm, math, heapqueue, sets, hashes, fenv]
 
-# Include 14x14 map data
+# Include map data
 include map14
 
 # Tileset properties
@@ -39,6 +39,7 @@ const
 # Game constants
 const
   AttackPower = 3
+  DefaultHealth = 200
 
 # Type definitions for game entities and map tiles
 type
@@ -65,7 +66,11 @@ const
   NilUnitIdx = UnitIdx(-1) # Invalid unit index
   NilCellIdx = CellIdx(-1) # Invalid tile index
 
-proc parseMap(map, entities: array[MapWidth*MapHeight, int16]): (Cells, Units) =
+const
+  ElfTileIdx = 142
+  GoblinTileIdx = 123
+
+proc parseEntityLayer(entities: array[MapWidth*MapHeight, int16]): (Cells, Units) =
   var tiles: Cells
   var units: seq[Unit] = @[]
   var count: int32 = 0
@@ -74,12 +79,12 @@ proc parseMap(map, entities: array[MapWidth*MapHeight, int16]): (Cells, Units) =
     let (y, x) = divmod(i.int16, MapWidth)
     tiles[CellIdx(i)].position = (x, y)
     case entities[i]
-    of 142: # Stalker (Elf)
-      units.add(Unit(race: Elf, cell: CellIdx(i), health: 200))
+    of ElfTileIdx:
+      units.add(Unit(race: Elf, cell: CellIdx(i), health: DefaultHealth))
       tiles[CellIdx(i)].unit = UnitIdx(count)
       inc count
-    of 123: # Zombie (Goblin)
-      units.add(Unit(race: Goblin, cell: CellIdx(i), health: 200))
+    of GoblinTileIdx:
+      units.add(Unit(race: Goblin, cell: CellIdx(i), health: DefaultHealth))
       tiles[CellIdx(i)].unit = UnitIdx(count)
       inc count
     else:
@@ -87,7 +92,7 @@ proc parseMap(map, entities: array[MapWidth*MapHeight, int16]): (Cells, Units) =
     tiles[CellIdx(i)].wall = Walls[i]
   result = (tiles, units)
 
-proc healthToAlpha(health: float32): float32 =
+func healthToAlpha(health: float32): float32 {.inline.} =
   # Converts a unit's health value to the alpha parameter of
   # the fade function in two steps
   if health < 10:
@@ -96,6 +101,17 @@ proc healthToAlpha(health: float32): float32 =
     return 0.6
   else:
     return 1.0
+
+func getTileIndex(race: Race): int16 {.inline.} =
+  # Get the tile index based on the race
+  case race
+  of Elf: ElfTileIdx
+  of Goblin: GoblinTileIdx
+
+func getRaceColor(race: Race): Color =
+  case race
+  of Elf: ElfColor
+  of Goblin: GoblinColor
 
 proc `==`(a, b: UnitIdx): bool {.borrow.}
 
@@ -198,7 +214,7 @@ proc main =
   let screenSize = Vector2(x: screenWidth, y: screenHeight)
   setShaderValue(shader, getShaderLocation(shader, "size"), screenSize)
   # Parse the map data
-  var (tiles, units) = parseMap(Map, Entities)
+  var (tiles, units) = parseEntityLayer(Entities)
   # Iterate over each tile in the map and draw the corresponding textures
   beginTextureMode(background)
   for i in 0..<MapWidth*MapHeight:
@@ -357,10 +373,9 @@ proc main =
       let pos = Vector2(x: x.float32*TileSize, y: y.float32*TileSize)
       # Draw the background color again to mask the background
       drawRectangle(pos, Vector2(x: TileSize, y: TileSize), BgColors[unit.cell.int])
-      let (entX, entY) = TilesetLUT[if unit.race == Elf: 142 else: 123]
+      let (entX, entY) = TilesetLUT[getTileIndex(unit.race)]
       let rec = Rectangle(x: entX.float32, y: entY.float32, width: TileSize, height: TileSize)
-      drawTexture(tileset, rec, pos, fade(if unit.race == Elf: col15 else: col17,
-          healthToAlpha(unit.health.float32)))
+      drawTexture(tileset, rec, pos, fade(getRaceColor(unit.race), healthToAlpha(unit.health.float32)))
     endMode2D()
     endTextureMode()
     drawing():
