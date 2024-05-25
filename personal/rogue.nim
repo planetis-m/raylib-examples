@@ -29,7 +29,7 @@ func getTilesetCoords(index: int16): (int16, int16) =
 
 # Create lookup table (LUT) for tileset coordinates
 const
-  TilesetLUT = block:
+  Tileset = block:
     var lut: array[1..TilesetSize, tuple[x, y: int16]]
     # Assign coordinates to each tile
     for i in 1..TilesetSize:
@@ -223,7 +223,7 @@ proc main =
     let pos = Vector2(x: x.float32*TileSize, y: y.float32*TileSize)
     # Draw the background color
     drawRectangle(pos, Vector2(x: TileSize, y: TileSize), BgColors[i])
-    let (tileX, tileY) = TilesetLUT[Map[i]]
+    let (tileX, tileY) = Tileset[Map[i]]
     let rec = Rectangle(x: tileX.float32, y: tileY.float32, width: TileSize, height: TileSize)
     drawTexture(tileset, rec, pos, FgColors[i])
   endTextureMode()
@@ -373,7 +373,7 @@ proc main =
       let pos = Vector2(x: x.float32*TileSize, y: y.float32*TileSize)
       # Draw the background color again to mask the background
       drawRectangle(pos, Vector2(x: TileSize, y: TileSize), BgColors[unit.cell.int])
-      let (entX, entY) = TilesetLUT[getTileIndex(unit.race)]
+      let (entX, entY) = Tileset[getTileIndex(unit.race)]
       let rec = Rectangle(x: entX.float32, y: entY.float32, width: TileSize, height: TileSize)
       drawTexture(tileset, rec, pos, fade(getRaceColor(unit.race), healthToAlpha(unit.health.float32)))
     endMode2D()
