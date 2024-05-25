@@ -92,7 +92,7 @@ proc parseEntityLayer(entities: array[MapWidth*MapHeight, int16]): (Cells, Units
     cells[CellIdx(i)].wall = Walls[i]
   result = (cells, units)
 
-func healthToAlpha(health: float32): float32 {.inline.} =
+func healthToAlpha(health: int16): float32 {.inline.} =
   # Converts a unit's health value to the alpha parameter of
   # the fade function in two steps
   if health < 10:
@@ -367,7 +367,7 @@ proc main =
         height: -background.texture.height.float32)
     drawTexture(background.texture, src, Vector2(x: 0, y: 0), White)
     # Iterate over each unit and draw the corresponding textures
-    for unit in units:
+    for unit in units.items:
       template cell: untyped = cells[unit.cell]
       let (x, y) = cell.position
       let pos = Vector2(x: x.float32*TileSize, y: y.float32*TileSize)
@@ -375,7 +375,7 @@ proc main =
       drawRectangle(pos, Vector2(x: TileSize, y: TileSize), BgColors[unit.cell.int])
       let (entX, entY) = Tileset[raceToTileIndex(unit.race)]
       let rec = Rectangle(x: entX.float32, y: entY.float32, width: TileSize, height: TileSize)
-      drawTexture(tileset, rec, pos, fade(raceToColor(unit.race), healthToAlpha(unit.health.float32)))
+      drawTexture(tileset, rec, pos, fade(raceToColor(unit.race), healthToAlpha(unit.health)))
     endMode2D()
     endTextureMode()
     drawing():
