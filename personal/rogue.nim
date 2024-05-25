@@ -102,13 +102,13 @@ func healthToAlpha(health: float32): float32 {.inline.} =
   else:
     return 1.0
 
-func getTileIndex(race: Race): int16 {.inline.} =
+func raceToTileIndex(race: Race): int16 {.inline.} =
   # Get the tile index based on the race
   case race
   of Elf: ElfTileIdx
   of Goblin: GoblinTileIdx
 
-func getRaceColor(race: Race): Color =
+func raceToColor(race: Race): Color =
   case race
   of Elf: ElfColor
   of Goblin: GoblinColor
@@ -373,9 +373,9 @@ proc main =
       let pos = Vector2(x: x.float32*TileSize, y: y.float32*TileSize)
       # Draw the background color again to mask the background
       drawRectangle(pos, Vector2(x: TileSize, y: TileSize), BgColors[unit.cell.int])
-      let (entX, entY) = Tileset[getTileIndex(unit.race)]
+      let (entX, entY) = Tileset[raceToTileIndex(unit.race)]
       let rec = Rectangle(x: entX.float32, y: entY.float32, width: TileSize, height: TileSize)
-      drawTexture(tileset, rec, pos, fade(getRaceColor(unit.race), healthToAlpha(unit.health.float32)))
+      drawTexture(tileset, rec, pos, fade(raceToColor(unit.race), healthToAlpha(unit.health.float32)))
     endMode2D()
     endTextureMode()
     drawing():
