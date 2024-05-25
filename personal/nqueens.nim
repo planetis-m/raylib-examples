@@ -105,21 +105,20 @@ proc main =
     # ------------------------------------------------------------------------------------
     # Draw
     # ------------------------------------------------------------------------------------
-    beginDrawing()
-    # Draw the chess board
-    for row in 0..<N:
-      for col in 0..<N:
-        drawRectangle(col.int32*SquareSize, row.int32*SquareSize, SquareSize, SquareSize,
-            if (row + col) mod 2 == 0: getColor(0xf0d9b5ff'u32) else: getColor(0xb58863ff'u32))
-    # Draw the queens with animation
-    for row in 0..<N:
-      # Get previous queen position
-      let oldCol = solutions[if index > 0: index - 1 else: solutions.high][row]
-      let newCol = solutions[index][row]
-      animateQueenPlacement(queenPiece, row.int32, oldCol, newCol, framesCounter)
-    drawText(&"Solution {index+1}", 420, 10, 30, Black)
-    drawText("Press ENTER to continue", 15, 570, 20, Black)
-    endDrawing()
-    # ------------------------------------------------------------------------------------
+    drawing():
+      # Draw the chess board
+      for row in 0..<N:
+        for col in 0..<N:
+          drawRectangle(col.int32*SquareSize, row.int32*SquareSize, SquareSize, SquareSize,
+              if (row + col) mod 2 == 0: getColor(0xf0d9b5ff'u32) else: getColor(0xb58863ff'u32))
+      # Draw the queens with animation
+      for row in 0..<N:
+        # Get previous queen position
+        let oldCol = solutions[if index > 0: index - 1 else: solutions.high][row]
+        let newCol = solutions[index][row]
+        animateQueenPlacement(queenPiece, row.int32, oldCol, newCol, framesCounter)
+      drawText(&"Solution {index+1}", 420, 10, 30, Black)
+      drawText("Press ENTER to continue", 15, 570, 20, Black)
+      # ----------------------------------------------------------------------------------
 
 main()

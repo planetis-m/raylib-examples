@@ -16,19 +16,24 @@ import raylib, std/[algorithm, math, heapqueue, sets, hashes, fenv]
 # Include 14x14 map data
 include map14
 
+# Type alias for tile coordinates
+type TileCoord = tuple[x, y: int16]
+
+# Function to calculate tile coordinates from index
+func getTileCoords(index: int16): TileCoord =
+  let (y, x) = divmod(index, TilesetWidth)
+  result = (x*TileSize, y*TileSize)
+
 # Tileset properties
 const
   TileSize = 12 # in pixels
   TilesetWidth = 16 # in tiles
+  TilesetSize = TilesetWidth*TilesetWidth
   # Set the source coordinates for each tile in the tileset
   Tileset = block:
-    var tileset: array[1..TilesetWidth*TilesetWidth, tuple[x, y: int16]]
-    # Calculate tile coordinates from index
-    func getTileCoords(index: int16): (int16, int16) =
-      let (y, x) = divmod(index, TilesetWidth)
-      result = (x*TileSize, y*TileSize)
+    var tileset: array[1..TilesetSize, TileCoord]
     # Assign coordinates to each tile
-    for i in 1..TilesetWidth*TilesetWidth:
+    for i in 1..TilesetSize:
       tileset[i] = getTileCoords(int16(i - 1))
     tileset
 
