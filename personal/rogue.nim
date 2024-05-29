@@ -22,6 +22,9 @@ const
   TilesetWidth = 16 # in tiles
   TilesetSize = TilesetWidth*TilesetWidth
 
+  ElfTileIdx = 142
+  GoblinTileIdx = 123
+
 # Function to calculate tile coordinates from index
 func getTilesetCoords(index: int16): (int16, int16) =
   let (y, x) = divmod(index, TilesetWidth)
@@ -65,10 +68,6 @@ type
 const
   NilUnitIdx = UnitIdx(-1) # Invalid unit index
   NilCellIdx = CellIdx(-1) # Invalid cell index
-
-const
-  ElfTileIdx = 142
-  GoblinTileIdx = 123
 
 proc parseEntityLayer(entities: array[MapWidth*MapHeight, int16]): (Cells, Units) =
   var cells: Cells
@@ -216,17 +215,16 @@ proc main =
   # Parse the map data
   var (cells, units) = parseEntityLayer(Entities)
   # Iterate over each cell in the map and draw the corresponding textures
-  beginTextureMode(background)
-  for i in 0..<MapWidth*MapHeight:
-    template cell: untyped = cells[CellIdx(i)]
-    let (x, y) = cell.position
-    let pos = Vector2(x: x.float32*TileSize, y: y.float32*TileSize)
-    # Draw the background color
-    drawRectangle(pos, Vector2(x: TileSize, y: TileSize), BgColors[i])
-    let (tileX, tileY) = Tileset[Map[i]]
-    let rec = Rectangle(x: tileX.float32, y: tileY.float32, width: TileSize, height: TileSize)
-    drawTexture(tileset, rec, pos, FgColors[i])
-  endTextureMode()
+  textureMode(background):
+    for i in 0..<MapWidth*MapHeight:
+      template cell: untyped = cells[CellIdx(i)]
+      let (x, y) = cell.position
+      let pos = Vector2(x: x.float32*TileSize, y: y.float32*TileSize)
+      # Draw the background color
+      drawRectangle(pos, Vector2(x: TileSize, y: TileSize), BgColors[i])
+      let (tileX, tileY) = Tileset[Map[i]]
+      let rec = Rectangle(x: tileX.float32, y: tileY.float32, width: TileSize, height: TileSize)
+      drawTexture(tileset, rec, pos, FgColors[i])
   # Declare the frontier queue and the discovered set for pathfinding
   var frontier: HeapQueue[TilePriority]
   var discovered: HashSet[CellIdx]
@@ -360,32 +358,29 @@ proc main =
     # ------------------------------------------------------------------------------------
     # Draw
     # ------------------------------------------------------------------------------------
-    beginTextureMode(target) # Enable drawing to texture
-    beginMode2D(camera)
-    # Draw the background texture
-    let src = Rectangle(x: 0, y: 0, width: background.texture.width.float32,
-        height: -background.texture.height.float32)
-    drawTexture(background.texture, src, Vector2(x: 0, y: 0), White)
-    # Iterate over each unit and draw the corresponding textures
-    for unit in units.items:
-      template cell: untyped = cells[unit.cell]
-      let (x, y) = cell.position
-      let pos = Vector2(x: x.float32*TileSize, y: y.float32*TileSize)
-      # Draw the background color again to mask the background
-      drawRectangle(pos, Vector2(x: TileSize, y: TileSize), BgColors[unit.cell.int])
-      let (entX, entY) = Tileset[raceToTileIndex(unit.race)]
-      let rec = Rectangle(x: entX.float32, y: entY.float32, width: TileSize, height: TileSize)
-      drawTexture(tileset, rec, pos, fade(raceToColor(unit.race), healthToAlpha(unit.health)))
-    endMode2D()
-    endTextureMode()
+    textureMode(target): # Enable drawing to texture
+      mode2D(camera):
+        # Draw the background texture
+        let src = Rectangle(x: 0, y: 0, width: background.texture.width.float32,
+            height: -background.texture.height.float32)
+        drawTexture(background.texture, src, Vector2(x: 0, y: 0), White)
+        # Iterate over each unit and draw the corresponding textures
+        for unit in units.items:
+          template cell: untyped = cells[unit.cell]
+          let (x, y) = cell.position
+          let pos = Vector2(x: x.float32*TileSize, y: y.float32*TileSize)
+          # Draw the background color again to mask the background
+          drawRectangle(pos, Vector2(x: TileSize, y: TileSize), BgColors[unit.cell.int])
+          let (entX, entY) = Tileset[raceToTileIndex(unit.race)]
+          let rec = Rectangle(x: entX.float32, y: entY.float32, width: TileSize, height: TileSize)
+          drawTexture(tileset, rec, pos, fade(raceToColor(unit.race), healthToAlpha(unit.health)))
     drawing():
       clearBackground(Black)
-      beginShaderMode(shader)
-      # Draw the target texture using the shader
-      let src = Rectangle(x: 0, y: 0, width: target.texture.width.float32,
-          height: -target.texture.height.float32)
-      drawTexture(target.texture, src, Vector2(x: 0, y: 0), White)
-      endShaderMode()
+      shaderMode(shader):
+        # Draw the target texture using the shader
+        let src = Rectangle(x: 0, y: 0, width: target.texture.width.float32,
+            height: -target.texture.height.float32)
+        drawTexture(target.texture, src, Vector2(x: 0, y: 0), White)
     # ------------------------------------------------------------------------------------
 
 main()
