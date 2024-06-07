@@ -23,7 +23,7 @@ import raylib, std/strformat
 # NOTE: Gamepad name ID depends on drivers and OS
 const
   Xbox360LegacyNameId = "Xbox Controller"
-  PS3NameId = "PLAYSTATION(R)3 Controller"
+  PS3NameId = "Sony PLAYSTATION(R)3 Controller"
 
 when defined(linux):
   const
