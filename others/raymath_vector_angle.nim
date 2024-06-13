@@ -78,15 +78,16 @@ proc main =
       drawCircleSector(v0, 40, startAngle, startAngle - angle, 32, fade(Green, 0.6))
     drawText("v0", v0.x.int32, v0.y.int32, 10, DarkGray)
     # If the line from v0 to v1 would overlap the text, move it's position up 10
-    if angleMode == Angle and (v0 - v1).y > 0:
-      drawText("v1", v1.x.int32, v1.y.int32-10, 10, DarkGray)
-    if angleMode == Angle and (v0 - v1).y < 0:
-      drawText("v1", v1.x.int32, v1.y.int32, 10, DarkGray)
+    if angleMode == Angle:
+      if (v0 - v1).y >= 0:
+        drawText("v1", v1.x.int32, int32(v1.y - 10), 10, DarkGray)
+      else:
+        drawText("v1", v1.x.int32, v1.y.int32, 10, DarkGray)
     # If angle mode 1, use v1 to emphasize the horizontal line
     if angleMode == LineAngle:
-      drawText("v1", v0.x.int32+40, v0.y.int32, 10, DarkGray)
+      drawText("v1", int32(v0.x + 40), v0.y.int32, 10, DarkGray)
     # position adjusted by -10 so it isn't hidden by cursor
-    drawText("v2", v2.x.int32-10, v2.y.int32-10, 10, DarkGray)
+    drawText("v2", int32(v2.x - 10), int32(v2.y - 10), 10, DarkGray)
     drawText("Press SPACE to change MODE", 460, 10, 20, DarkGray)
     drawText(&"ANGLE: {angle:2.2f}", 10, 70, 20, Lime)
     endDrawing()
