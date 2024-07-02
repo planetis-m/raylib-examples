@@ -8,6 +8,9 @@
 #   the address printed to stdout. As you will notice, code structure is slightly
 #   diferent to the other examples...
 #
+#   NOTE: For multithreading support you need to pass the following extra arguments to nimhttpd:
+#   -H:"Cross-Origin-Opener-Policy: same-origin" -H:"Cross-Origin-Embedder-Policy: require-corp"
+#
 #   Example originally created with raylib 1.3, last time updated with raylib 1.3
 #
 #   Example licensed under an unmodified zlib/libpng license, which is an OSI-certified,

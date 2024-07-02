@@ -154,7 +154,7 @@ proc main =
         # Otherwise, check its neighbors
         for neighborIdx in neighbors(current):
           template neighbor: untyped = grid[neighborIdx]
-          if neighborIdx notin discovered and not neighbor.wall:
+          if not neighbor.wall and neighborIdx notin discovered:
             let tempG = current.g + heuristic(neighbor, current)
             # Is this a better path than before?
             var newPath = false

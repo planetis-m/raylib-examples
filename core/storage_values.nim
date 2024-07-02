@@ -10,7 +10,7 @@
 #
 # ****************************************************************************************
 
-import raylib, std/[random, lenientops, strformat]
+import raylib, std/[random, strformat]
 
 const
   screenWidth = 800
