@@ -1,6 +1,6 @@
 when defined(emscripten):
   --define:GraphicsApiOpenGlEs2
-  --define:NaylibWebResources
+  # --define:NaylibWebResources
   --os:linux
   --cpu:wasm32
   --cc:clang
@@ -14,7 +14,7 @@ when defined(emscripten):
     --clang.linkerexe:emcc
     --clang.cpp.exe:emcc
     --clang.cpp.linkerexe:emcc
-  --mm:orc
+  # --mm:orc
   --threads:on
   --panics:on
   --define:noSignalHandler

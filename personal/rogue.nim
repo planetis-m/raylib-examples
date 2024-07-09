@@ -197,6 +197,7 @@ const
 proc main =
   # Initialization
   # --------------------------------------------------------------------------------------
+  # setConfigFlags(flags(WindowHighDPI))
   initWindow(screenWidth, screenHeight, "Advent Of Code - Beverage Bandits")
   defer: closeWindow() # Close window and OpenGL context
   # Create a Camera2D

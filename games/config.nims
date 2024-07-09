@@ -20,4 +20,4 @@ when defined(emscripten):
   --define:noSignalHandler
   switch("passL", "-o public/" & projectName() & ".html")
   # Use raylib/src/shell.html or raylib/src/minshell.html
-  # --passL:"--shell-file minshell.html"
+  --passL:"--shell-file minshell.html"
