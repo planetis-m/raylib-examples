@@ -15,4 +15,5 @@ task test, "Runs the test suite":
               "personal", "shaders", "shapes", "text", "textures"]:
     for f in listFiles(thisDir().quoteShell / dir):
       if f.endsWith(".nim"):
+        echo "Compiling example: ", f
         exec "nim c -d:release --verbosity:0 --hints:off " & quoteShell(f)

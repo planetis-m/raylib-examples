@@ -33,7 +33,7 @@ proc main =
   # --------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "raylib [models] example - geometric shapes")
   # Define the camera to look into our 3d world
-  let camera = Camera(
+  var camera = Camera(
     position: Vector3(x: 0, y: 10, z: 10),
     target: Vector3(x: 0, y: 0, z: 0),
     up: Vector3(x: 0, y: 1, z: 0),
