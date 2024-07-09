@@ -14,7 +14,7 @@ when defined(emscripten):
     --clang.linkerexe:emcc
     --clang.cpp.exe:emcc
     --clang.cpp.linkerexe:emcc
-  --mm:orc
+  # --mm:orc
   --threads:off
   --panics:on
   --define:noSignalHandler
