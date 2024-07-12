@@ -1,10 +1,13 @@
 when defined(emscripten):
   --define:GraphicsApiOpenGlEs2
   # --define:NaylibWebResources
+  # switch("define", "NaylibWebResourcesPath=resources")
+  # switch("define", "NaylibWebPthreadPoolSize=2")
+  # --define:NaylibWebAsyncify
   --os:linux
   --cpu:wasm32
   --cc:clang
-  when defined(windows):
+  when buildOS == "windows":
     --clang.exe:emcc.bat
     --clang.linkerexe:emcc.bat
     --clang.cpp.exe:emcc.bat
