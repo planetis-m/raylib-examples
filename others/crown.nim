@@ -9,7 +9,7 @@ const
   nimBg = getColor(0x17181fff'u32)
 
   crownSides = 8                           # Low-polygon version
-  centerAngle: float32 = Tau/crownSides    # Angle from the center of a circle
+  centerAngle: float32 = TAU/crownSides    # Angle from the center of a circle
   lowerRadius: float32 = 2                 # Lower crown circle
   upperRadius = lowerRadius*1.4'f32        # Upper crown circle
   mainHeight = lowerRadius*0.8'f32         # Height without teeth
@@ -42,25 +42,21 @@ proc main =
     fovy: 45,                              # Camera field-of-view apperture in Y (degrees)
     projection: Perspective                # Defines projection type, see CameraProjection
   )
+
   var pause = false                  # Pausing the game will stop animation
-
   setTargetFPS(60)                   # Set the game to run at 60 frames per second
-
   # Wait for Esc key press or when the window is closed
   while not windowShouldClose():
     if not pause:
       updateCamera(camera, Orbital)  # Set an orbital camera mode
-
     if isKeyPressed(Space) or
         isGestureDetected(Tap):      # Pressing Space will stop/resume animation
       pause = not pause
 
     drawing():                       # Use drawing functions inside this block
       clearBackground(RayWhite)      # Set background color
-
       mode3D(camera):                # Use 3D drawing functions inside this block
         drawGrid(10, 1)
-
         for i in 0..<crownSides:
           # Define 5 points:
           # - Current lower circle point
@@ -83,17 +79,13 @@ proc main =
           # Front polygon (clockwise order)
           drawTriangle3D(lowerCur, upperCur, upperNext, nimFg)
           drawTriangle3D(lowerCur, upperNext, lowerNext, nimFg)
-
           # Back polygon (counter-clockwise order)
           drawTriangle3D(lowerCur, upperNext, upperCur, nimBg)
           drawTriangle3D(lowerCur, lowerNext, upperNext, nimBg)
-
           # Wire line for polygons
           drawLine3D(lowerCur, upperCur, Gray)
-
           # Crown tooth front triangle (clockwise order)
           drawTriangle3D(upperCur, tooth, upperNext, nimFg)
-
           # Crown tooth back triangle (counter-clockwise order)
           drawTriangle3D(upperNext, tooth, upperCur, nimBg)
 
@@ -102,6 +94,7 @@ proc main =
         fontSize: int32 = 40
         textWidth = measureText("I AM NIM", fontSize)
         verticalPos = int32(getScreenHeight().float32*0.4'f32)
+
       drawText(text, (getScreenWidth() - textWidth) div 2,  # center
           (getScreenHeight() + verticalPos) div 2, fontSize, Black)
       drawText(if pause: "Press Space or tap to continue"

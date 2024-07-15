@@ -53,6 +53,12 @@ proc initGame() =
     for j in 0..<TileCount:
       if j != col:
         grid[row][j] = (grid[row][j] + 9) mod 10
+  # Reset game state
+  undoStack.setLen(0)
+  selectedRow = -1
+  selectedCol = -1
+  moves = 0
+  gameOver = false
 
 proc checkWin(): bool =
   # Check if all tiles in the grid are 9 (win condition)
@@ -96,16 +102,16 @@ proc getTileRec(row, col: int32): Rectangle =
   )
 
 proc handleInput() =
+  const GridRec = Rectangle(
+    x: TilemapOffset.x, y: TilemapOffset.y,
+    width: TilemapWidth, height: TilemapWidth
+  )
   # Handle mouse input and update game state accordingly
   if isMouseButtonPressed(Left):
-    # Get mouse position relative to tilemap area
+    # Get mouse position
     let mousePos = getMousePosition()
     # Check if mouse is within tilemap bounds
-    const GridRec = Rectangle(
-      x: TilemapOffset.x, y: TilemapOffset.y,
-      width: TilemapWidth, height: TilemapWidth
-    )
-    if checkCollisionPointRec(mousePos, GridRec):
+    if not gameOver and checkCollisionPointRec(mousePos, GridRec):
       # Loop through each tile in the grid
       block outer:
         for row in 0..<TileCount:
@@ -122,6 +128,9 @@ proc handleInput() =
   # Check for undo command
   if isKeyPressed(U):
     undoMove()
+    gameOver = false
+  elif isKeyPressed(R):
+    initGame()
 
 proc drawBoxedText(text: string, rect: Rectangle, fontSize: int32, fgColor: Color) =
   # Center text within a given rectangle
@@ -156,7 +165,7 @@ proc main() =
   # Initialization
   # --------------------------------------------------------------------------------------
   # Set up the raylib window
-  initWindow(screenWidth, screenHeight, "rayilb example - target 9 puzzle")
+  initWindow(screenWidth, screenHeight, "raylib example - target 9 puzzle")
   randomize()
   # Initialize game state
   initGame()
