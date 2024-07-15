@@ -35,9 +35,9 @@ var
   grid: Grid
   undoStack: seq[Move]
   selectedRow, selectedCol: int32 = -1
-  moves: int32 = 0 # Count player moves
+  remainingMoves: int32 # Count player moves
   gameOver = false
-  initialMoves = 3
+  initialMoves: int32 = 3
 
 proc initGame() =
   # Initialize the game grid
@@ -58,7 +58,7 @@ proc initGame() =
   undoStack.setLen(0)
   selectedRow = -1
   selectedCol = -1
-  moves = 0
+  remainingMoves = initialMoves
   gameOver = false
 
 proc checkWin(): bool =
@@ -85,7 +85,7 @@ proc undoMove =
     for j in 0..<TileCount:
       if j != move.col:
         grid[move.row][j] = (grid[move.row][j] + 9) mod 10
-    dec moves # Update move count
+    inc remainingMoves # Update move count
 
 proc increaseRowAndColumn(row, col: int32) =
   # Increment clicked tile and surrounding cells
@@ -123,7 +123,7 @@ proc handleInput() =
               # Save the current state before making a move
               pushMove(undoStack, row.int32, col.int32)
               increaseRowAndColumn(row.int32, col.int32)
-              inc moves # Update move count
+              dec remainingMoves # Update move count
               break outer
   # Check for undo command
   if isKeyPressed(U) or isGestureDetected(SwipeRight):
@@ -157,12 +157,16 @@ proc drawTilesGrid() =
       drawRectangleRounded(getTileRec(row.int32, col.int32), 0.2, 10, tileColor)
       drawBoxedText($grid[row][col], getTileRec(row.int32, col.int32), 40, LightGray)
 
-proc drawWinMessage() =
-  let winRect = Rectangle(
+proc drawGameOverMessage() =
+  const messageRect = Rectangle(
     x: 0, y: screenHeight div 2 - 30,
-    width: screenWidth.float32, height: 60)
-  drawRectangle(winRect, colorAlpha(Green, 0.7))
-  drawBoxedText("You Win!", winRect, 40, White)
+    width: screenWidth, height: 60)
+  if checkWin():
+    drawRectangle(messageRect, colorAlpha(Green, 0.6))
+    drawBoxedText("You Win!", messageRect, 40, White)
+  else:
+    drawRectangle(messageRect, colorAlpha(Red, 0.6))
+    drawBoxedText("Game Over!", messageRect, 40, White)
 
 # ----------------------------------------------------------------------------------------
 # Program main entry point
@@ -173,39 +177,35 @@ proc main() =
   # --------------------------------------------------------------------------------------
   # Set up the raylib window
   initWindow(screenWidth, screenHeight, "raylib example - target 9 puzzle")
-  randomize()
-  # Create a radial gradient background
-  var gradientImage = genImageChecked(screenWidth, screenHeight, 20, 20,
-                                      colorAlpha(Gray, 0.1), RayWhite)
-  let background = loadTextureFromImage(gradientImage)
-  reset(gradientImage)
-  # Initialize game state
-  initGame()
-  setTargetFPS(60)
-  # --------------------------------------------------------------------------------------
-  # Main game loop
-  while not windowShouldClose():
-    # Update
+  try:
+    randomize()
+    # Initialize game state
+    initGame()
+    setTargetFPS(60)
     # ------------------------------------------------------------------------------------
-    handleInput() # Handle mouse input and logic
-    gameOver = checkWin() # Check for win condition
+    # Main game loop
+    while not windowShouldClose():
+      # Update
+      # ----------------------------------------------------------------------------------
+      handleInput() # Handle mouse input and logic
+      gameOver = remainingMoves <= 0
+      # ----------------------------------------------------------------------------------
+      # Draw
+      # ----------------------------------------------------------------------------------
+      beginDrawing()
+      clearBackground(RayWhite)
+      # Draw the grid and game elements
+      drawTilesGrid()
+      if gameOver:
+        drawGameOverMessage()
+      else:
+        drawText(&"Remaining moves: {remainingMoves}", 10, 10, 20, DarkGray)
+      drawText("Press U to undo last move, R to start a new game.", 10, 420, 20, DarkGray)
+      endDrawing()
+      # ----------------------------------------------------------------------------------
+    # De-Initialization
     # ------------------------------------------------------------------------------------
-    # Draw
-    # ------------------------------------------------------------------------------------
-    beginDrawing()
-    clearBackground(RayWhite)
-    drawTexture(background, 0, 0, White)
-    # Draw the grid and game elements
-    drawTilesGrid()
-    if gameOver:
-      drawWinMessage()
-    else:
-      drawText(&"Moves: {moves}", 10, 10, 20, DarkGray)
-    drawText("Press U to undo last move", 10, 420, 20, DarkGray)
-    endDrawing()
-    # ------------------------------------------------------------------------------------
-  # De-Initialization
-  # --------------------------------------------------------------------------------------
-  closeWindow() # Close window and OpenGL context
+  finally:
+    closeWindow() # Close window and OpenGL context
 
 main()
