@@ -145,17 +145,24 @@ proc drawBoxedText(text: string, rect: Rectangle, fontSize: int32, fgColor: Colo
   drawText(font, text, pos, fontSize.float32, spacing, fgColor)
 
 proc drawTilesGrid() =
-  # Draw the grid of tiles and game elements
-  drawRectangle(TilemapOffset.x.int32, TilemapOffset.y.int32, TilemapWidth, TilemapWidth, DarkBrown)
+  drawRectangleRounded(Rectangle(
+      x: TilemapOffset.x - 10, y: TilemapOffset.y - 10,
+      width: TilemapWidth + 20, height: TilemapWidth + 20
+    ), 0.1, 10, DarkBlue)
   for row in 0..<TileCount:
     for col in 0..<TileCount:
-      # Apply different colors based on tile selection state
-      let tileColor = if row == selectedRow and col == selectedCol: fade(Brown, 0.8)
-                      elif row == selectedRow or col == selectedCol: fade(Brown, 0.4)
-                      else: fade(Brown, 0.1)
-      drawRectangle(getTileRec(row.int32, col.int32), tileColor)
-      # Draw text in each cell
+      let tileColor = if row == selectedRow and col == selectedCol: fade(SkyBlue, 0.6)
+                      elif row == selectedRow or col == selectedCol: fade(Blue, 0.4)
+                      else: fade(Black, 0.2)
+      drawRectangleRounded(getTileRec(row.int32, col.int32), 0.2, 10, tileColor)
       drawBoxedText($grid[row][col], getTileRec(row.int32, col.int32), 40, LightGray)
+
+proc drawWinMessage() =
+  let winRect = Rectangle(
+    x: 0, y: screenHeight div 2 - 30,
+    width: screenWidth.float32, height: 60)
+  drawRectangle(winRect, colorAlpha(Green, 0.7))
+  drawBoxedText("You Win!", winRect, 40, White)
 
 # ----------------------------------------------------------------------------------------
 # Program main entry point
@@ -185,8 +192,7 @@ proc main() =
     # Draw the grid and game elements
     drawTilesGrid()
     if gameOver:
-      drawText("You Win!", getScreenWidth() div 2 - measureText("You Win!", 40) div 2,
-          getScreenHeight() div 2 - 20, 40, Green)
+      drawWinMessage()
     else:
       drawText(&"Moves: {moves}", 10, 10, 20, DarkGray)
     drawText("Press U to undo last move", 10, 420, 20, DarkGray)
