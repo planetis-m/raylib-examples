@@ -37,14 +37,15 @@ var
   selectedRow, selectedCol: int32 = -1
   moves: int32 = 0 # Count player moves
   gameOver = false
+  initialMoves = 3
 
 proc initGame() =
   # Initialize the game grid
   for row in 0..<TileCount:
     for col in 0..<TileCount:
       grid[row][col] = 9
-  # Randomly make 3 moves
-  for _ in 1..3:
+  # Randomly make initialMoves moves
+  for _ in 1..initialMoves:
     let row = rand(0..<TileCount)
     let col = rand(0..<TileCount)
     # Decrement chosen tile and surrounding cells
@@ -104,8 +105,7 @@ proc getTileRec(row, col: int32): Rectangle =
 proc handleInput() =
   const GridRec = Rectangle(
     x: TilemapOffset.x, y: TilemapOffset.y,
-    width: TilemapWidth, height: TilemapWidth
-  )
+    width: TilemapWidth, height: TilemapWidth)
   # Handle mouse input and update game state accordingly
   if isMouseButtonPressed(Left):
     # Get mouse position
@@ -126,10 +126,10 @@ proc handleInput() =
               inc moves # Update move count
               break outer
   # Check for undo command
-  if isKeyPressed(U):
+  if isKeyPressed(U) or isGestureDetected(SwipeRight):
     undoMove()
     gameOver = false
-  elif isKeyPressed(R):
+  elif isKeyPressed(R) or isGestureDetected(SwipeDown):
     initGame()
 
 proc drawBoxedText(text: string, rect: Rectangle, fontSize: int32, fgColor: Color) =
@@ -174,6 +174,11 @@ proc main() =
   # Set up the raylib window
   initWindow(screenWidth, screenHeight, "raylib example - target 9 puzzle")
   randomize()
+  # Create a radial gradient background
+  var gradientImage = genImageChecked(screenWidth, screenHeight, 20, 20,
+                                      colorAlpha(Gray, 0.1), RayWhite)
+  let background = loadTextureFromImage(gradientImage)
+  reset(gradientImage)
   # Initialize game state
   initGame()
   setTargetFPS(60)
@@ -189,6 +194,7 @@ proc main() =
     # ------------------------------------------------------------------------------------
     beginDrawing()
     clearBackground(RayWhite)
+    drawTexture(background, 0, 0, White)
     # Draw the grid and game elements
     drawTilesGrid()
     if gameOver:
