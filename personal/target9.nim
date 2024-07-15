@@ -26,6 +26,15 @@ const
   TileCount = 3
   TileWidth = (TilemapWidth - (TileCount + 1)*TileSpacing) div TileCount
 
+  # Color scheme
+  BackgroundColor = Color(r: 0x2c, g: 0x3e, b: 0x50, a: 255)  # Dark blue background
+  TileNormalColor = Color(r: 0xec, g: 0xf0, b: 0xf1, a: 255)  # Light gray tiles
+  TileHighlightColor = Color(r: 0x34, g: 0x98, b: 0xdb, a: 255)  # Blue highlight
+  TileSelectedColor = Color(r: 0xe7, g: 0x4c, b: 0x3c, a: 255)  # Red selected tile
+  TextColor = Color(r: 0x2c, g: 0x3e, b: 0x50, a: 255)  # Dark blue text
+  WinColor = Color(r: 0x2e, g: 0xcc, b: 0x71, a: 255)  # Green for win message
+  LoseColor = Color(r: 0xe7, g: 0x4c, b: 0x3c, a: 255)  # Red for lose message
+
 type
   Grid = array[TileCount, array[TileCount, int]] # Type for representing the grid of tiles
   Move = object
@@ -129,7 +138,7 @@ proc handleInput() =
   if isKeyPressed(U) or isGestureDetected(SwipeRight):
     undoMove()
     gameOver = false
-  elif isKeyPressed(R) or isGestureDetected(SwipeDown):
+  elif isKeyPressed(R) or isGestureDetected(SwipeUp):
     initGame()
 
 proc drawBoxedText(text: string, rect: Rectangle, fontSize: int32, fgColor: Color) =
@@ -148,25 +157,25 @@ proc drawTilesGrid() =
   drawRectangleRounded(Rectangle(
       x: TilemapOffset.x - 10, y: TilemapOffset.y - 10,
       width: TilemapWidth + 20, height: TilemapWidth + 20
-    ), 0.1, 10, DarkBlue)
+    ), 0.1, 10, BackgroundColor)
   for row in 0..<TileCount:
     for col in 0..<TileCount:
-      let tileColor = if row == selectedRow and col == selectedCol: fade(SkyBlue, 0.6)
-                      elif row == selectedRow or col == selectedCol: fade(Blue, 0.4)
-                      else: fade(Black, 0.2)
+      let tileColor = if row == selectedRow and col == selectedCol: TileSelectedColor
+                      elif row == selectedRow or col == selectedCol: TileHighlightColor
+                      else: TileNormalColor
       drawRectangleRounded(getTileRec(row.int32, col.int32), 0.2, 10, tileColor)
-      drawBoxedText($grid[row][col], getTileRec(row.int32, col.int32), 40, LightGray)
+      drawBoxedText($grid[row][col], getTileRec(row.int32, col.int32), 40, TextColor)
 
 proc drawGameOverMessage() =
   const messageRect = Rectangle(
     x: 0, y: screenHeight div 2 - 30,
     width: screenWidth, height: 60)
   if checkWin():
-    drawRectangle(messageRect, colorAlpha(Green, 0.6))
-    drawBoxedText("You Win!", messageRect, 40, White)
+    drawRectangle(messageRect, colorAlpha(WinColor, 0.6))
+    drawBoxedText("You Win!", messageRect, 40, TileNormalColor)
   else:
-    drawRectangle(messageRect, colorAlpha(Red, 0.6))
-    drawBoxedText("Game Over!", messageRect, 40, White)
+    drawRectangle(messageRect, colorAlpha(LoseColor, 0.6))
+    drawBoxedText("Game Over!", messageRect, 40, TileNormalColor)
 
 # ----------------------------------------------------------------------------------------
 # Program main entry point
