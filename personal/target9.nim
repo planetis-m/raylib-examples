@@ -33,7 +33,7 @@ const
   TileSelectedColor = Color(r: 0xe7, g: 0x4c, b: 0x3c, a: 255) # Red selected tile
   TextNormalColor = Color(r: 0x2c, g: 0x3e, b: 0x50, a: 255) # Dark blue text
   TextHighlightColor = Color(r: 0xec, g: 0xf0, b: 0xf1, a: 255) # Brighter text
-  TileSelectedRingColor = Color(r: 0xf3, g: 0x9c, b: 0x12, a: 255) # Selected tile's outer ring
+  TileSelectedRingColor = Color(r: 0xf3, g: 0x9c, b: 0x12, a: 255) # Brighter orange
   WinColor = Color(r: 0x2e, g: 0xcc, b: 0x71, a: 255) # Green for win message
   LoseColor = Color(r: 0xe7, g: 0x4c, b: 0x3c, a: 255) # Red for lose message
 
