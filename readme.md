@@ -51,7 +51,7 @@ This example is a solution to the "Beverage Bandits" problem from Advent of Code
 ### Shader Art Coding
 **File:** [shaderart.nim](personal/shaderart.nim)
 
-An introduction to Shader Art Coding, based on the YouTube tutorial by @kishimisu. This example demonstrates how to create interesting visual effects using shaders.
+An introduction to Shader Art Coding, based on the YouTube tutorial by @[kishimisu](https://github.com/kishimisu). This example demonstrates how to create interesting visual effects using shaders.
 
 ![Shader Art](media/shaderart.png)
 
