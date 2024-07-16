@@ -27,13 +27,15 @@ const
   TileWidth = (TilemapWidth - (TileCount + 1)*TileSpacing) div TileCount
 
   # Color scheme
-  BackgroundColor = Color(r: 0x2c, g: 0x3e, b: 0x50, a: 255)  # Dark blue background
-  TileNormalColor = Color(r: 0xec, g: 0xf0, b: 0xf1, a: 255)  # Light gray tiles
-  TileHighlightColor = Color(r: 0x34, g: 0x98, b: 0xdb, a: 255)  # Blue highlight
-  TileSelectedColor = Color(r: 0xe7, g: 0x4c, b: 0x3c, a: 255)  # Red selected tile
-  TextColor = Color(r: 0x2c, g: 0x3e, b: 0x50, a: 255)  # Dark blue text
-  WinColor = Color(r: 0x2e, g: 0xcc, b: 0x71, a: 255)  # Green for win message
-  LoseColor = Color(r: 0xe7, g: 0x4c, b: 0x3c, a: 255)  # Red for lose message
+  BackgroundColor = Color(r: 0x2c, g: 0x3e, b: 0x50, a: 255) # Dark blue background
+  TileNormalColor = Color(r: 0xec, g: 0xf0, b: 0xf1, a: 255) # Light gray tiles
+  TileHighlightColor = Color(r: 0x34, g: 0x98, b: 0xdb, a: 255) # Blue highlight
+  TileSelectedColor = Color(r: 0xe7, g: 0x4c, b: 0x3c, a: 255) # Red selected tile
+  TextNormalColor = Color(r: 0x2c, g: 0x3e, b: 0x50, a: 255) # Dark blue text
+  TextHighlightColor = Color(r: 0xec, g: 0xf0, b: 0xf1, a: 255) # Brighter text
+  TileSelectedRingColor = Color(r: 0xf3, g: 0x9c, b: 0x12, a: 255) # Selected tile's outer ring
+  WinColor = Color(r: 0x2e, g: 0xcc, b: 0x71, a: 255) # Green for win message
+  LoseColor = Color(r: 0xe7, g: 0x4c, b: 0x3c, a: 255) # Red for lose message
 
 type
   Grid = array[TileCount, array[TileCount, int]] # Type for representing the grid of tiles
@@ -160,11 +162,18 @@ proc drawTilesGrid() =
     ), 0.1, 10, BackgroundColor)
   for row in 0..<TileCount:
     for col in 0..<TileCount:
-      let tileColor = if row == selectedRow and col == selectedCol: TileSelectedColor
-                      elif row == selectedRow or col == selectedCol: TileHighlightColor
+      let tileRect = getTileRec(row.int32, col.int32)
+      let isSelected = row == selectedRow and col == selectedCol
+      let isHighlighted = row == selectedRow or col == selectedCol
+      let tileColor = if isSelected: TileSelectedColor
+                      elif isHighlighted: TileHighlightColor
                       else: TileNormalColor
-      drawRectangleRounded(getTileRec(row.int32, col.int32), 0.2, 10, tileColor)
-      drawBoxedText($grid[row][col], getTileRec(row.int32, col.int32), 40, TextColor)
+      drawRectangleRounded(tileRect, 0.2, 10, tileColor)
+      # Draw outer ring for selected tile
+      if isSelected:
+        drawRectangleRoundedLines(tileRect, 0.2, 10, 3, TileSelectedRingColor)
+      let textColor = if isSelected or isHighlighted: TextHighlightColor else: TextNormalColor
+      drawBoxedText($grid[row][col], tileRect, 40, textColor)
 
 proc drawGameOverMessage() =
   const messageRect = Rectangle(
