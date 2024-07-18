@@ -41,14 +41,22 @@ type
   Grid = array[TileCount, array[TileCount, int]] # Type for representing the grid of tiles
   Move = object
     row, col: int32
+  GameState = enum
+    Playing, Won, Lost
 
 var
   grid: Grid
   undoStack: seq[Move]
   selectedRow, selectedCol: int32 = -1
   remainingMoves: int32 # Count player moves
-  gameOver = false
+  gameState = Playing
   initialMoves: int32 = 3
+
+proc isIntentionalSwipe(gesture: Gesture): bool =
+  if isGestureDetected(gesture):
+    let dragVec = getGestureDragVector()
+    result = lengthSqr(dragVec) >= 0.4
+  else: result = false
 
 proc initGame() =
   # Initialize the game grid
@@ -70,7 +78,7 @@ proc initGame() =
   selectedRow = -1
   selectedCol = -1
   remainingMoves = initialMoves
-  gameOver = false
+  gameState = Playing
 
 proc checkWin(): bool =
   # Check if all tiles in the grid are 9 (win condition)
@@ -122,7 +130,7 @@ proc handleInput() =
     # Get mouse position
     let mousePos = getMousePosition()
     # Check if mouse is within tilemap bounds
-    if not gameOver and checkCollisionPointRec(mousePos, GridRec):
+    if gameState == Playing and checkCollisionPointRec(mousePos, GridRec):
       # Loop through each tile in the grid
       block outer:
         for row in 0..<TileCount:
@@ -137,10 +145,10 @@ proc handleInput() =
               dec remainingMoves # Update move count
               break outer
   # Check for undo command
-  if isKeyPressed(U) or isGestureDetected(SwipeRight):
+  if isKeyPressed(U) or isIntentionalSwipe(SwipeRight):
     undoMove()
-    gameOver = false
-  elif isKeyPressed(R) or isGestureDetected(SwipeUp):
+    gameState = Playing
+  elif isKeyPressed(R) or isIntentionalSwipe(SwipeUp):
     initGame()
 
 proc drawBoxedText(text: string, rect: Rectangle, fontSize: int32, fgColor: Color) =
@@ -179,7 +187,7 @@ proc drawGameOverMessage() =
   const messageRect = Rectangle(
     x: 0, y: screenHeight div 2 - 30,
     width: screenWidth, height: 60)
-  if checkWin():
+  if gameState == Won:
     drawRectangle(messageRect, colorAlpha(WinColor, 0.6))
     drawBoxedText("You Win!", messageRect, 40, TileNormalColor)
   else:
@@ -206,7 +214,8 @@ proc main() =
       # Update
       # ----------------------------------------------------------------------------------
       handleInput() # Handle mouse input and logic
-      gameOver = remainingMoves <= 0
+      if remainingMoves <= 0:
+        gameState = if checkWin(): Won else: Lost
       # ----------------------------------------------------------------------------------
       # Draw
       # ----------------------------------------------------------------------------------
@@ -214,10 +223,10 @@ proc main() =
       clearBackground(RayWhite)
       # Draw the grid and game elements
       drawTilesGrid()
-      if gameOver:
-        drawGameOverMessage()
-      else:
+      if gameState == Playing:
         drawText(&"Remaining moves: {remainingMoves}", 10, 10, 20, DarkGray)
+      else:
+        drawGameOverMessage()
       drawText("Press U to undo last move, R to start a new game.", 10, 420, 20, DarkGray)
       endDrawing()
       # ----------------------------------------------------------------------------------
