@@ -55,7 +55,7 @@ var
 proc isIntentionalSwipe(gesture: Gesture): bool =
   if isGestureDetected(gesture):
     let dragVec = getGestureDragVector()
-    result = lengthSqr(dragVec) >= 0.4
+    result = lengthSqr(dragVec) >= 0.375
   else: result = false
 
 proc initGame() =
