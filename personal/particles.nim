@@ -15,7 +15,7 @@ type
     size: float32
 
   ParticleSystem = object
-    buffer: ptr UncheckedArray[byte]
+    buffer: pointer
     pool: ObjPool[Particle]
     activeParticles: array[MaxParticles, ptr Particle]
     activeCount: int32
@@ -27,8 +27,8 @@ proc `=destroy`(x: var ParticleSystem) =
 proc createParticleSystem(): ParticleSystem =
   result = ParticleSystem(activeCount: 0)
   let memSize = sizeof(Particle)*MaxParticles
-  result.buffer = cast[ptr UncheckedArray[byte]](alloc(memSize))
-  result.pool = createObjPool[Particle](result.buffer.toOpenArray(0, memSize - 1))
+  result.buffer = alloc(memSize)
+  result.pool = createObjPool[Particle](result.buffer, memSize)
 
 proc updateParticle(particle: ptr Particle): bool =
   particle.position += particle.velocity
