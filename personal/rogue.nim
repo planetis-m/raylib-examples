@@ -76,7 +76,11 @@ proc parseEntityLayer(entities: array[MapWidth*MapHeight, int16]): (Cells, Units
   for i in 0..<MapWidth*MapHeight:
     # Calculate the row and column of the cell
     let (y, x) = divmod(i.int16, MapWidth)
-    cells[CellIdx(i)].position = (x, y)
+    cells[CellIdx(i)] = Cell(
+      position: (x, y),
+      unit: NilUnitIdx,
+      wall: Walls[i]
+    )
     case entities[i]
     of ElfTileIdx:
       units.add(Unit(race: Elf, cell: CellIdx(i), health: DefaultHealth))
@@ -88,8 +92,7 @@ proc parseEntityLayer(entities: array[MapWidth*MapHeight, int16]): (Cells, Units
       inc count
     else:
       cells[CellIdx(i)].unit = NilUnitIdx # No unit is present
-    cells[CellIdx(i)].wall = Walls[i]
-  result = (cells, units)
+  (cells, units)
 
 func healthToAlpha(health: int16): float32 {.inline.} =
   # Converts a unit's health value to the alpha parameter of
@@ -126,16 +129,16 @@ iterator neighbors(index: CellIdx): CellIdx =
 
 proc isOpenPosition(cells: Cells, index: CellIdx): bool {.inline.} =
   # Checks if a given cell index represents an open position
-  result = not cells[index].wall and cells[index].unit == NilUnitIdx
+  not cells[index].wall and cells[index].unit == NilUnitIdx
 
 proc heuristic(a, b: tuple[x, y: int16]): float32 {.inline.} =
   # Calculate the heuristic between two positions using the Euclidean distance formula
-  result = sqrt(float32((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y)))
+  sqrt(float32((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y)))
 
 proc cmp(a, b: CellIdx): int {.inline.} =
   # Compares two cell indices in reading order
   # Returns a negative value if a < b, 0 if a == b, and a positive value if a > b
-  result = a.int32 - b.int32
+  a.int32 - b.int32
 
 proc `<`(a, b: CellIdx): bool {.inline.} = cmp(a, b) < 0
 proc `<`(a, b: Unit): bool {.inline.} = a.cell < b.cell
@@ -176,7 +179,7 @@ proc `<`(a, b: TilePriority): bool {.inline.} =
     return true
   if planning[a].goal > planning[b].goal:
     return false
-  return a.CellIdx < b.CellIdx
+  a.CellIdx < b.CellIdx
 
 proc `not`(x: Race): Race = Race(not x.bool)
 

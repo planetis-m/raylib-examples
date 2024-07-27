@@ -15,7 +15,8 @@ task test, "Runs the test suite":
               "personal", "shaders", "shapes", "text", "textures"]:
     for f in listFiles(thisDir().quoteShell / dir):
       if f.endsWith("astar.nim") or f.endsWith("rogue.nim") or
-          f.endsWith("map7.nim") or f.endsWith("map14.nim"): continue # requires devel
+          f.endsWith("map7.nim") or f.endsWith("map14.nim") or
+          f.endsWith("maploader.nim": continue # requires devel
       if f.endsWith(".nim"):
         echo "Compiling example: ", f
         exec "nim c -d:release --verbosity:0 --hints:off " & quoteShell(f)
