@@ -165,7 +165,21 @@ proc `==`(a, b: CellIdx): bool {.borrow.}
 proc hash(x: CellIdx): Hash {.borrow.}
 
 proc `==`(a, b: TilePriority): bool {.borrow.}
-proc `<`(a, b: TilePriority): bool {.borrow.}
+
+# Stores the path planning information for each cell on the map
+var planning: array[CellIdx(MapWidth*MapHeight), PathPlanning]
+
+proc `<`(a, b: TilePriority): bool {.inline.} =
+  # Used to maintain the heap property
+  if planning[a].f < planning[b].f:
+    return true
+  if planning[a].f > planning[b].f:
+    return false
+  if planning[a].goal < planning[b].goal:
+    return true
+  if planning[a].goal > planning[b].goal:
+    return false
+  a.CellIdx < b.CellIdx
 
 proc `not`(x: Race): Race = Race(not x.bool)
 
@@ -215,23 +229,8 @@ proc main =
       let (tileX, tileY) = Tileset[Map[i]]
       let rec = Rectangle(x: tileX.float32, y: tileY.float32, width: TileSize, height: TileSize)
       drawTexture(tileset, rec, pos, FgColors[i])
-  # Stores the path planning information for each cell on the map
-  var planning: array[CellIdx(MapWidth*MapHeight), PathPlanning]
-
-  proc tileCmp(a, b: TilePriority): bool =
-    # Used to maintain the heap property
-    if planning[a].f < planning[b].f:
-      return true
-    if planning[a].f > planning[b].f:
-      return false
-    if planning[a].goal < planning[b].goal:
-      return true
-    if planning[a].goal > planning[b].goal:
-      return false
-    a.CellIdx < b.CellIdx
-
   # Declare the frontier queue and the discovered set for pathfinding
-  var frontier = initHeapQueue[TilePriority](tileCmp)
+  var frontier: HeapQueue[TilePriority]
   var discovered: HashSet[CellIdx]
   # Initialize the round counter and the battle simulation status
   var round: int32 = 0
