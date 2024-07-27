@@ -118,5 +118,5 @@ proc parseEntityLayer*(gameData: GameData): (Cells, Units) =
       discard # No unit is present
   (cells, units)
 
-let gameData = parseGameData("map7.txt")
-var (cells, units) = parseEntityLayer(gameData)
+let data = parseGameData("map7.txt")
+var (cells, units) = parseEntityLayer(data)
