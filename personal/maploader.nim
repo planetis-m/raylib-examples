@@ -59,7 +59,7 @@ proc parseGameData*(filename: string): GameData =
       of FgColors:
         result.fgColors.add(parts.mapIt(result.colors[it.parseInt()]))
       of Walls:
-        result.walls.add(parts.mapIt(it.parseBool()))
+        result.walls.add(parts.mapIt(it.parseInt().bool))
 
 proc parseEntityLayer*(gameData: GameData): (Cells, Units) =
   var
@@ -83,5 +83,5 @@ proc parseEntityLayer*(gameData: GameData): (Cells, Units) =
       cells[i].unit = UnitIdx(count)
       inc count
     else:
-      discard # No unit is present, NilUnitIdx is already set
+      discard # No unit is present
   (cells, units)

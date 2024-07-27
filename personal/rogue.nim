@@ -91,7 +91,7 @@ proc parseEntityLayer(entities: array[MapWidth*MapHeight, int16]): (Cells, Units
       cells[CellIdx(i)].unit = UnitIdx(count)
       inc count
     else:
-      cells[CellIdx(i)].unit = NilUnitIdx # No unit is present
+      discard # No unit is present
   (cells, units)
 
 func healthToAlpha(health: int16): float32 {.inline.} =
