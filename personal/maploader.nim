@@ -1,4 +1,4 @@
-import std/[strutils, sequtils]
+import std/[strutils, sequtils, math]
 
 type
   Section = enum
@@ -11,6 +11,28 @@ type
     FgColors,
     Walls,
 
+  Color = object
+    r, g, b, a: uint8
+
+  CellIdx = distinct int32
+  UnitIdx = distinct int32
+
+  Race = enum
+    Elf, Goblin
+
+  Unit = object
+    cell: CellIdx # Index of the cell the unit is on
+    health: int16
+    race: Race
+
+  Cell = object
+    position: tuple[x, y: int16]
+    unit: UnitIdx # Index of the unit on the cell (if any)
+    wall: bool # Is the cell a wall?
+
+  Cells = seq[Cell]
+  Units = seq[Unit]
+
   GameData* = object
     colors: seq[Color]
     elfColor, goblinColor: Color
@@ -21,6 +43,16 @@ type
     fgColors: seq[Color]
     walls: seq[bool]
 
+const
+  NilUnitIdx = UnitIdx(-1) # Invalid unit index
+  NilCellIdx = CellIdx(-1) # Invalid cell index
+
+  ElfTileIdx = 142
+  GoblinTileIdx = 123
+
+  AttackPower = 3
+  DefaultHealth = 200
+
 proc parseGameData*(filename: string): GameData =
   result = GameData()
   var
@@ -28,7 +60,7 @@ proc parseGameData*(filename: string): GameData =
     count = 0
   for line in lines(filename):
     inc count
-    if line.startsWith("#"):
+    if line.startsWith('#'):
       currentSection = parseEnum[Section](line.substr(1).strip)
     elif line.len > 0:
       let parts = line.split(',').mapIt(it.strip)
@@ -36,11 +68,11 @@ proc parseGameData*(filename: string): GameData =
         echo "illformed data at ", count, ": ", line
       case currentSection
       of Palette:
-        result.colors[parts[0].parseInt()] = Color(
-          r: parts[1].parseInt().uint8,
-          g: parts[2].parseInt().uint8,
-          b: parts[3].parseInt().uint8,
-          a: parts[4].parseInt().uint8
+        result.colors.add Color(
+          r: parts[0].parseInt().uint8,
+          g: parts[1].parseInt().uint8,
+          b: parts[2].parseInt().uint8,
+          a: 255
         )
       of RaceColors:
         case parts[0]
@@ -85,3 +117,6 @@ proc parseEntityLayer*(gameData: GameData): (Cells, Units) =
     else:
       discard # No unit is present
   (cells, units)
+
+let gameData = parseGameData("map7.txt")
+var (cells, units) = parseEntityLayer(gameData)
