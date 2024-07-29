@@ -16,8 +16,8 @@ import raylib, std/[algorithm, math, heapqueue, sets, hashes, fenv]
 # Include a compile-time map loader
 include maploader
 
-const (ElfColor, GoblinColor, MapWidth, MapHeight,
-       Map, Entities, BgColors, FgColors, Walls) = parseGameData("map14.txt")
+const (ElfColor, GoblinColor, MapWidth, MapHeight, Map,
+       Entities, BgColors, FgColors, Walls) = parseGameData("map14.txt")
 
 # Tileset properties
 const
