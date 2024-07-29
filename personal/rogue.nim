@@ -13,8 +13,11 @@
 
 import raylib, std/[algorithm, math, heapqueue, sets, hashes, fenv]
 
-# Include map data
-include map14
+# Include a compile-time map loader
+include maploader
+
+const (ElfColor, GoblinColor, MapWidth, MapHeight,
+       Map, Entities, BgColors, FgColors, Walls) = parseGameData("map14.txt")
 
 # Tileset properties
 const
@@ -69,13 +72,13 @@ const
   NilUnitIdx = UnitIdx(-1) # Invalid unit index
   NilCellIdx = CellIdx(-1) # Invalid cell index
 
-proc parseEntityLayer(entities: array[MapWidth*MapHeight, int16]): (Cells, Units) =
+proc parseEntityLayer(entities: seq[int16]): (Cells, Units) =
   var cells: Cells
   var units: seq[Unit] = @[]
   var count: int32 = 0
   for i in 0..<MapWidth*MapHeight:
     # Calculate the row and column of the cell
-    let (y, x) = divmod(i.int16, MapWidth)
+    let (y, x) = divmod(i.int16, MapWidth.int16)
     cells[CellIdx(i)] = Cell(
       position: (x, y),
       unit: NilUnitIdx,
@@ -121,7 +124,7 @@ iterator neighbors(index: CellIdx): CellIdx =
   # Returns the neighboring cell indices of a given cell index
   const offsets = [ # Stores all cardinal directions
     # Up, Left, Right, Down,
-    -MapWidth.int32, -1, 1, MapWidth
+    -MapWidth.int32, -1, 1, MapWidth.int32
   ]
   for x in offsets.items:
     # Relies on the fact that the map's borders are all walls
