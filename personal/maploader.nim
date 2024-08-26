@@ -24,8 +24,8 @@ proc parseGameData(filename: string): auto =
     colors: seq[Color]
     currentSection = Colors
     count = 0
-  template expectPartsLen(min: int) =
-    if parts.len < min:
+  template expectPartsLen(num: int) =
+    if parts.len != num:
       assert false, "illformed data at " & $count & ": " & line
   for line in staticRead(filename).splitLines():
     inc count
@@ -33,6 +33,8 @@ proc parseGameData(filename: string): auto =
       currentSection = parseEnum[Section](line.substr(1).strip)
     elif line.len > 0:
       let parts = line.split(',').mapIt(it.strip)
+      if currentSection in {TMap..TWalls}:
+        expectPartsLen(mapWidth)
       case currentSection
       of Colors:
         expectPartsLen(3)
@@ -53,7 +55,6 @@ proc parseGameData(filename: string): auto =
         of "Width": mapWidth = parts[1].parseInt()
         of "Height": mapHeight = parts[1].parseInt()
       of TMap:
-        # expectPartsLen(mapWidth)
         map.add(parts.mapIt(it.parseInt().int16))
       of TEntities:
         entities.add(parts.mapIt(it.parseInt().int16))
