@@ -211,8 +211,7 @@ proc main =
   # Load the tileset image
   let tileset = loadTexture("resources/lambdarogue.png")
   # Create RenderTexture2D objects for rendering to textures
-  # target is used for rendering the units, and background for the map
-  let target = loadRenderTexture(screenWidth, screenHeight)
+  let scene = loadRenderTexture(screenWidth, screenHeight)
   let background = loadRenderTexture(screenWidth, screenHeight)
   # Load the CRT shader
   let shader = loadShader("", "resources/shaders/retro_crt.fs")
@@ -365,7 +364,7 @@ proc main =
     # ------------------------------------------------------------------------------------
     # Draw
     # ------------------------------------------------------------------------------------
-    textureMode(target): # Enable drawing to texture
+    textureMode(scene): # Enable drawing to texture
       mode2D(camera):
         # Draw the background texture
         let src = Rectangle(x: 0, y: 0, width: background.texture.width.float32,
@@ -385,9 +384,9 @@ proc main =
       clearBackground(Black)
       shaderMode(shader):
         # Draw the target texture using the shader
-        let src = Rectangle(x: 0, y: 0, width: target.texture.width.float32,
-            height: -target.texture.height.float32)
-        drawTexture(target.texture, src, Vector2(x: 0, y: 0), White)
+        let src = Rectangle(x: 0, y: 0, width: scene.texture.width.float32,
+            height: -scene.texture.height.float32)
+        drawTexture(scene.texture, src, Vector2(x: 0, y: 0), White)
     # ------------------------------------------------------------------------------------
 
 main()
