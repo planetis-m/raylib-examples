@@ -20,7 +20,7 @@ type
     activeParticles: array[MaxParticles, ptr Particle]
     activeCount: int32
 
-proc `=destroy`(x: var ParticleSystem) =
+proc `=destroy`(x: ParticleSystem) =
   # x.pool.freeAll()
   dealloc(x.buffer)
 
