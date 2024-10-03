@@ -24,12 +24,13 @@ proc logCustom(msgType: TraceLogLevel; text: string) =
   var header = newStringOfCap(36)
   let timeStr = now().format("yyyy-MM-dd hh:mm:ss")
   header.add &"[{timeStr}] "
-  case msgType
-  of Info: header.add "[INFO]: "
-  of Error: header.add "[ERROR]: "
-  of Warning: header.add "[WARN]: "
-  of Debug: header.add "[DEBUG]: "
-  else: discard
+  header.add:
+    case msgType
+    of Info: "[INFO]: "
+    of Error: "[ERROR]: "
+    of Warning: "[WARN]: "
+    of Debug: "[DEBUG]: "
+    else: ""
   echo(header, text)
 
 proc main =

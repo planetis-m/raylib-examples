@@ -15,13 +15,13 @@ proc parseGameData(filename: string): auto =
   var
     elfColor, goblinColor: Color
     mapWidth, mapHeight: int
-    map: seq[int16]
-    entities: seq[int16]
-    bgColors: seq[Color]
-    fgColors: seq[Color]
-    walls: seq[bool]
+    map: seq[int16] = @[]
+    entities: seq[int16] = @[]
+    bgColors: seq[Color] = @[]
+    fgColors: seq[Color] = @[]
+    walls: seq[bool] = @[]
     # temporaries
-    colors: seq[Color]
+    colors: seq[Color] = @[]
     currentSection = Colors
     count = 0
   template expectPartsLen(num: int) =
