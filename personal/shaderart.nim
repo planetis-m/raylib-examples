@@ -14,8 +14,8 @@
 import raylib
 
 const
-  screenWidth = 800
-  screenHeight = 450
+  screenWidth = 600
+  screenHeight = 600
 
 const
   shaderCode = """
@@ -33,8 +33,8 @@ uniform float seconds;
 uniform vec2 size;
 
 // NOTE: Render size values should be passed from code
-const float renderWidth = 800;
-const float renderHeight = 450;
+const float renderWidth = 600;
+const float renderHeight = 600;
 
 vec3 palette(float t) {
   vec3 a = vec3(0.5, 0.5, 0.5);
