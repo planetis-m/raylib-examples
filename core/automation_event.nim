@@ -127,7 +127,7 @@ proc main =
   )
 
   # Automation events
-  var aelist = loadAutomationEventList(nil)
+  var aelist = loadAutomationEventList("")
   # Initialize list of automation events to record new events
   setAutomationEventList(aelist)
   var eventRecording = false
