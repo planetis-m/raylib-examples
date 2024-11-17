@@ -186,6 +186,12 @@ void main() {
 }
 """
 
+const
+  MaxFlowerParam = 20.0
+  MinFlowerParam = -20.0
+  VelocityStep = 0.02
+  VelocityBias = 0.01
+
 type Flower = object
   cubemap: TextureCubemap
   chromaticDispersion: Vector3
@@ -215,6 +221,34 @@ type Flower = object
   translation: Vector3
   velocity: Vector3
 
+proc `=destroy`(self: Flower) =
+  # Clean up resources when object is destroyed
+  if self.cubemap.id != 0:
+    unloadTexture(self.cubemap.id)
+  #if self.modelShader.id != 0:
+  #  unloadShader(self.modelShader.id)
+  #if self.model.meshCount != 0:
+  #  unloadModel(self.model.id)
+
+proc `=copy`(dest: var Flower, source: Flower) {.error.} =
+  # Disable copying since we manage unique resources
+  discard
+
+proc `=sink`(dest: var Flower, source: Flower) =
+  # Move resources from source to destination
+  if dest.cubemap.id != 0:
+    unloadTexture(dest.cubemap.id)
+  #if dest.modelShader.id != 0:
+  #  unloadShader(dest.modelShader.id)
+  #if dest.model.meshCount != 0:
+  #  unloadModel(dest.model.id)
+
+  dest = source
+  # Zero out source to prevent double-free
+  #source.cubemap.id = 0
+  #source.modelShader.id = 0
+  #source.model.meshCount = 0
+
 proc initialize(self: var Flower) =
   self.translation = Vector3(x:0, y:0, z:0)
   self.velocity = Vector3( x:rand(1.0) * 0.02 - 0.01, y:rand(1.0) * 0.02 - 0.01, z:rand(1.0) * 0.02 - 0.01)
@@ -226,6 +260,8 @@ proc build(self: var Flower) =
   self.model.materials[0].shader = self.modelShader
 
   var image = loadImage("resources/skybox.png")  # TODO Replace with your texture path
+  if image.data == nil:
+    raise newException(IOError, "Failed to load skybox.png texture")
   self.cubemap = loadTextureCubemap(image, CubemapLayout.CrossThreeByFour)
   reset(image)
 
@@ -303,20 +339,23 @@ proc animate(self: var Flower, camera: var Camera3D) =
   endShaderMode()
 
   self.a += rand(1.0) * 0.02 - 0.1f
-  if self.a > 20:
-    self.a = 20
-  if self.a < -20:
-    self.a = -20
+  if self.a > MaxFlowerParam:
+    self.a = MaxFlowerParam
+  if self.a < MinFlowerParam:
+    self.a = MinFlowerParam
+
   self.b += rand(1.0) * 0.02 - 0.1f
-  if self.b > 20:
-    self.b = 20
-  if self.b < -20:
-    self.b = -20
+  if self.b > MaxFlowerParam:
+    self.b = MaxFlowerParam
+  if self.b < MinFlowerParam:
+    self.b = MinFlowerParam
+
   self.c += rand(1.0) * 0.5 - 0.25
   if self.c > 5:
     self.c = 5
   if self.c < -5:
     self.c = -5
+
   self.d += rand(1.0) * 0.5 - 0.25
   if self.d > 5:
     self.d = 5
@@ -328,13 +367,7 @@ proc animate(self: var Flower, camera: var Camera3D) =
     y:self.translation.y + self.velocity.y,
     z:self.translation.z + self.velocity.z)
 
-  iterator countTo(n: int): int =
-    var i = 0
-    while i <= n:
-      yield i
-      inc i
-
-  for j in countTo(2):
+  for f in 0..<3:
     if system.abs(self.translation.x) > 10:
       initialize(self)
     elif system.abs(self.translation.y) > 10:
@@ -400,29 +433,42 @@ proc main() =
   skybox.materials[0].shader = skyboxShader
 
   var image = loadImage("resources/skybox.png")  # TODO Replace with your texture path
+  if image.data == nil:
+    raise newException(IOError, "Failed to load skybox.png texture")
   var cubemap = loadTextureCubemap(image, CubemapLayout.AutoDetect)
   reset(image)
 
   # Debugging output
   if skyboxShader.id == 0:
     echo "Failed to load skyboxShader"
+    return
+
+  if cubemap.id == 0:
+    echo "Failed to load cubemap"
+    return
 
   skybox.materials[0].maps[MaterialMapIndex.Cubemap].texture = cubemap
 
   var img = genImageChecked(64, 64, 32, 32, DarkBrown, DarkGray)
   var backgroundTexture = loadTextureFromImage(img)
 
-  var flowers: seq[Flower]
-
   let FLOWERS = 25
+
+  var flowers: seq[Flower]
 
   flowers.setLen(FLOWERS + 1)
 
-  for f in 0..FLOWERS:
-    flowers.add(Flower())
-
-  for f in 0..FLOWERS:
+  for f in 0..<flowers.len:
     build(flowers[f])
+
+  defer:
+    unloadTexture(backgroundTexture.id)
+    unloadTexture(cubemap.id)
+    # unloadModel(skybox.id)
+    # unloadShader(skyboxShader.id)
+    # unloadImage(img.id)
+    for f in 0..<flowers.len:
+      `=destroy`(flowers[f])
 
   var cubemapSkyboxLoc = getShaderLocation(skyboxShader, "environmentMap")
   echo "environmentMap ", cubemapSkyboxLoc.int32
@@ -448,7 +494,7 @@ proc main() =
 
     disableBackfaceCulling()
 
-    for f in 0..FLOWERS:
+    for f in 0..<flowers.len:
       animate(flowers[f], orbit.camera)
 
     beginShaderMode(skyboxShader)
