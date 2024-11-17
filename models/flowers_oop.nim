@@ -191,72 +191,57 @@ const
   MinFlowerParam = -20.0
   VelocityStep = 0.02
   VelocityBias = 0.01
+  Flowers = 25
 
-type Flower = object
-  cubemap: TextureCubemap
-  chromaticDispersion: Vector3
-  bias: float32
-  scale: float32
-  power: float32
-  a: float32
-  b: float32
-  c: float32
-  d: float32
-  tdelta: float32
-  pdelta: float32
-  cubemapModelLoc: ShaderLocation
-  chromaticDispersionLoc: ShaderLocation
-  biasLoc: ShaderLocation
-  scaleLoc: ShaderLocation
-  powerLoc: ShaderLocation
-  aLoc: ShaderLocation
-  bLoc: ShaderLocation
-  cLoc: ShaderLocation
-  dLoc: ShaderLocation
-  tdeltaLoc: ShaderLocation
-  pdeltaLoc: ShaderLocation
-  viewLoc: ShaderLocation
-  model: Model
-  modelShader: Shader
-  translation: Vector3
-  velocity: Vector3
+type
+  Flower = object
+    chromaticDispersion: Vector3
+    bias: float32
+    scale: float32
+    power: float32
+    a: float32
+    b: float32
+    c: float32
+    d: float32
+    tdelta: float32
+    pdelta: float32
+    cubemapModelLoc: ShaderLocation
+    chromaticDispersionLoc: ShaderLocation
+    biasLoc: ShaderLocation
+    scaleLoc: ShaderLocation
+    powerLoc: ShaderLocation
+    aLoc: ShaderLocation
+    bLoc: ShaderLocation
+    cLoc: ShaderLocation
+    dLoc: ShaderLocation
+    tdeltaLoc: ShaderLocation
+    pdeltaLoc: ShaderLocation
+    viewLoc: ShaderLocation
+    model: ref Model
+    modelShader: ref Shader
+    translation: Vector3
+    velocity: Vector3
 
 proc initialize(self: var Flower) =
-  self.translation = Vector3(x:0, y:0, z:0)
-  self.velocity = Vector3( x:rand(1.0) * 0.02 - 0.01, y:rand(1.0) * 0.02 - 0.01, z:rand(1.0) * 0.02 - 0.01)
+  self.translation = Vector3(x: 0, y: 0, z: 0)
+  self.velocity = Vector3(x: rand(1.0) * 0.02 - 0.01, y: rand(1.0) * 0.02 - 0.01, z: rand(1.0) * 0.02 - 0.01)
 
-proc build(self: var Flower) =
-  var sphere = genMeshSphere(10, 64, 64)
-  self.model = loadModelFromMesh(sphere)
-  self.modelShader = loadShaderFromMemory(vertexModelShader, fragmentModelShader)
-  self.model.materials[0].shader = self.modelShader
+proc build(self: var Flower; model: sink ref Model, modelShader: sink ref Shader) =
+  self.model = model
+  self.modelShader = modelShader
 
-  var image = loadImage("resources/skybox.png")  # TODO Replace with your texture path
-  if image.data == nil:
-    raise newException(IOError, "Failed to load skybox.png texture")
-  self.cubemap = loadTextureCubemap(image, CubemapLayout.CrossThreeByFour)
-  reset(image)
-
-  # Debugging output
-  if self.model.meshCount == 0:
-    echo "Failed to load model"
-  if self.modelShader.id == 0:
-    echo "Failed to load modelShader"
-
-  self.model.materials[0].maps[MaterialMapIndex.Cubemap].texture = self.cubemap
-
-  self.cubemapModelLoc = getShaderLocation(self.modelShader, "environmentMap")
-  self.chromaticDispersionLoc = getShaderLocation(self.modelShader, "chromaticDispersion")
-  self.biasLoc = getShaderLocation(self.modelShader, "bias")
-  self.scaleLoc = getShaderLocation(self.modelShader, "scale")
-  self.powerLoc = getShaderLocation(self.modelShader, "power")
-  self.aLoc = getShaderLocation(self.modelShader, "a")
-  self.bLoc = getShaderLocation(self.modelShader, "b")
-  self.cLoc = getShaderLocation(self.modelShader, "c")
-  self.dLoc = getShaderLocation(self.modelShader, "d")
-  self.tdeltaLoc = getShaderLocation(self.modelShader, "tdelta")
-  self.pdeltaLoc = getShaderLocation(self.modelShader, "pdelta")
-  self.viewLoc = getShaderLocation(self.modelShader, "view")
+  self.cubemapModelLoc = getShaderLocation(self.modelShader[], "environmentMap")
+  self.chromaticDispersionLoc = getShaderLocation(self.modelShader[], "chromaticDispersion")
+  self.biasLoc = getShaderLocation(self.modelShader[], "bias")
+  self.scaleLoc = getShaderLocation(self.modelShader[], "scale")
+  self.powerLoc = getShaderLocation(self.modelShader[], "power")
+  self.aLoc = getShaderLocation(self.modelShader[], "a")
+  self.bLoc = getShaderLocation(self.modelShader[], "b")
+  self.cLoc = getShaderLocation(self.modelShader[], "c")
+  self.dLoc = getShaderLocation(self.modelShader[], "d")
+  self.tdeltaLoc = getShaderLocation(self.modelShader[], "tdelta")
+  self.pdeltaLoc = getShaderLocation(self.modelShader[], "pdelta")
+  self.viewLoc = getShaderLocation(self.modelShader[], "view")
 
   echo "environmentMap ", self.cubemapModelLoc.int32
   echo "chromaticDispersion ", self.chromaticDispersionLoc.int32
@@ -285,29 +270,28 @@ proc build(self: var Flower) =
 
   var screenSize = [getScreenWidth().float32, getScreenHeight().float32]
 
-  setShaderValue(self.modelShader, getShaderLocation(self.modelShader, "size"), screenSize)
-  setShaderValue(self.modelShader, self.cubemapModelLoc, mapIndex)
+  setShaderValue(self.modelShader[], getShaderLocation(self.modelShader[], "size"), screenSize)
+  setShaderValue(self.modelShader[], self.cubemapModelLoc, mapIndex)
 
   initialize(self)
 
 proc animate(self: var Flower, camera: var Camera3D) =
-  
   var viewMatrix = getCameraMatrix(camera)
 
-  setShaderValue(self.modelShader, self.chromaticDispersionLoc, self.chromaticDispersion)
-  setShaderValue(self.modelShader, self.biasLoc, self.bias.float32)
-  setShaderValue(self.modelShader, self.scaleLoc, self.scale.float32)
-  setShaderValue(self.modelShader, self.powerLoc, self.power.float32)
-  setShaderValue(self.modelShader, self.aLoc, self.a.float32)
-  setShaderValue(self.modelShader, self.bLoc, self.b.float32)
-  setShaderValue(self.modelShader, self.cLoc, self.c.float32)
-  setShaderValue(self.modelShader, self.dLoc, self.d.float32)
-  setShaderValue(self.modelShader, self.tdeltaLoc, self.tdelta.float32)
-  setShaderValue(self.modelShader, self.pdeltaLoc, self.pdelta.float32)
-  setShaderValueMatrix(self.modelShader, self.viewLoc, viewMatrix)
+  setShaderValue(self.modelShader[], self.chromaticDispersionLoc, self.chromaticDispersion)
+  setShaderValue(self.modelShader[], self.biasLoc, self.bias.float32)
+  setShaderValue(self.modelShader[], self.scaleLoc, self.scale.float32)
+  setShaderValue(self.modelShader[], self.powerLoc, self.power.float32)
+  setShaderValue(self.modelShader[], self.aLoc, self.a.float32)
+  setShaderValue(self.modelShader[], self.bLoc, self.b.float32)
+  setShaderValue(self.modelShader[], self.cLoc, self.c.float32)
+  setShaderValue(self.modelShader[], self.dLoc, self.d.float32)
+  setShaderValue(self.modelShader[], self.tdeltaLoc, self.tdelta.float32)
+  setShaderValue(self.modelShader[], self.pdeltaLoc, self.pdelta.float32)
+  setShaderValueMatrix(self.modelShader[], self.viewLoc, viewMatrix)
 
-  beginShaderMode(self.modelShader)
-  drawModel(self.model, self.translation, 0.04f, White)
+  beginShaderMode(self.modelShader[])
+  drawModel(self.model[], self.translation, 0.04f, White)
   endShaderMode()
 
   self.a += rand(1.0) * 0.02 - 0.1f
@@ -405,33 +389,30 @@ proc main() =
   skybox.materials[0].shader = skyboxShader
 
   var image = loadImage("resources/skybox.png")  # TODO Replace with your texture path
-  if image.data == nil:
-    raise newException(IOError, "Failed to load skybox.png texture")
   var cubemap = loadTextureCubemap(image, CubemapLayout.AutoDetect)
   reset(image)
-
-  # Debugging output
-  if skyboxShader.id == 0:
-    echo "Failed to load skyboxShader"
-    return
-
-  if cubemap.id == 0:
-    echo "Failed to load cubemap"
-    return
 
   skybox.materials[0].maps[MaterialMapIndex.Cubemap].texture = cubemap
 
   var img = genImageChecked(64, 64, 32, 32, DarkBrown, DarkGray)
   var backgroundTexture = loadTextureFromImage(img)
 
-  let FLOWERS = 25
-
   var flowers: seq[Flower]
+  flowers.setLen(Flowers)
 
-  flowers.setLen(FLOWERS + 1)
+  let sphere = genMeshSphere(10, 64, 64)
+  var flowerModel: ref Model
+  new(flowerModel)
+  flowerModel[] = loadModelFromMesh(sphere)
+  var flowerShader: ref Shader
+  new(flowerShader)
+  flowerShader[] = loadShaderFromMemory(vertexModelShader, fragmentModelShader)
+  flowerModel[].materials[0].shader = flowerShader[]
+
+  flowerModel[].materials[0].maps[MaterialMapIndex.Cubemap].texture = cubemap
 
   for f in 0..<flowers.len:
-    build(flowers[f])
+    build(flowers[f], flowerModel, flowerShader)
 
   var cubemapSkyboxLoc = getShaderLocation(skyboxShader, "environmentMap")
   echo "environmentMap ", cubemapSkyboxLoc.int32
