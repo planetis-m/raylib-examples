@@ -433,10 +433,6 @@ proc main() =
   for f in 0..<flowers.len:
     build(flowers[f])
 
-  defer:
-    for f in 0..<flowers.len:
-      `=destroy`(flowers[f])
-
   var cubemapSkyboxLoc = getShaderLocation(skyboxShader, "environmentMap")
   echo "environmentMap ", cubemapSkyboxLoc.int32
 
