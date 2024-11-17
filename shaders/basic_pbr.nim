@@ -258,7 +258,7 @@ proc main =
     setShaderValue(shader, emissiveColorLoc, carEmissiveColor)
     let emissiveIntensity: float32 = 0.01
     setShaderValue(shader, emissiveIntensityLoc, emissiveIntensity)
-    drawModel(car, Vector3(), 0.005, White)
+    drawModel(car, Vector3(), 0.25, White)
     # Draw car model
     # Draw spheres to show the lights positions
     for i in 0..<MaxLights:
