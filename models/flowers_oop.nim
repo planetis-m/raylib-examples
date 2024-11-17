@@ -225,8 +225,9 @@ proc build(self: var Flower) =
   self.modelShader = loadShaderFromMemory(vertexModelShader, fragmentModelShader)
   self.model.materials[0].shader = self.modelShader
 
-  var image = loadImage("resources/skybox.png")  # TODO Replace with your texture path
-  self.cubemap = loadTextureCubemap(image, CubemapLayout.AutoDetect);
+  var image = loadImage("resources/skybox.png")  # Replace with your texture path
+  self.cubemap = loadTextureCubemap(image, CubemapLayout.CrossThreeByFour)
+  reset(image)
 
   # Debugging output
   if self.model.meshCount == 0:
@@ -335,15 +336,15 @@ proc animate(self: var Flower, camera: var Camera3D) =
 
   for j in countTo(2):
     if system.abs(self.translation.x) > 10:
-      initialize(self);
+      initialize(self)
     elif system.abs(self.translation.y) > 10:
-      initialize(self);
+      initialize(self)
     elif system.abs(self.translation.z) > 10:
-      initialize(self);
+      initialize(self)
     else:
-      self.velocity.x += rand(1.0) * 0.02 - 0.01;
-      self.velocity.y += rand(1.0) * 0.02 - 0.01;
-      self.velocity.z += rand(1.0) * 0.02 - 0.01;
+      self.velocity.x += rand(1.0) * 0.02 - 0.01
+      self.velocity.y += rand(1.0) * 0.02 - 0.01
+      self.velocity.z += rand(1.0) * 0.02 - 0.01
 
 const
   OrbitSpeed = 0.5f
@@ -399,8 +400,8 @@ proc main() =
   skybox.materials[0].shader = skyboxShader
 
   var image = loadImage("resources/skybox.png")  # Replace with your texture path
-
-  var cubemap = loadTextureCubemap(image, CubemapLayout.AutoDetect);
+  var cubemap = loadTextureCubemap(image, CubemapLayout.AutoDetect)
+  reset(image)
 
   # Debugging output
   if skyboxShader.id == 0:
