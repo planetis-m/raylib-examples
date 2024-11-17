@@ -221,34 +221,6 @@ type Flower = object
   translation: Vector3
   velocity: Vector3
 
-proc `=destroy`(self: Flower) =
-  # Clean up resources when object is destroyed
-  if self.cubemap.id != 0:
-    unloadTexture(self.cubemap.id)
-  #if self.modelShader.id != 0:
-  #  unloadShader(self.modelShader.id)
-  #if self.model.meshCount != 0:
-  #  unloadModel(self.model.id)
-
-proc `=copy`(dest: var Flower, source: Flower) {.error.} =
-  # Disable copying since we manage unique resources
-  discard
-
-proc `=sink`(dest: var Flower, source: Flower) =
-  # Move resources from source to destination
-  if dest.cubemap.id != 0:
-    unloadTexture(dest.cubemap.id)
-  #if dest.modelShader.id != 0:
-  #  unloadShader(dest.modelShader.id)
-  #if dest.model.meshCount != 0:
-  #  unloadModel(dest.model.id)
-
-  dest = source
-  # Zero out source to prevent double-free
-  #source.cubemap.id = 0
-  #source.modelShader.id = 0
-  #source.model.meshCount = 0
-
 proc initialize(self: var Flower) =
   self.translation = Vector3(x:0, y:0, z:0)
   self.velocity = Vector3( x:rand(1.0) * 0.02 - 0.01, y:rand(1.0) * 0.02 - 0.01, z:rand(1.0) * 0.02 - 0.01)
@@ -462,11 +434,6 @@ proc main() =
     build(flowers[f])
 
   defer:
-    unloadTexture(backgroundTexture.id)
-    unloadTexture(cubemap.id)
-    # unloadModel(skybox.id)
-    # unloadShader(skyboxShader.id)
-    # unloadImage(img.id)
     for f in 0..<flowers.len:
       `=destroy`(flowers[f])
 
