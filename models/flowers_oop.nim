@@ -186,7 +186,7 @@ void main() {
 }
 """
 
-type Flower = ref object
+type Flower = object
   cubemap: TextureCubemap
   chromaticDispersion: Vector3
   bias: float32
@@ -225,7 +225,7 @@ proc build(self: var Flower) =
   self.modelShader = loadShaderFromMemory(vertexModelShader, fragmentModelShader)
   self.model.materials[0].shader = self.modelShader
 
-  var image = loadImage("resources/skybox.png")  # Replace with your texture path
+  var image = loadImage("resources/skybox.png")  # TODO Replace with your texture path
   self.cubemap = loadTextureCubemap(image, CubemapLayout.CrossThreeByFour)
   reset(image)
 
@@ -399,7 +399,7 @@ proc main() =
   var skyboxShader = loadShaderFromMemory(vertexSkyboxShader, fragmentSkyboxShader)
   skybox.materials[0].shader = skyboxShader
 
-  var image = loadImage("resources/skybox.png")  # Replace with your texture path
+  var image = loadImage("resources/skybox.png")  # TODO Replace with your texture path
   var cubemap = loadTextureCubemap(image, CubemapLayout.AutoDetect)
   reset(image)
 
@@ -415,6 +415,8 @@ proc main() =
   var flowers: seq[Flower]
 
   let FLOWERS = 25
+
+  flowers.setLen(FLOWERS + 1)
 
   for f in 0..FLOWERS:
     flowers.add(Flower())
