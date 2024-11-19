@@ -5,7 +5,8 @@ const
   screenHeight = 540
   vertexSkyboxShader =
     """
-#version 330 core
+#version 300 es
+precision highp float;
 uniform mat4 mvp;
 
 in vec3 vertexPosition;
@@ -30,8 +31,8 @@ void main()
 }
 """
   fragmentSkyboxShader = """
-#version 330 core
-#extension GL_NV_shadow_samplers_cube : enable
+#version 300 es
+precision highp float;
 
 in vec3 fragPosition;
 uniform samplerCube environmentMap;
@@ -46,7 +47,8 @@ void main() {
 
   vertexModelShader =
     """
-#version 330 core
+#version 300 es
+precision highp float;
 /*
 The MIT License (MIT)
 Copyright (c) 2011 Authors of J3D. All rights reserved.
@@ -151,8 +153,8 @@ void main()
 
 """
   fragmentModelShader = """
-#version 330 core
-#extension GL_NV_shadow_samplers_cube : enable
+#version 300 es
+precision highp float;
 /*
 The MIT License (MIT)
 Copyright (c) 2011 Authors of J3D. All rights reserved.
@@ -176,12 +178,21 @@ out vec4 finalColor;
 
 void main() {
 
+#ifdef GL_ES
+    vec4 ref = texture(environmentMap, t);
+    vec4 ret = vec4(1.0);
+
+    ret.r = texture(environmentMap, tr).r;
+    ret.g = texture(environmentMap, tg).g;
+    ret.b = texture(environmentMap, tb).b;
+#else
     vec4 ref = textureCube(environmentMap, t);
     vec4 ret = vec4(1.0);
 
     ret.r = textureCube(environmentMap, tr).r;
     ret.g = textureCube(environmentMap, tg).g;
     ret.b = textureCube(environmentMap, tb).b;
+#endif
     finalColor = ret * rfac + ref * (1.0 - rfac);
 }
 """
