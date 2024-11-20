@@ -28,7 +28,7 @@ when defined(GraphicsApiOpenGl33):
     glslVersion = 330
 else:
   const
-    glslVersion = 120
+    glslVersion = 100
 
 const
   MaxLights = 4
@@ -250,16 +250,16 @@ proc main =
     setShaderValue(shader, textureTilingLoc, floorTextureTiling)
     let floorEmissiveColor = colorNormalize(floor.materials[0].maps[Emission].color)
     setShaderValue(shader, emissiveColorLoc, floorEmissiveColor)
-    drawModel(floor, Vector3(), 5, White)
     # Draw floor model
+    drawModel(floor, Vector3(), 5, White)
     # Set old car model texture tiling, emissive color and emissive intensity parameters on shader
     setShaderValue(shader, textureTilingLoc, carTextureTiling)
     let carEmissiveColor = colorNormalize(car.materials[0].maps[Emission].color)
     setShaderValue(shader, emissiveColorLoc, carEmissiveColor)
     let emissiveIntensity: float32 = 0.01
     setShaderValue(shader, emissiveIntensityLoc, emissiveIntensity)
-    drawModel(car, Vector3(), 0.25, White)
     # Draw car model
+    drawModel(car, Vector3(), 0.25, White)
     # Draw spheres to show the lights positions
     for i in 0..<MaxLights:
       let lightColor = Color(
