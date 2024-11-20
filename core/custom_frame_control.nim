@@ -9,8 +9,8 @@
 #       3. Frame time control: WaitTime()
 #       4. PollInputEvents()
 #
-#   To avoid steps 2, 3 and 4, flag SUPPORT_CUSTOM_FRAME_CONTROL can be enabled in
-#   config.h (it requires recompiling raylib). This way those steps are up to the user.
+#   To avoid steps 2, 3 and 4, define NaylibSupportCustomFrameControl can be enabled in
+#   config.nims. This way those steps are up to the user.
 #
 #   Note that enabling this flag invalidates some functions:
 #       - GetFrameTime()
@@ -26,8 +26,6 @@
 # ****************************************************************************************
 
 import raylib, std/[lenientops, strformat]
-
-{.passC: "-DSUPPORT_CUSTOM_FRAME_CONTROL=1".}
 
 const
   screenWidth = 800
