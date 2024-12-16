@@ -17,7 +17,7 @@
 #
 # ****************************************************************************************
 
-import raylib, rlgl
+import raylib, rlgl, std/syncio
 
 const
   # IMPORTANT: This must match gol*.glsl GOL_WIDTH constant.

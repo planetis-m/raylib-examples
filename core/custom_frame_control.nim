@@ -3,19 +3,19 @@
 #   raylib [core] example - custom frame control
 #
 #   WARNING: This is an example for advance users willing to have full control over
-#   the frame processes. By default, EndDrawing() calls the following processes:
-#       1. Draw remaining batch data: rlDrawRenderBatchActive()
-#       2. SwapScreenBuffer()
-#       3. Frame time control: WaitTime()
-#       4. PollInputEvents()
+#   the frame processes. By default, endDrawing() calls the following processes:
+#       1. Draw remaining batch data: drawRenderBatchActive()
+#       2. swapScreenBuffer()
+#       3. Frame time control: waitTime()
+#       4. pollInputEvents()
 #
 #   To avoid steps 2, 3 and 4, define NaylibSupportCustomFrameControl can be enabled in
 #   config.nims. This way those steps are up to the user.
 #
 #   Note that enabling this flag invalidates some functions:
-#       - GetFrameTime()
-#       - SetTargetFPS()
-#       - GetFPS()
+#       - getFrameTime()
+#       - setTargetFPS()
+#       - getFPS()
 #
 #   This example has been created using raylib 3.8 (www.raylib.com)
 #   raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
