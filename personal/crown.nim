@@ -1,5 +1,6 @@
 # Developed in 2021 by greenfork
 # Reviewed in 2023 by planetis-m
+# Reviewed in 2025 by ILiekCarot
 
 import std/math, raylib
 
@@ -92,13 +93,13 @@ proc main =
       let
         text = "I AM NIM"
         fontSize: int32 = 40
-        textWidth = measureText("I AM NIM", fontSize)
+        textWidth = measureText(text, fontSize)
         verticalPos = int32(getScreenHeight().float32*0.4'f32)
 
       drawText(text, (getScreenWidth() - textWidth) div 2,  # center
           (getScreenHeight() + verticalPos) div 2, fontSize, Black)
-      drawText(if pause: "Press Space or tap to continue"
-          else: "Press Space or tap to pause", 10, 10, 20, Black)
+      drawText("Press Space or tap to " & (if pause: "continue"
+          else: "pause"), 10, 10, 20, Black)
 
   closeWindow()
 
