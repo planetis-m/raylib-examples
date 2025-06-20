@@ -158,6 +158,9 @@ proc main =
   let ambientLoc = getShaderLocation(shader, "ambient")
   setShaderValue(shader, ambientColorLoc, ambientColorNormalized)
   setShaderValue(shader, ambientLoc, ambientIntensity)
+  # Get location for shader parameters that can be modified in real time
+  let metallicValueLoc = getShaderLocation(shader, "metallicValue")
+  let roughnessValueLoc = getShaderLocation(shader, "roughnessValue")
   let emissiveIntensityLoc = getShaderLocation(shader, "emissivePower")
   let emissiveColorLoc = getShaderLocation(shader, "emissiveColor")
   let textureTilingLoc = getShaderLocation(shader, "tiling")
@@ -175,7 +178,7 @@ proc main =
   car.materials[0].shader = shader
   # Setup materials[0].maps default parameters
   car.materials[0].maps[Albedo].color = White
-  car.materials[0].maps[Metalness].value = 0
+  car.materials[0].maps[Metalness].value = 1
   car.materials[0].maps[Roughness].value = 0
   car.materials[0].maps[Occlusion].value = 1
   car.materials[0].maps[Emission].color = Color(r: 255, g: 162, b: 0, a: 255)
@@ -195,8 +198,8 @@ proc main =
   # Assign material shader for our floor model, same PBR shader
   floor.materials[0].shader = shader
   floor.materials[0].maps[Albedo].color = White
-  floor.materials[0].maps[Metalness].value = 0
-  floor.materials[0].maps[Roughness].value = 0
+  floor.materials[0].maps[Metalness].value = 0.8
+  floor.materials[0].maps[Roughness].value = 0.1
   floor.materials[0].maps[Occlusion].value = 1
   floor.materials[0].maps[Emission].color = Black
   floor.materials[0].maps[Albedo].texture = floorAlbedoTex
@@ -250,6 +253,9 @@ proc main =
     setShaderValue(shader, textureTilingLoc, floorTextureTiling)
     let floorEmissiveColor = colorNormalize(floor.materials[0].maps[Emission].color)
     setShaderValue(shader, emissiveColorLoc, floorEmissiveColor)
+    # Set floor metallic and roughness values
+    setShaderValue(shader, metallicValueLoc, floor.materials[0].maps[Metalness].value)
+    setShaderValue(shader, roughnessValueLoc, floor.materials[0].maps[Roughness].value)
     # Draw floor model
     drawModel(floor, Vector3(), 5, White)
     # Set old car model texture tiling, emissive color and emissive intensity parameters on shader
@@ -258,6 +264,9 @@ proc main =
     setShaderValue(shader, emissiveColorLoc, carEmissiveColor)
     let emissiveIntensity: float32 = 0.01
     setShaderValue(shader, emissiveIntensityLoc, emissiveIntensity)
+    # Set old car metallic and roughness values
+    setShaderValue(shader, metallicValueLoc, car.materials[0].maps[Metalness].value)
+    setShaderValue(shader, roughnessValueLoc, car.materials[0].maps[Roughness].value)
     # Draw car model
     drawModel(car, Vector3(), 0.25, White)
     # Draw spheres to show the lights positions
