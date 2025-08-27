@@ -14,8 +14,8 @@
 import std/[times, atomics], raylib
 
 const
-  screenWidth = 800
-  screenHeight = 450
+  ScreenWidth = 800
+  ScreenHeight = 450
 
 type
   State = enum

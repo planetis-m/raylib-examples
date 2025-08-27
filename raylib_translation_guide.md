@@ -1,0 +1,406 @@
+# Raylib C to Nim (naylib) Translation Guide
+
+This document serves as a comprehensive guide for translating raylib C examples to Nim using the naylib wrapper. It details the patterns, idioms, and conventions used in the existing codebase to ensure consistency and maintainability.
+
+## 1. File Structure and Organization
+
+### Basic File Template
+Every example follows a consistent structure:
+```nim
+import raylib
+
+const
+  ScreenWidth = 800
+  ScreenHeight = 450
+ 
+proc main =
+  # Initialization
+  initWindow(ScreenWidth, ScreenHeight, "raylib [core] example - basic window")
+  defer: closeWindow()  # Important pattern in naylib
+  setTargetFPS(60)
+
+  # Main game loop
+  while not windowShouldClose():
+    # Update
+    # TODO: Update variables here
+
+    # Draw
+    drawing():  # Using template for safer begin-end pairs
+      clearBackground(RayWhite)
+      drawText("Congrats! You created your first window!", 190, 200, 20, LightGray)
+
+main()
+```
+
+### Key Structural Elements
+1. **Standard Header Comment**: Always include the original raylib header with attribution
+2. **Import Section**: Import only the necessary naylib (`raylib`, `raymath`, etc.) and nim standard library modules used in the code
+3. **Constants Section**: Screen dimensions and other constants at the top
+4. **Main Procedure**: All logic encapsulated in a `main()` procedure
+5. **Initialization Block**: Window initialization with `defer` for cleanup
+6. **Game Loop**: Standard while loop with update/draw sections
+7. **Resource Management**: Rely on automatic destructors for naylib objects like `Texture` or `Font`
+
+## 2. Naming Conventions
+
+### Variables and Procedures
+- Use `camelCase` for variables and procedure names:
+  ```nim
+  var framesCounter: int32 = 0
+  proc updateCamera() = ...
+  ```
+
+### Constants
+- Use `PascalCase` for constants:
+  ```nim
+  const
+    MaxFrameSpeed = 15
+    MinFrameSpeed = 1
+    ScreenWidth = 800
+  ```
+
+### Types
+- Use `PascalCase` for type names:
+  ```nim
+  type
+    LightKind = enum
+      Directional, Point, Spot
+  ```
+
+## 3. Type Translations
+
+### Basic Types
+
+C types are mapped to Nim types following these patterns:
+
+```nim name=type_conversions.nim
+# C: float -> Nim: float32
+let posX: float32 = 100.0
+
+# C: int -> Nim: int32
+let counter: int32 = 0
+
+# C: unsigned int -> Nim: uint32
+let flags: uint32 = 0
+
+# C: boolean -> Nim: bool
+let isVisible = true
+
+# C: char* -> Nim: string
+let title = "Window Title"
+```
+
+
+| C Type | Nim Type | Notes |
+|--------|----------|-------|
+| `int` | `int32` | Explicitly use 32-bit integers |
+| `short` | `int16` | The standard for 16-bit integers |
+| `long long` | `int64` | The standard for 64-bit integers |
+| `unsigned int` | `uint32` | For non-negative 32-bit integers |
+| `float` | `float32` | Explicitly use 32-bit floats |
+| `double` | `float` or `float64` | Nim's default `float` is a 64-bit double |
+| `bool` | `bool` | Direct translation |
+| `char*`, `const char*` | `string` | Replace C strings with Nim's safe, managed strings. |
+| `void*` (generic data) | `generics` | Use type-safe generics instead of raw pointers. |
+| `struct T` | `type T = object` | Direct translation to Nim's object type. |
+| `enum E` | `type E = enum` | Direct translation to Nim's safer enum type. |
+| `T*` (heap object) | `ref T` | For pointers to shared, managed objects. |
+| `T*` (out-parameter) | `var T` | For modifying values in-place (pass-by-reference). |
+| `T*` (array) | `seq[T]` | Replace C-style arrays with Nim's dynamic sequences. |
+| `T arr[N]` (fixed array) | `array[N, T]` | Use for fixed-size, stack-allocated arrays. |
+
+### Using std/lenientops for Mixed-Type Arithmetic
+
+Import `std/lenientops` to allow direct arithmetic between ints and floats avoiding repetitive type conversions.
+
+```nim
+import std/lenientops
+
+var
+  count: int32 = 10
+  scaleFactor: float32 = 3.5
+  offset: int32 = 100
+  adjustment: float32 = 50.5
+
+# Without lenientops, you'd need explicit casts:
+let result1 = float32(count) * scaleFactor
+let result2 = offset + int32(adjustment)
+
+# With lenientops, direct operations work:
+let result1 = count * scaleFactor    # Works directly
+let result2 = offset + adjustment    # Works directly
+```
+
+### Raylib Style Arithmetic Spacing
+
+Following raylib's coding style, omit spaces around * and /, but include spaces around + and -.
+
+```nim
+# Good raylib style
+let centerX = screenWidth/2 - buttonWidth/2
+let centerY = screenHeight/2 - buttonHeight/2
+let scaledValue = baseValue*1.5
+
+# Less preferred
+let centerX = screenWidth / 2 - buttonWidth / 2
+let centerY = screenHeight / 2 - buttonHeight / 2
+let scaledValue = baseValue * 1.5
+```
+
+### Creating Struct Instances
+
+```nim
+# Good: This is the standard, clear way to create objects in Nim.
+var camera = Camera(
+  position: Vector3(x: 5, y: 5, z: 5),
+  target: Vector3(x: 0, y: 0, z: 0),
+  up: Vector3(x: 0, y: 1, z: 0),
+  fovy: 45,
+  projection: Perspective
+)
+
+# Also works, but is less ideal:
+var camera: Camera
+camera.position = Vector3(x: 5, y: 5, z: 5)
+camera.target = Vector3(x: 0, y: 0, z: 0)
+camera.up = Vector3(x: 0, y: 1, z: 0)
+camera.fovy = 45
+camera.projection = Perspective
+```
+
+## 4. Function Call Patterns
+
+### Simple Function Calls
+Direct translation with camelCase:
+```c
+// C
+InitWindow(ScreenWidth, ScreenHeight, "Title");
+```
+```nim
+# Nim
+initWindow(ScreenWidth, ScreenHeight, "Title")
+```
+
+### Function Overloading
+Naylib uses overloading instead of C-style suffixes:
+```c
+// C
+DrawTexture(texture, posX, posY, WHITE);
+DrawTextureRec(texture, sourceRec, position, WHITE);
+```
+```nim
+# Nim - overloaded drawTexture procedure
+drawTexture(texture, posX, posY, White)
+drawTexture(texture, sourceRec, position, White)
+```
+
+## 5. Control Flow Patterns
+
+### Input Handling
+Use direct translations of input functions with camelCase naming and Nim's boolean expressions:
+
+```c
+// C
+if (IsKeyPressed(KEY_SPACE))
+    // Handle space key press
+
+if (IsKeyDown(KEY_LEFT))
+    // Handle left key being held down
+
+if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+    // Handle left mouse button press
+```
+
+```nim
+# Nim
+if isKeyPressed(Space):
+  # Handle space key press
+
+if isKeyDown(Left):
+  # Handle left key being held down
+
+if isMouseButtonPressed(Left):
+  # Handle left mouse button press
+```
+
+### Conditional Drawing
+Use templates for scoped operations:
+```nim
+drawing():  # Equivalent to beginDrawing()/endDrawing()
+  clearBackground(RayWhite)
+  # Drawing code here
+
+mode3D(camera):  # Equivalent to beginMode3D()/endMode3D()
+  drawModel(model, position, scale, White)
+```
+
+## 6. Memory Management
+
+### Automatic Cleanup with Destructors
+Naylib uses destructors for automatic memory management of types like `Image`, `Wave`, `Texture`, etc. This eliminates the need for manual `Unload` calls:
+```nim
+let texture = loadTexture("image.png")
+# No need to manually unload - automatically cleaned up by destructor
+```
+
+### Using Explicit Cleanup
+For cases where you want explicit control or need to ensure cleanup at a specific point:
+```nim
+var image = loadImage("resources/heightmap.png") # Load image (RAM)
+let texture = loadTextureFromImage(image) # Convert image to texture (VRAM)
+reset(image) # Unload image from RAM, already uploaded to VRAM
+```
+
+### Handling Types Without Copy Hooks
+Some types in naylib, like `Texture`, `Shader`, `Mesh`, `Font`, etc don't have `=copy` hooks to prevent accidental copying. To work around this, use references:
+```nim
+var texture: ref Texture
+new(texture)
+texture[] = loadTexture("resources/example.png")
+let copy = texture # This works, copying the reference
+```
+
+## 7. Error Handling
+
+### Resource Loading Validation
+Naylib's `load*` functions automatically validate asset loading and raise `RaylibError` if they fail:
+```nim
+# This will automatically raise RaylibError if loading fails
+let texture = loadTexture("image.png")
+
+# We skip explicit error handling in the examples for brevity.
+```
+
+### Assertions
+Use assertions for preconditions:
+```nim
+import std/assertions
+assert(windowIsReady(), "Window should be initialized")
+```
+
+## 8. Common Patterns and Idioms
+
+### Texture Ownership in Models
+
+When assigning a texture to a model, the operation only performs a shallow copy of the texture handle. The model does not take ownership of the resource; it simply holds another copy of the handle. The texture must remain valid and in scope for as long as the model uses it.
+
+```nim
+var model = loadModel("resources/models/plane.obj") # Load model
+let texture = loadTexture("resources/models/plane_diffuse.png") # Load texture
+model.materials[0].maps[MaterialMapIndex.Diffuse].texture = texture # Assign diffuse texture
+```
+
+When creating a model from a mesh, ownership is moved. The `sink Mesh` parameter consumes the argument, and with copy operations disabled on Mesh, the compiler enforces that the mesh is transferred into the model. The original variable becomes invalid, and the model is now responsible for unloading the mesh.
+
+```nim
+let mesh = genMeshHeightmap(image, Vector3(x: 16, y: 8, z: 16)) # Generate heightmap mesh (RAM and VRAM)
+var model = loadModelFromMesh(mesh) # Mesh is consumed and owned by the model
+```
+
+## 9. String Formatting and Text
+
+### Formatted text drawing
+
+Use Nim string interpolation:
+
+```c
+// C
+DrawText(TextFormat("TARGET FPS: %i", targetFPS), x, y, fontSize, color);
+```
+```nim
+# Nim
+import std/strformat
+drawText(&"TARGET FPS: {targetFPS}", x, y, fontSize, color)
+```
+
+## 11. Audio Patterns
+
+### Audio Device Management
+```nim
+initAudioDevice()
+defer: closeAudioDevice()  # Still needed as it's a global resource
+```
+
+## 12. Shader Patterns
+
+### Shader Loading
+```nim
+when defined(GraphicsApiOpenGl33):
+  const glslVersion = 330
+else:
+  const glslVersion = 100
+
+let shader = loadShader(&"resources/shaders/glsl{glslVersion}/lighting.vs",
+    &"resources/shaders/glsl{glslVersion}/lighting.fs")
+# No need for defer - automatically cleaned up by destructor
+```
+
+## Shader Value Setting
+
+```c
+#include "raylib.h"
+
+int colorLoc = GetShaderLocation(shader, "color");
+float color[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
+SetShaderValue(shader, colorLoc, color, SHADER_UNIFORM_VEC4); // must pass the uniform type explicitly
+```
+
+```nim
+let colorLoc = getShaderLocation(shader, "color")
+let color: array[4, float32] = [1.0, 0.0, 0.0, 1.0]
+setShaderValue(shader, colorLoc, color) # uniform type inferred as Vec4
+```
+
+`setShaderValue` infers the uniform type from the Nim value at compile time (e.g., `float32`, `array[3, float32]`, `array[4, int32]`) and forwards it to the low-level implementation, so you don’t need to pass the uniform type explicitly.
+
+## 14. Configuration and Platform-Specific Features
+
+### Setting Configuration Flags
+Use the `flags` procedure to work with bitflags like `ConfigFlags`:
+```c
+# C: SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_WINDOW_HIGHDPI)
+```
+```nim
+setConfigFlags(flags(Msaa4xHint, WindowHighdpi))
+initWindow(screenWidth, screenHeight, "Window title")
+```
+
+## 15. Advanced Usage Patterns
+
+### Properly Calling closeWindow
+Since Naylib wraps most types with destructors, `closeWindow` should be called at the very end:
+```nim
+# Recommended approach
+initWindow(800, 450, "example")
+defer: closeWindow()
+let texture = loadTexture("resources/example.png")
+# Game logic goes here
+```
+
+## Working with Embedded Resources
+
+Wrap embedded byte arrays (exported via `exportImageAsCode`/`exportWaveAsCode`) as non-owning views using `toWeakImage`/`toWeakWave`. Then pass the underlying Image/Wave to the usual loaders.
+
+```nim
+# Embedded arrays are part of the binary.
+# Image: metadata must match the embedded data.
+let image = toWeakImage(ImageData, ImageWidth, ImageHeight, ImageFormat)
+let texture = loadTextureFromImage(Image(image)) # pass Image (convert from WeakImage)
+```
+
+## Custom Pixel Formats
+
+Define how your types map to GPU formats with `pixelKind`. The API infers the format from the element type and validates size/format on upload.
+
+```nim
+type RGBAPixel* = distinct byte
+template pixelKind*(x: typedesc[RGBAPixel]): PixelFormat = UncompressedR8g8b8a8
+
+# External provider returns interleaved RGBA8 data for the given size
+proc loadExternalRGBA8(width, height: int): seq[RGBAPixel]
+
+let rgba = loadExternalRGBA8(width, height) # len must be width*height*4
+let tex = loadTextureFromData(rgba, width, height) # inferred RGBA8 from RGBAPixel
+updateTexture(tex, rgba) # format and size validated by the API
+```
+
