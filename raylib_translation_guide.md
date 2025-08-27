@@ -33,7 +33,7 @@ main()
 ```
 
 ### Key Structural Elements
-1. **Standard Header Comment**: Always include the original raylib header with attribution
+1. **Standard Header Comment**: Always include the original raylib header with attribution, adapted to Nim's comment syntax
 2. **Import Section**: Import only the necessary naylib (`raylib`, `raymath`, etc.) and nim standard library modules used in the code
 3. **Constants Section**: Screen dimensions and other constants at the top
 4. **Main Procedure**: All logic encapsulated in a `main()` procedure
@@ -109,44 +109,6 @@ let title = "Window Title"
 | `T*` (array) | `seq[T]` | Replace C-style arrays with Nim's dynamic sequences. |
 | `T arr[N]` (fixed array) | `array[N, T]` | Use for fixed-size, stack-allocated arrays. |
 
-### Using std/lenientops for Mixed-Type Arithmetic
-
-Import `std/lenientops` to allow direct arithmetic between ints and floats avoiding repetitive type conversions.
-
-```nim
-import std/lenientops
-
-var
-  count: int32 = 10
-  scaleFactor: float32 = 3.5
-  offset: int32 = 100
-  adjustment: float32 = 50.5
-
-# Without lenientops, you'd need explicit casts:
-let result1 = float32(count) * scaleFactor
-let result2 = offset + int32(adjustment)
-
-# With lenientops, direct operations work:
-let result1 = count * scaleFactor    # Works directly
-let result2 = offset + adjustment    # Works directly
-```
-
-### Raylib Style Arithmetic Spacing
-
-Following raylib's coding style, omit spaces around * and /, but include spaces around + and -.
-
-```nim
-# Good raylib style
-let centerX = screenWidth/2 - buttonWidth/2
-let centerY = screenHeight/2 - buttonHeight/2
-let scaledValue = baseValue*1.5
-
-# Less preferred
-let centerX = screenWidth / 2 - buttonWidth / 2
-let centerY = screenHeight / 2 - buttonHeight / 2
-let scaledValue = baseValue * 1.5
-```
-
 ### Creating Struct Instances
 
 ```nim
@@ -186,12 +148,18 @@ Naylib uses overloading instead of C-style suffixes:
 ```c
 // C
 DrawTexture(texture, posX, posY, WHITE);
+DrawTextureV(texture, position, WHITE);
+DrawTextureEx(texture, position, rotation, scale, WHITE);
 DrawTextureRec(texture, sourceRec, position, WHITE);
+DrawTexturePro(texture, sourceRec, destRec, origin, rotation, WHITE);
 ```
 ```nim
-# Nim - overloaded drawTexture procedure
+# Nim (naylib) - overloaded drawTexture procedures
 drawTexture(texture, posX, posY, White)
+drawTexture(texture, position, White)
+drawTexture(texture, position, rotation, scale, White)
 drawTexture(texture, sourceRec, position, White)
+drawTexture(texture, sourceRec, destRec, origin, rotation, White)
 ```
 
 ## 5. Control Flow Patterns
@@ -260,7 +228,76 @@ texture[] = loadTexture("resources/example.png")
 let copy = texture # This works, copying the reference
 ```
 
-## 7. Error Handling
+## 7. Mathematical Operations
+
+When translating raymath functions from C to Nim, use operators where available and drop the type prefixes from function names.
+
+```c
+// C
+Vector3 sum   = Vector3Add(a, b);
+Vector3 diff  = Vector3Subtract(a, b);
+Vector3 scale = Vector3Scale(a, factor);
+Vector3 mul   = Vector3Multiply(a, b);
+Vector3 div   = Vector3Divide(a, b);
+Vector3 trans = Vector3Transform(a, matrix);
+float   dist  = Vector3Distance(a, b);
+Vector3 neg   = Vector3Negate(a);
+Quaternion q  = QuaternionMultiply(q1, q2);
+```
+
+```nim
+# Nim
+let sum   = a + b
+let diff  = a - b
+let scale = a * factor
+let mul   = a * b
+let div   = a / b
+let trans = a * matrix
+let dist  = distance(a, b)
+let neg   = -a
+let q     = q1 * q2
+if a =~ b: discard  # approximate equality
+```
+
+### Using std/lenientops for Mixed-Type Arithmetic
+
+Import `std/lenientops` to allow direct arithmetic between ints and floats avoiding repetitive type conversions.
+
+```nim
+import std/lenientops
+
+var
+  count: int32 = 10
+  scaleFactor: float32 = 3.5
+  offset: int32 = 100
+  adjustment: float32 = 50.5
+
+# Without lenientops, you'd need explicit casts:
+let result1 = float32(count) * scaleFactor
+let result2 = offset + int32(adjustment)
+
+# With lenientops, direct operations work:
+let result1 = count * scaleFactor    # Works directly
+let result2 = offset + adjustment    # Works directly
+```
+
+### Raylib Style Arithmetic Spacing
+
+Following raylib's coding style, omit spaces around * and /, but include spaces around + and -.
+
+```nim
+# Good raylib style
+let centerX = screenWidth/2 - buttonWidth/2
+let centerY = screenHeight/2 - buttonHeight/2
+let scaledValue = baseValue*1.5
+
+# Less preferred
+let centerX = screenWidth / 2 - buttonWidth / 2
+let centerY = screenHeight / 2 - buttonHeight / 2
+let scaledValue = baseValue * 1.5
+```
+
+## 8. Error Handling
 
 ### Resource Loading Validation
 Naylib's `load*` functions automatically validate asset loading and raise `RaylibError` if they fail:
@@ -278,7 +315,7 @@ import std/assertions
 assert(windowIsReady(), "Window should be initialized")
 ```
 
-## 8. Common Patterns and Idioms
+## 9. Common Patterns and Idioms
 
 ### Texture Ownership in Models
 
@@ -297,7 +334,7 @@ let mesh = genMeshHeightmap(image, Vector3(x: 16, y: 8, z: 16)) # Generate heigh
 var model = loadModelFromMesh(mesh) # Mesh is consumed and owned by the model
 ```
 
-## 9. String Formatting and Text
+## 10. String Formatting and Text
 
 ### Formatted text drawing
 
@@ -353,7 +390,7 @@ setShaderValue(shader, colorLoc, color) # uniform type inferred as Vec4
 
 `setShaderValue` infers the uniform type from the Nim value at compile time (e.g., `float32`, `array[3, float32]`, `array[4, int32]`) and forwards it to the low-level implementation, so you don’t need to pass the uniform type explicitly.
 
-## 14. Configuration and Platform-Specific Features
+## 13. Configuration and Platform-Specific Features
 
 ### Setting Configuration Flags
 Use the `flags` procedure to work with bitflags like `ConfigFlags`:
@@ -365,7 +402,7 @@ setConfigFlags(flags(Msaa4xHint, WindowHighdpi))
 initWindow(screenWidth, screenHeight, "Window title")
 ```
 
-## 15. Advanced Usage Patterns
+## 14. Advanced Usage Patterns
 
 ### Properly Calling closeWindow
 Since Naylib wraps most types with destructors, `closeWindow` should be called at the very end:
