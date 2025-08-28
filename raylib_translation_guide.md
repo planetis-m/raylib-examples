@@ -31,7 +31,7 @@ proc main =
   initWindow(ScreenWidth, ScreenHeight, "raylib [core] example - basic window")
   defer: closeWindow()  # Important pattern in naylib
   setTargetFPS(60)
-
+  let font = loadFont("fonts/roboto.ttf")
   # Main game loop
   while not windowShouldClose():
     # Update
@@ -40,7 +40,7 @@ proc main =
     # Draw
     drawing():  # Using template for safer begin-end pairs
       clearBackground(RayWhite)
-      drawText("Congrats! You created your first window!", 190, 200, 20, LightGray)
+      drawText(font, "Congrats! You created your first window!", Vector2(x: 190, y: 200), 20, 2.0, LightGray)
 
 main()
 ```
@@ -53,6 +53,7 @@ main()
 5. **Initialization Block**: Window initialization with `defer` for cleanup
 6. **Game Loop**: Standard while loop with update/draw sections
 7. **Resource Management**: Rely on automatic destructors for naylib objects like `Texture` or `Font`
+8. **Function Overloading**: Variants like `drawTextPro` or `drawTextEx` are unified into overloaded `drawText` procedures with different parameters.
 
 ## 2. Naming Conventions
 
@@ -117,8 +118,8 @@ let title = "Window Title"
 ```nim
 # Float: avoid promotion to float (64-bit) and implicit narrowing back to float32
 let scleraLeftPosition = Vector2(
-  x: getScreenWidth() / 2.0'f32,
-  y: getScreenHeight() / 2.0'f32
+  x: getScreenWidth() / 2'f32,
+  y: getScreenHeight() / 2'f32
 )
 
 # Ints: literals are polymorphic
@@ -202,8 +203,8 @@ drawTexture(texture, sourceRec, destRec, origin, rotation, White)
 
 **Reminder:**
 
-- Do **not** add function suffixes (`V`, `Ex`, `Pro`, etc) in Nim.
-- Just call the base name (e.g., `drawCircle`, `drawTexture`), and the correct overload will be resolved based on the parameters.
+- Remove raylib function suffixes (`V`, `Ex`, `Rec`, `Pro`, etc) in Nim.
+- Just call the base name (e.g., `drawCircle`, `drawTexture`, `drawLine`), and the correct overload will be resolved based on the parameters.
 
 ## 5. Control Flow Patterns
 
