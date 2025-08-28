@@ -42,7 +42,7 @@ proc loadDataThread() {.thread.} =
 proc main =
   # Initialization
   # --------------------------------------------------------------------------------------
-  initWindow(screenWidth, screenHeight, "raylib [core] example - loading thread")
+  initWindow(ScreenWidth, ScreenHeight, "raylib [core] example - loading thread")
   var state: State = Waiting
   var framesCounter: int32 = 0
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
