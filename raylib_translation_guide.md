@@ -53,7 +53,7 @@ main()
 5. **Initialization Block**: Window initialization with `defer` for cleanup
 6. **Game Loop**: Standard while loop with update/draw sections
 7. **Resource Management**: Rely on automatic destructors for naylib objects like `Texture` or `Font`
-8. **Function Overloading**: Naylib uses function overloading instead of multiple similarly-named C functions (e.g., `DrawText`, `DrawTextEx`, `DrawTextPro`)
+8. **Function Overloading**: Use the base function names without suffixes like `V`, `Ex`, `Rec`, `Pro`, etc.
 
 ## 2. Naming Conventions
 
