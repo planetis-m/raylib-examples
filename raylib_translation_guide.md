@@ -11,6 +11,8 @@ Every example follows a consistent structure:
 #
 #   raylib [core] example - Basic window
 #
+#   Example complexity rating: [★☆☆☆] 1/4
+#
 #   Example licensed under an unmodified zlib/libpng license, which is an OSI-certified,
 #   BSD-like license that allows static linking with closed source software
 #
@@ -44,7 +46,7 @@ main()
 ```
 
 ### Key Structural Elements
-1. **Standard Header Comment**: Always include the original raylib header with attribution, adapted to Nim's comment syntax
+1. **Standard Header Comment**: Always include the **full original raylib header**, adapted to Nim's comment syntax
 2. **Import Section**: Include only the necessary naylib (`raylib`, `raymath`, etc.) and nim standard library modules used in the code
 3. **Constants Section**: Screen dimensions and other constants at the top
 4. **Main Procedure**: All logic encapsulated in a `main()` procedure
@@ -86,7 +88,7 @@ C types are mapped to Nim types following these patterns:
 
 ```nim
 # C: float -> Nim: float32
-let posX: float32 = 100.0
+let posX: float32 = 100.0 # Preferred format for variable declaration
 
 # C: int -> Nim: int32
 let counter: int32 = 0
@@ -99,6 +101,28 @@ let isVisible = true
 
 # C: char* -> Nim: string
 let title = "Window Title"
+```
+
+**Note:**
+
+- Always declare the type explicitly (e.g., `float32`, `int32`) to avoid unintended defaults
+- When using numeric literals in expressions, add the correct suffix (e.g., `'f32`, `'i32`, `'u32`) to prevent implicit conversions.
+- Avoid C-style suffixes (e.g., `0.0f`)
+
+### Example
+
+```nim
+# Wrong: promoted to float (64-bit) and implicit narrowing back to float32
+let scleraLeftPosition = Vector2(
+  x: getScreenWidth() / 2.0,
+  y: getScreenHeight() / 2.0
+)
+
+# Correct: mark float literals as float32
+let scleraLeftPosition = Vector2(
+  x: getScreenWidth() / 2.0'f32,
+  y: getScreenHeight() / 2.0'f32
+)
 ```
 
 ### Mapping C Types to Nim Types
@@ -173,6 +197,11 @@ drawTexture(texture, position, rotation, scale, White)
 drawTexture(texture, sourceRec, position, White)
 drawTexture(texture, sourceRec, destRec, origin, rotation, White)
 ```
+
+**Reminder:**
+
+- Do **not** add C-style suffixes (`V`, `Ex`, `Pro`, etc) in Nim.
+- Just call the base name (e.g., `drawCircle`, `drawTexture`), naylib resolves the right overload based on parameters.
 
 ## 5. Control Flow Patterns
 
