@@ -49,7 +49,7 @@ proc main() =
 
   # Rotate around origin
   # Here we choose to rotate around the image center
-  let origin = size * 0.5
+  let origin = size*0.5
 
   # Distance is needed for the correct billboard draw order
   # Larger distance (further away from the camera) should be drawn prior to smaller distance

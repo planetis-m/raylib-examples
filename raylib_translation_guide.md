@@ -375,14 +375,14 @@ let shader = loadShader(&"resources/shaders/glsl{glslVersion}/lighting.vs",
 ## Shader Value Setting
 
 ```c
-#include "raylib.h"
-
+// C
 int colorLoc = GetShaderLocation(shader, "color");
 float color[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
 SetShaderValue(shader, colorLoc, color, SHADER_UNIFORM_VEC4); // must pass the uniform type explicitly
 ```
 
 ```nim
+# Nim
 let colorLoc = getShaderLocation(shader, "color")
 let color: array[4, float32] = [1.0, 0.0, 0.0, 1.0]
 setShaderValue(shader, colorLoc, color) # uniform type inferred as Vec4
@@ -395,9 +395,11 @@ setShaderValue(shader, colorLoc, color) # uniform type inferred as Vec4
 ### Setting Configuration Flags
 Use the `flags` procedure to work with bitflags like `ConfigFlags`:
 ```c
-# C: SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_WINDOW_HIGHDPI)
+// C
+SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_WINDOW_HIGHDPI)
 ```
 ```nim
+# Nim
 setConfigFlags(flags(Msaa4xHint, WindowHighdpi))
 initWindow(screenWidth, screenHeight, "Window title")
 ```
@@ -419,8 +421,7 @@ let texture = loadTexture("resources/example.png")
 Wrap embedded byte arrays (exported via `exportImageAsCode`/`exportWaveAsCode`) as non-owning views using `toWeakImage`/`toWeakWave`. Then pass the underlying Image/Wave to the usual loaders.
 
 ```nim
-# Embedded arrays are part of the binary.
-# Image: metadata must match the embedded data.
+# Embedded arrays are part of the binary. Metadata must match the embedded data.
 let image = toWeakImage(ImageData, ImageWidth, ImageHeight, ImageFormat)
 let texture = loadTextureFromImage(Image(image)) # pass Image (convert from WeakImage)
 ```
