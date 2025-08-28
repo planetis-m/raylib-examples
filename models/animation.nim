@@ -34,11 +34,11 @@ proc main() =
 
   # Define the camera to look into our 3d world
   var camera = Camera(
-    position: Vector3(x: 10.0, y: 10.0, z: 10.0),  # Camera position
+    position: Vector3(x: 10.0, y: 10.0, z: 10.0),   # Camera position
     target: Vector3(x: 0.0, y: 0.0, z: 0.0),        # Camera looking at point
     up: Vector3(x: 0.0, y: 1.0, z: 0.0),            # Camera up vector (rotation towards target)
-    fovy: 45.0,                                       # Camera field-of-view Y
-    projection: Perspective                            # Camera mode type
+    fovy: 45.0,                                     # Camera field-of-view Y
+    projection: Perspective                         # Camera mode type
   )
 
   # Load the animated model mesh and basic data

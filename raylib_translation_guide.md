@@ -88,7 +88,7 @@ C types are mapped to Nim types following these patterns:
 
 ```nim
 # C: float -> Nim: float32
-let posX: float32 = 100.0 # Preferred format for variable declaration
+let posX: float32 = 100.0 # Preferred format for declarations
 
 # C: int -> Nim: int32
 let counter: int32 = 0
@@ -105,24 +105,26 @@ let title = "Window Title"
 
 **Note:**
 
-- Always declare the type explicitly (e.g., `float32`, `int32`) to avoid unintended defaults
-- When using numeric literals in expressions, add the correct suffix (e.g., `'f32`, `'i32`, `'u32`) to prevent implicit conversions.
-- Avoid C-style suffixes (e.g., `0.0f`)
+* Give explicit types (e.g., `float32`, `int32`) in declarations.
+* In **expressions**, Nim applies its convertible relation:
+  – Float literals like `2.0` are `float` (64-bit); ints are polymorphic.
+  – `float64` and `float32` are implicitly convertible both ways; int literals convert to many numeric types.
+  To **keep evaluation in the target type**, suffix the literal (`'f32`, `'i32`, `'u32`, …) or convert as needed.
+* Avoid C-style suffixes (e.g., `0.0f`).
 
-### Example
+### Examples
 
 ```nim
-# Wrong: promoted to float (64-bit) and implicit narrowing back to float32
-let scleraLeftPosition = Vector2(
-  x: getScreenWidth() / 2.0,
-  y: getScreenHeight() / 2.0
-)
-
-# Correct: mark float literals as float32
+# Float: avoid promotion to float (64-bit) and implicit narrowing back to float32
 let scleraLeftPosition = Vector2(
   x: getScreenWidth() / 2.0'f32,
   y: getScreenHeight() / 2.0'f32
 )
+
+# Ints: literals are polymorphic
+camera.zoom += getMouseWheelMove()*0.05'f32
+if camera.zoom > 3: camera.zoom = 3
+elif camera.zoom < 0.1'f32: camera.zoom = 0.1'f32
 ```
 
 ### Mapping C Types to Nim Types
@@ -200,8 +202,8 @@ drawTexture(texture, sourceRec, destRec, origin, rotation, White)
 
 **Reminder:**
 
-- Do **not** add C-style suffixes (`V`, `Ex`, `Pro`, etc) in Nim.
-- Just call the base name (e.g., `drawCircle`, `drawTexture`), naylib resolves the right overload based on parameters.
+- Do **not** add function suffixes (`V`, `Ex`, `Pro`, etc) in Nim.
+- Just call the base name (e.g., `drawCircle`, `drawTexture`), and the correct overload will be resolved based on the parameters.
 
 ## 5. Control Flow Patterns
 
