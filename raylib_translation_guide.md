@@ -73,7 +73,7 @@ main()
 
 C types are mapped to Nim types following these patterns:
 
-```nim name=type_conversions.nim
+```nim
 # C: float -> Nim: float32
 let posX: float32 = 100.0
 
@@ -90,6 +90,7 @@ let isVisible = true
 let title = "Window Title"
 ```
 
+### Mapping C Types to Nim Types
 
 | C Type | Nim Type | Notes |
 |--------|----------|-------|
