@@ -53,7 +53,7 @@ main()
 5. **Initialization Block**: Window initialization with `defer` for cleanup
 6. **Game Loop**: Standard while loop with update/draw sections
 7. **Resource Management**: Rely on automatic destructors for naylib objects like `Texture` or `Font`
-8. **Function Overloading**: Variants like `drawTextPro` or `drawTextEx` are unified into overloaded `drawText` procedures with different parameters.
+8. **Function Overloading**: Naylib uses function overloading instead of multiple similarly-named C functions (e.g., `DrawText`, `DrawTextEx`, `DrawTextPro`)
 
 ## 2. Naming Conventions
 
@@ -183,7 +183,7 @@ initWindow(ScreenWidth, ScreenHeight, "Title")
 ```
 
 ### Function Overloading
-Naylib uses overloading instead of C-style suffixes:
+In C, similar functions have different names. In Nim, these are combined into one function name with multiple parameter sets.
 ```c
 // C
 DrawTexture(texture, posX, posY, WHITE);
