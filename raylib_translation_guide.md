@@ -7,7 +7,18 @@ This document serves as a comprehensive guide for translating raylib C examples 
 ### Basic File Template
 Every example follows a consistent structure:
 ```nim
-import raylib
+# ****************************************************************************************
+#
+#   raylib [core] example - Basic window
+#
+#   Example licensed under an unmodified zlib/libpng license, which is an OSI-certified,
+#   BSD-like license that allows static linking with closed source software
+#
+#   Copyright (c) 2013-2025 Ramon Santamaria (@raysan5)
+#
+# ****************************************************************************************
+
+import raylib, std/[math, lenientops]
 
 const
   ScreenWidth = 800
@@ -34,7 +45,7 @@ main()
 
 ### Key Structural Elements
 1. **Standard Header Comment**: Always include the original raylib header with attribution, adapted to Nim's comment syntax
-2. **Import Section**: Import only the necessary naylib (`raylib`, `raymath`, etc.) and nim standard library modules used in the code
+2. **Import Section**: Include only the necessary naylib (`raylib`, `raymath`, etc.) and nim standard library modules used in the code
 3. **Constants Section**: Screen dimensions and other constants at the top
 4. **Main Procedure**: All logic encapsulated in a `main()` procedure
 5. **Initialization Block**: Window initialization with `defer` for cleanup
@@ -115,19 +126,19 @@ let title = "Window Title"
 ```nim
 # Good: This is the standard, clear way to create objects in Nim.
 var camera = Camera(
-  position: Vector3(x: 5, y: 5, z: 5),
-  target: Vector3(x: 0, y: 0, z: 0),
-  up: Vector3(x: 0, y: 1, z: 0),
-  fovy: 45,
+  position: Vector3(x: 5.0, y: 5.0, z: 5.0),
+  target: Vector3(x: 0.0, y: 0.0, z: 0.0),
+  up: Vector3(x: 0.0, y: 1.0, z: 0.0),
+  fovy: 45.0,
   projection: Perspective
 )
 
 # Also works, but is less ideal:
 var camera: Camera
-camera.position = Vector3(x: 5, y: 5, z: 5)
-camera.target = Vector3(x: 0, y: 0, z: 0)
-camera.up = Vector3(x: 0, y: 1, z: 0)
-camera.fovy = 45
+camera.position = Vector3(x: 5.0, y: 5.0, z: 5.0)
+camera.target = Vector3(x: 0.0, y: 0.0, z: 0.0)
+camera.up = Vector3(x: 0.0, y: 1.0, z: 0.0)
+camera.fovy = 45.0
 camera.projection = Perspective
 ```
 
