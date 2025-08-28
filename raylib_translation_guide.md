@@ -192,7 +192,7 @@ DrawTextureRec(texture, sourceRec, position, WHITE);
 DrawTexturePro(texture, sourceRec, destRec, origin, rotation, WHITE);
 ```
 ```nim
-# Nim (naylib) - overloaded drawTexture procedures
+# Nim (naylib) - overloaded procedures
 drawTexture(texture, posX, posY, White)
 drawTexture(texture, position, White)
 drawTexture(texture, position, rotation, scale, White)
@@ -340,6 +340,24 @@ let centerY = screenHeight / 2 - buttonHeight / 2
 let scaledValue = baseValue * 1.5
 ```
 
+### Splitting Long Expressions in Nim
+
+In Nim, only break lines after an operator (put operator at end of line), comma, or open parenthesis, and indent the continuation line. Never start the next line with an operator.
+
+```nim
+# Incorrect (causes errors):
+let a1 = (-G*(2*m1 + m2)*sin(theta1)
+          - m2*G*sin(theta1 - 2*theta2)
+          - 2*sinD*m2*(ww2*L2 + ww1*L1*cosD))
+         / (L1*(2*m1 + m2 - m2*cos2D))
+
+# Correct:
+let a1 = (-G*(2*m1 + m2)*sin(theta1) -
+          m2*G*sin(theta1 - 2*theta2) -
+          2*sinD*m2*(ww2*L2 + ww1*L1*cosD)) /
+         (L1*(2*m1 + m2 - m2*cos2D))
+```
+
 ## 8. Error Handling
 
 ### Resource Loading Validation
@@ -387,6 +405,7 @@ Use Nim string interpolation:
 // C
 DrawText(TextFormat("TARGET FPS: %i", targetFPS), x, y, fontSize, color);
 ```
+
 ```nim
 # Nim
 import std/strformat
