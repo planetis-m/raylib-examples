@@ -25,33 +25,33 @@ proc main =
   defer: closeWindow()  # Important pattern in naylib
   setTargetFPS(60)
 
-  var 
+  var
     scleraLeftPosition = Vector2(
-      x: getScreenWidth()/2.0'f32 - 100, 
-      y: getScreenHeight()/2.0'f32
+      x: getScreenWidth()/2'f32 - 100, 
+      y: getScreenHeight()/2'f32
     )
     scleraRightPosition = Vector2(
-      x: getScreenWidth()/2.0'f32 + 100, 
-      y: getScreenHeight()/2.0'f32
+      x: getScreenWidth()/2'f32 + 100, 
+      y: getScreenHeight()/2'f32
     )
-    scleraRadius: float32 = 80.0
+    scleraRadius: float32 = 80
 
     irisLeftPosition = Vector2(
-      x: getScreenWidth()/2.0'f32 - 100, 
-      y: getScreenHeight()/2.0'f32
+      x: getScreenWidth()/2'f32 - 100, 
+      y: getScreenHeight()/2'f32
     )
     irisRightPosition = Vector2(
-      x: getScreenWidth()/2.0'f32 + 100, 
-      y: getScreenHeight()/2.0'f32
+      x: getScreenWidth()/2'f32 + 100, 
+      y: getScreenHeight()/2'f32
     )
-    irisRadius: float32 = 24.0
+    irisRadius: float32 = 24
 
-  var 
-    angle: float32 = 0.0
-    dx: float32 = 0.0
-    dy: float32 = 0.0
-    dxx: float32 = 0.0
-    dyy: float32 = 0.0
+  var
+    angle: float32 = 0
+    dx: float32 = 0
+    dy: float32 = 0
+    dxx: float32 = 0
+    dyy: float32 = 0
 
   # Main game loop
   while not windowShouldClose():

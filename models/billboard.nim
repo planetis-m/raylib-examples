@@ -13,8 +13,7 @@
 #
 # ********************************************************************************************
 
-import raylib, raymath
-import std/lenientops
+import raylib, raymath, std/lenientops
 
 const
   ScreenWidth = 800
@@ -27,36 +26,36 @@ proc main() =
 
   # Define the camera to look into our 3d world
   var camera = Camera(
-    position: Vector3(x: 5.0, y: 4.0, z: 5.0),    # Camera position
-    target: Vector3(x: 0.0, y: 2.0, z: 0.0),      # Camera looking at point
-    up: Vector3(x: 0.0, y: 1.0, z: 0.0),          # Camera up vector (rotation towards target)
-    fovy: 45.0,                                   # Camera field-of-view Y
-    projection: Perspective                       # Camera projection type
+    position: Vector3(x: 5, y: 4, z: 5),    # Camera position
+    target: Vector3(x: 0, y: 2, z: 0),      # Camera looking at point
+    up: Vector3(x: 0, y: 1, z: 0),          # Camera up vector (rotation towards target)
+    fovy: 45,                               # Camera field-of-view Y
+    projection: Perspective                 # Camera projection type
   )
 
   let bill = loadTexture("resources/billboard.png")    # Our billboard texture
-  let billPositionStatic = Vector3(x: 0.0, y: 2.0, z: 0.0)          # Position of static billboard
-  let billPositionRotating = Vector3(x: 1.0, y: 2.0, z: 1.0)        # Position of rotating billboard
+  let billPositionStatic = Vector3(x: 0, y: 2, z: 0)          # Position of static billboard
+  let billPositionRotating = Vector3(x: 1, y: 2, z: 1)        # Position of rotating billboard
 
   # Entire billboard texture, source is used to take a segment from a larger texture
-  let source = Rectangle(x: 0.0, y: 0.0, width: float32(bill.width), height: float32(bill.height))
+  let source = Rectangle(x: 0, y: 0, width: float32(bill.width), height: float32(bill.height))
 
   # NOTE: Billboard locked on axis-Y
-  let billUp = Vector3(x: 0.0, y: 1.0, z: 0.0)
+  let billUp = Vector3(x: 0, y: 1, z: 0)
 
-  # Set the height of the rotating billboard to 1.0 with the aspect ratio fixed
-  let size = Vector2(x: source.width/source.height, y: 1.0)
+  # Set the height of the rotating billboard to 1 with the aspect ratio fixed
+  let size = Vector2(x: source.width/source.height, y: 1)
 
   # Rotate around origin
   # Here we choose to rotate around the image center
-  let origin = size*0.5
+  let origin = size*0.5'f32
 
   # Distance is needed for the correct billboard draw order
   # Larger distance (further away from the camera) should be drawn prior to smaller distance
   var 
-    distanceStatic: float32
-    distanceRotating: float32
-    rotation: float32 = 0.0
+    distanceStatic: float32 = 0
+    distanceRotating: float32 = 0
+    rotation: float32 = 0
 
   setTargetFPS(60)                   # Set our game to run at 60 frames-per-second
 
@@ -64,26 +63,26 @@ proc main() =
   while not windowShouldClose():        # Detect window close button or ESC key
     # Update
     updateCamera(camera, Orbital)
-    
-    rotation += 0.4
+
+    rotation += 0.4'f32
     distanceStatic = distance(camera.position, billPositionStatic)
     distanceRotating = distance(camera.position, billPositionRotating)
 
     # Draw
     drawing():
       clearBackground(RayWhite)
-      
+
       mode3D(camera):
-        drawGrid(10, 1.0)        # Draw a grid
-        
+        drawGrid(10, 1)        # Draw a grid
+
         # Draw order matters!
         if distanceStatic > distanceRotating:
-          drawBillboard(camera, bill, billPositionStatic, 2.0, White)
+          drawBillboard(camera, bill, billPositionStatic, 2, White)
           drawBillboard(camera, bill, source, billPositionRotating, billUp, size, origin, rotation, White)
         else:
           drawBillboard(camera, bill, source, billPositionRotating, billUp, size, origin, rotation, White)
-          drawBillboard(camera, bill, billPositionStatic, 2.0, White)
-      
+          drawBillboard(camera, bill, billPositionStatic, 2, White)
+
       drawFPS(10, 10)
 
 main()

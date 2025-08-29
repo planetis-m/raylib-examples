@@ -1,0 +1,20 @@
+# Build artifacts
+*.o
+*.a
+*.so
+*.dll
+*.exe
+nimcache/
+
+*.nimble_link
+
+# Dependencies
+deps/
+nimbledeps/
+
+.env
+.venv
+
+# Configuration
+nim.cfg
+

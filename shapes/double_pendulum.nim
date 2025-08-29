@@ -24,7 +24,7 @@ const
   G = 9.81'f32
 
 proc calculatePendulumEndPoint(l, theta: float32): Vector2 =
-  result = Vector2(x: 10 * l * sin(theta), y: 10 * l * cos(theta))
+  result = Vector2(x: 10*l*sin(theta), y: 10*l*cos(theta))
 
 proc calculateDoublePendulumEndPoint(l1, theta1, l2, theta2: float32): Vector2 =
   let endpoint1 = calculatePendulumEndPoint(l1, theta1)
@@ -56,8 +56,8 @@ proc main =
   previousPosition.y += ScreenHeight/2'f32 - 100
 
   # Scale length
-  let L1 = l1 * lengthScaler
-  let L2 = l2 * lengthScaler
+  let L1 = l1*lengthScaler
+  let L2 = l2*lengthScaler
 
   # Draw parameters
   let lineThick: int32 = 20
@@ -76,8 +76,8 @@ proc main =
     # Update
     # ----------------------------------------------------------------------------------
     let dt = getFrameTime()
-    let step = dt / SimulationSteps
-    let step2 = step * step
+    let step = dt/SimulationSteps
+    let step2 = step*step
 
     # Update Physics - larger steps = better approximation
     for i in 0..<SimulationSteps:
@@ -86,8 +86,8 @@ proc main =
         sinD = sin(delta)
         cosD = cos(delta)
         cos2D = cos(2*delta)
-        ww1 = w1 * w1
-        ww2 = w2 * w2
+        ww1 = w1*w1
+        ww2 = w2*w2
 
       # Calculate a1
       let a1 = (-G*(2*m1 + m2)*sin(theta1) -
@@ -121,7 +121,7 @@ proc main =
 
       # Draw trail
       drawCircle(previousPosition, trailThick.float32, Red)
-      drawLine(previousPosition, currentPosition, trailThick.float32 * 2, Red)
+      drawLine(previousPosition, currentPosition, trailThick.float32*2, Red)
 
     # Update previous position
     previousPosition = currentPosition
@@ -137,12 +137,12 @@ proc main =
                   height: -target.texture.height.float32), Vector2(x: 0, y: 0), White)
 
       # Draw double pendulum
-      drawRectangle(Rectangle(x: ScreenWidth/2'f32, y: ScreenHeight/2'f32 - 100, width: 10 * l1, height: lineThick.float32), 
-                    Vector2(x: 0, y: lineThick * 0.5'f32), 90 - radToDeg(theta1), RayWhite)
+      drawRectangle(Rectangle(x: ScreenWidth/2'f32, y: ScreenHeight/2'f32 - 100, width: 10*l1, height: lineThick.float32), 
+                    Vector2(x: 0, y: lineThick*0.5'f32), 90 - radToDeg(theta1), RayWhite)
 
       let endpoint1 = calculatePendulumEndPoint(l1, theta1)
       drawRectangle(Rectangle(x: ScreenWidth/2'f32 + endpoint1.x, y: ScreenHeight/2'f32 - 100 + endpoint1.y,
-                    width: 10 * l2, height: lineThick.float32), Vector2(x: 0, y: lineThick * 0.5'f32), 90 - radToDeg(theta2), RayWhite)
+                    width: 10*l2, height: lineThick.float32), Vector2(x: 0, y: lineThick*0.5'f32), 90 - radToDeg(theta2), RayWhite)
     # ----------------------------------------------------------------------------------
 
 main()

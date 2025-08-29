@@ -25,13 +25,13 @@ import raylib, std/[math, lenientops]
 const
   ScreenWidth = 800
   ScreenHeight = 450
- 
+
 proc main =
   # Initialization
   initWindow(ScreenWidth, ScreenHeight, "raylib [core] example - basic window")
   defer: closeWindow()  # Important pattern in naylib
   setTargetFPS(60)
-  let font = loadFont("fonts/roboto.ttf")
+
   # Main game loop
   while not windowShouldClose():
     # Update
@@ -40,7 +40,7 @@ proc main =
     # Draw
     drawing():  # Using template for safer begin-end pairs
       clearBackground(RayWhite)
-      drawText(font, "Congrats! You created your first window!", Vector2(x: 190, y: 200), 20, 2.0, LightGray)
+      drawText("Congrats! You created your first window!", 190, 200, 20, LightGray)
 
 main()
 ```
@@ -89,7 +89,7 @@ C types are mapped to Nim types following these patterns:
 
 ```nim
 # C: float -> Nim: float32
-let posX: float32 = 100.0 # Preferred format for declarations
+let posX: float32 = 22.5 # Preferred format for declarations
 
 # C: int -> Nim: int32
 let counter: int32 = 0
@@ -98,35 +98,19 @@ let counter: int32 = 0
 let flags: uint32 = 0
 
 # C: boolean -> Nim: bool
-let isVisible = true
+let isVisible: bool = true
 
 # C: char* -> Nim: string
-let title = "Window Title"
+let title: string = "Window Title"
 ```
 
-**Note:**
+### Numerical Literal Rules
 
-* Give explicit types (e.g., `float32`, `int32`) in declarations.
-* In **expressions**, Nim applies its convertible relation:
-  – Float literals like `2.0` are `float` (64-bit); ints are polymorphic.
-  – `float64` and `float32` are implicitly convertible both ways; int literals convert to many numeric types.
-  To **keep evaluation in the target type**, suffix the literal (`'f32`, `'i32`, `'u32`, …) or convert as needed.
-* Avoid C-style suffixes (e.g., `0.0f`).
-
-### Examples
-
-```nim
-# Float: avoid promotion to float (64-bit) and implicit narrowing back to float32
-let scleraLeftPosition = Vector2(
-  x: getScreenWidth() / 2'f32,
-  y: getScreenHeight() / 2'f32
-)
-
-# Ints: literals are polymorphic
-camera.zoom += getMouseWheelMove()*0.05'f32
-if camera.zoom > 3: camera.zoom = 3
-elif camera.zoom < 0.1'f32: camera.zoom = 0.1'f32
-```
+- **Explicit Type Declarations:** Always declare variables with explicit types (e.g., `var x: T = …`). Avoid relying on type inference with `var x = …`.
+- **Whole Number Literals:** Treat whole number literals as integers (e.g., `45.0` becomes `45`).
+- **Division Suffix:** When performing division, always include the appropriate suffix (e.g., `ScreenWidth/2'f32`).
+- **Decimal Point Suffix:** In expressions, suffix floating-point literals (e.g., `lineThick*0.5'f32`) to ensure `float32` precision.
+- **Avoid C-Style Suffixes:** Do not use C-style suffixes (e.g., `0.0f`) in Nim.
 
 ### Mapping C Types to Nim Types
 
@@ -173,10 +157,12 @@ camera.projection = Perspective
 
 ### Simple Function Calls
 Direct translation with camelCase:
+
 ```c
 // C
 InitWindow(ScreenWidth, ScreenHeight, "Title");
 ```
+
 ```nim
 # Nim
 initWindow(ScreenWidth, ScreenHeight, "Title")
@@ -261,15 +247,6 @@ For cases where you want explicit control or need to ensure cleanup at a specifi
 var image = loadImage("resources/heightmap.png") # Load image (RAM)
 let texture = loadTextureFromImage(image) # Convert image to texture (VRAM)
 reset(image) # Unload image from RAM, already uploaded to VRAM
-```
-
-### Handling Types Without Copy Hooks
-Some types in naylib, like `Texture`, `Shader`, `Mesh`, `Font`, etc don't have `=copy` hooks to prevent accidental copying. To work around this, use references:
-```nim
-var texture: ref Texture
-new(texture)
-texture[] = loadTexture("resources/example.png")
-let copy = texture # This works, copying the reference
 ```
 
 ## 7. Mathematical Operations
@@ -377,26 +354,7 @@ import std/assertions
 assert(windowIsReady(), "Window should be initialized")
 ```
 
-## 9. Common Patterns and Idioms
-
-### Texture Ownership in Models
-
-When assigning a texture to a model, the operation only performs a shallow copy of the texture handle. The model does not take ownership of the resource; it simply holds another copy of the handle. The texture must remain valid and in scope for as long as the model uses it.
-
-```nim
-var model = loadModel("resources/models/plane.obj") # Load model
-let texture = loadTexture("resources/models/plane_diffuse.png") # Load texture
-model.materials[0].maps[MaterialMapIndex.Diffuse].texture = texture # Assign diffuse texture
-```
-
-When creating a model from a mesh, ownership is moved. The `sink Mesh` parameter consumes the argument, and with copy operations disabled on Mesh, the compiler enforces that the mesh is transferred into the model. The original variable becomes invalid, and the model is now responsible for unloading the mesh.
-
-```nim
-let mesh = genMeshHeightmap(image, Vector3(x: 16, y: 8, z: 16)) # Generate heightmap mesh (RAM and VRAM)
-var model = loadModelFromMesh(mesh) # Mesh is consumed and owned by the model
-```
-
-## 10. String Formatting and Text
+## 9. String Formatting and Text
 
 ### Formatted text drawing
 
@@ -413,7 +371,7 @@ import std/strformat
 drawText(&"TARGET FPS: {targetFPS}", x, y, fontSize, color)
 ```
 
-## 11. Audio Patterns
+## 8. Audio Patterns
 
 ### Audio Device Management
 ```nim
@@ -421,7 +379,7 @@ initAudioDevice()
 defer: closeAudioDevice()  # Still needed as it's a global resource
 ```
 
-## 12. Shader Patterns
+## 9. Shader Patterns
 
 ### Shader Loading
 ```nim
@@ -453,7 +411,7 @@ setShaderValue(shader, colorLoc, color) # uniform type inferred as Vec4
 
 `setShaderValue` infers the uniform type from the Nim value at compile time (e.g., `float32`, `array[3, float32]`, `array[4, int32]`) and forwards it to the low-level implementation, so you don’t need to pass the uniform type explicitly.
 
-## 13. Configuration and Platform-Specific Features
+## 10. Flag Patterns
 
 ### Setting Configuration Flags
 Use the `flags` procedure to work with bitflags like `ConfigFlags`:
@@ -465,43 +423,5 @@ SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_WINDOW_HIGHDPI)
 # Nim
 setConfigFlags(flags(Msaa4xHint, WindowHighdpi))
 initWindow(screenWidth, screenHeight, "Window title")
-```
-
-## 14. Advanced Usage Patterns
-
-### Properly Calling closeWindow
-Since Naylib wraps most types with destructors, `closeWindow` should be called at the very end:
-```nim
-# Recommended approach
-initWindow(800, 450, "example")
-defer: closeWindow()
-let texture = loadTexture("resources/example.png")
-# Game logic goes here
-```
-
-## Working with Embedded Resources
-
-Wrap embedded byte arrays (exported via `exportImageAsCode`/`exportWaveAsCode`) as non-owning views using `toWeakImage`/`toWeakWave`. Then pass the underlying Image/Wave to the usual loaders.
-
-```nim
-# Embedded arrays are part of the binary. Metadata must match the embedded data.
-let image = toWeakImage(ImageData, ImageWidth, ImageHeight, ImageFormat)
-let texture = loadTextureFromImage(Image(image)) # pass Image (convert from WeakImage)
-```
-
-## Custom Pixel Formats
-
-Define how your types map to GPU formats with `pixelKind`. The API infers the format from the element type and validates size/format on upload.
-
-```nim
-type RGBAPixel* = distinct byte
-template pixelKind*(x: typedesc[RGBAPixel]): PixelFormat = UncompressedR8g8b8a8
-
-# External provider returns interleaved RGBA8 data for the given size
-proc loadExternalRGBA8(width, height: int): seq[RGBAPixel]
-
-let rgba = loadExternalRGBA8(width, height) # len must be width*height*4
-let tex = loadTextureFromData(rgba, width, height) # inferred RGBA8 from RGBAPixel
-updateTexture(tex, rgba) # format and size validated by the API
 ```
 
