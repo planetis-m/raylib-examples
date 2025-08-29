@@ -170,6 +170,7 @@ initWindow(ScreenWidth, ScreenHeight, "Title")
 
 ### Function Overloading
 In C, similar functions have different names. In Nim, these are combined into one function name with multiple parameter sets.
+
 ```c
 // C
 DrawTexture(texture, posX, posY, WHITE);
@@ -178,6 +179,7 @@ DrawTextureEx(texture, position, rotation, scale, WHITE);
 DrawTextureRec(texture, sourceRec, position, WHITE);
 DrawTexturePro(texture, sourceRec, destRec, origin, rotation, WHITE);
 ```
+
 ```nim
 # Nim (naylib) - overloaded procedures
 drawTexture(texture, posX, posY, White)
@@ -320,7 +322,10 @@ let scaledValue = baseValue * 1.5
 
 ### Splitting Long Expressions in Nim
 
-In Nim, only break lines after an operator (put operator at end of line), comma, or open parenthesis, and indent the continuation line. Never start the next line with an operator.
+* Break lines only after binary operators, commas, or open parentheses.
+* Place binary operators at the end of the line, not at the start of the next line.
+* Indent continuation lines consistently.
+* Unary operators (e.g., a leading `-` for a negative term) may appear at the start of a line.
 
 ```nim
 # Incorrect (causes errors):
@@ -381,18 +386,6 @@ defer: closeAudioDevice()  # Still needed as it's a global resource
 
 ## 9. Shader Patterns
 
-### Shader Loading
-```nim
-when defined(GraphicsApiOpenGl33):
-  const glslVersion = 330
-else:
-  const glslVersion = 100
-
-let shader = loadShader(&"resources/shaders/glsl{glslVersion}/lighting.vs",
-    &"resources/shaders/glsl{glslVersion}/lighting.fs")
-# No need for defer - automatically cleaned up by destructor
-```
-
 ## Shader Value Setting
 
 ```c
@@ -415,10 +408,12 @@ setShaderValue(shader, colorLoc, color) # uniform type inferred as Vec4
 
 ### Setting Configuration Flags
 Use the `flags` procedure to work with bitflags like `ConfigFlags`:
+
 ```c
 // C
 SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_WINDOW_HIGHDPI)
 ```
+
 ```nim
 # Nim
 setConfigFlags(flags(Msaa4xHint, WindowHighdpi))
