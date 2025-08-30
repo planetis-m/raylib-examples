@@ -106,11 +106,13 @@ let title: string = "Window Title"
 
 ### Numerical Literal Rules
 
-- **Explicit Type Declarations:** Always declare variables with explicit types (e.g., `var x: T = …`). Avoid relying on type inference with `var x = …`.
-- **Whole Number Literals:** Treat whole number literals as integers (e.g., `45.0` becomes `45`).
-- **Division Suffix:** When performing division, always include the appropriate suffix (e.g., `ScreenWidth/2'f32`).
-- **Decimal Point Suffix:** In expressions, suffix floating-point literals (e.g., `lineThick*0.5'f32`) to ensure `float32` precision.
-- **Avoid C-Style Suffixes:** Do not use C-style suffixes (e.g., `0.0f`) in Nim.
+- **Explicit Type Declarations:** Prefer explicit type annotations (e.g., `let x: int32 = 10`) for clarity and consistency.
+  *Note: Inference (`let x = 10`) is fine only when the type is obvious and unambiguous. Literals are converted automatically when an explicit type is provided (e.g., `let y: int32 = 20`).*
+- **Whole Number Literals:** Use integer form (`45`) instead of decimal form (`45.0`).
+- **Division Suffix:** Always include the correct suffix for division results (e.g., `ScreenWidth/2'f32`).
+  *Note: This prevents unintended float widening or mismatches.*
+- **Decimal Point Suffix:** Add suffixes to floating-point literals in expressions (e.g., `lineThick*0.5'f32`) to ensure `float32` precision.
+- **Avoid C-Style Suffixes:** Do not use C-style suffixes (e.g., `0.0f`).
 
 ### Mapping C Types to Nim Types
 
@@ -322,10 +324,10 @@ let scaledValue = baseValue * 1.5
 
 ### Splitting Long Expressions in Nim
 
-* Break lines only after binary operators, commas, or open parentheses.
-* Place binary operators at the end of the line, not at the start of the next line.
-* Indent continuation lines consistently.
-* Unary operators (e.g., a leading `-` for a negative term) may appear at the start of a line.
+- Break lines only after binary operators, commas, or open parentheses.
+- Place binary operators at the end of the line, not at the start of the next line.
+- Indent continuation lines consistently.
+- Unary operators (e.g., a leading `-` for a negative term) may appear at the start of a line.
 
 ```nim
 # Incorrect (causes errors):
@@ -385,6 +387,16 @@ defer: closeAudioDevice()  # Still needed as it's a global resource
 ```
 
 ## 9. Shader Patterns
+
+### Shader Loading
+```nim
+when defined(GraphicsApiOpenGl33):
+  const GlslVersion = 330
+else:
+  const GlslVersion = 100
+
+let fragShaderFileName = "resources/shaders/glsl{GlslVersion}/reload.fs"
+```
 
 ## Shader Value Setting
 

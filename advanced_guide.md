@@ -30,18 +30,6 @@ var model = loadModelFromMesh(mesh) # Mesh is consumed and owned by the model
 
 ## 3. Advanced Usage Patterns
 
-### Shader Loading
-```nim
-when defined(GraphicsApiOpenGl33):
-  const glslVersion = 330
-else:
-  const glslVersion = 100
-
-let shader = loadShader(&"resources/shaders/glsl{glslVersion}/lighting.vs",
-    &"resources/shaders/glsl{glslVersion}/lighting.fs")
-# No need for defer - automatically cleaned up by destructor
-```
-
 ### Properly Calling closeWindow
 Since Naylib wraps most types with destructors, `closeWindow` should be called at the very end:
 ```nim
