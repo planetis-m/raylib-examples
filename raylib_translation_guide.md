@@ -83,45 +83,67 @@ main()
 
 ## 3. Type Translations
 
-### Basic Types
+### Number Types
 
-C types are mapped to Nim types following these patterns:
+C numeric types are mapped to Nim types following these patterns:
 
 ```nim
 # C: float -> Nim: float32
-let posX: float32 = 22.5 # Preferred format for declarations
+let posX: float32 = 22.5 # Preferred format with an explicit type
 
 # C: int -> Nim: int32
 let counter: int32 = 0
 
 # C: unsigned int -> Nim: uint32
 let flags: uint32 = 0
-
-# C: boolean -> Nim: bool
-let isVisible: bool = true
-
-# C: char* -> Nim: string
-let title: string = "Window Title"
 ```
 
-### Numerical Literal Rules
+Nim Defaults:
+- Float literals like `2.0` are float64. Integer literals are polymorphic.
+- `float64` and `float32` are implicitly convertible both ways; int literals convert to many numeric types.
 
-* **Explicit Type Declarations**
-  Prefer explicit type annotations for clarity (e.g., `let x: int32 = 10`).
-  * When a type is explicitly declared, both integer and float literals are automatically converted to the target type.
-    * Examples:
-      * `let a: float32 = 45`   # int literal → converted to float32
-      * `let b: float32 = 22.5` # float64 literal → converted to float32
-  * Do **not** add `'f32` (or similar) suffixes in this context — they are redundant.
-* **Whole Number Literals**
-  * Write whole numbers without a decimal point (e.g., `45` instead of `45.0`).
-* **Floating-Point Literals in Expressions**
-  * Use suffixes (`'f32`) when a floating-point literal appears in an **expression** (e.g., `lineThick*0.5'f32`) to ensure float32 precision.
-  * This prevents unintended float widening or mismatches.
-* **Division Rule**
-  * Always ensure at least one operand in division is a float type, either by using a float suffix (e.g., `ScreenWidth/2'f32`) or by casting (e.g., `float32(ScreenWidth)/2`).
-* **Avoid C-Style Suffixes**
-  * Do not use C-style suffixes like `0.0f`.
+Rules:
+1. **No suffixes needed for simple literals**
+   If you specify the type (e.g., `: float32`), don't add `'f32` or similar suffixes — they are redundant.
+
+2. **Use whole numbers when possible**
+   For whole number values, write `170` instead of `170.0`, even if the target type is a float.
+
+3. **Prevent unintended type mismatches**
+   Use literal suffixes (`'f32`) or explicit conversion (`float32(value)`), (e.g., `lineThick*0.5'f32`, `float32(screenWidth)/2`) to ensure float32 precision. This prevents unintended float widening or mismatches.
+
+4. **Avoid C-Style Suffixes**
+   Do not use C-style suffixes like `0.0f`.
+
+Good:
+```nim
+let a: float32 = 15        # No suffix needed
+let b: float32 = 0.2       # No suffix needed
+let angle: float32 = 180   # Whole number for float type
+
+let angle = degToRad(170'f32)   # Add type hints when the type is ambiguous
+
+let result1 = lineThick*0.5'f32       # This prevents unintended float widening
+let result2 = screenWidth/2'f32       # This prevents unintended float widening
+let result3 = float32(screenWidth)/2  # This prevents unintended float widening
+
+let ratio1: float32 = float32(intValue1) / intValue2  # Convert at least one operand to float32
+let ratio2: float32 = float32(intValue1) / float32(intValue2)
+```
+
+Bad:
+```nim
+let a: float32 = 15'f32    # Redundant suffix
+let b: float32 = 0.2'f32   # Redundant suffix
+
+let angle: float32 = degToRad(170)   # May fail due to missing type hint
+
+let result1 = lineThick*0.5   # Unintended float widening to 64-bit
+let result3 = screenWidth/2   # The type is inferred as float (64-bit)
+let result3 = screenWidth/2.0 # Explicit decimal creates 64-bit float
+
+let ratio: float32 = intValue1 / intValue2  # Expression evaluates to float64, gets down-converted
+```
 
 ### Mapping C Types to Nim Types
 

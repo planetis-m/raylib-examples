@@ -40,14 +40,14 @@ proc main =
 
   # Simulation Parameters
   var 
-    l1 = 15.0'f32
+    l1 = 15'f32
     m1 = 0.2'f32
-    theta1 = degToRad(170.0'f32)
-    w1 = 0.0'f32
-    l2 = 15.0'f32
+    theta1 = degToRad(170'f32)
+    w1 = 0'f32
+    l2 = 15'f32
     m2 = 0.1'f32
-    theta2 = degToRad(0.0'f32)
-    w2 = 0.0'f32
+    theta2 = degToRad(0'f32)
+    w2 = 0'f32
     lengthScaler = 0.1'f32
     totalM = m1 + m2
 

@@ -15,7 +15,7 @@
 #
 # ****************************************************************************************
 
-import raylib, std/[math, times, lenientops]
+import raylib, std/[math, times]
 
 const
   DigitSize = 30
@@ -131,14 +131,14 @@ proc updateClock(clock: var Clock) =
 
   clock.hour.angle = float32((timeInfo.hour mod 12) * 180 div 6)
   clock.hour.angle += float32((timeInfo.minute mod 60) * 30 div 60)
-  clock.hour.angle -= 90'f32
+  clock.hour.angle -= 90
 
   clock.minute.angle = float32((timeInfo.minute mod 60) * 6)
   clock.minute.angle += float32((timeInfo.second mod 60) * 6 div 60)
-  clock.minute.angle -= 90'f32
+  clock.minute.angle -= 90
 
   clock.second.angle = float32((timeInfo.second mod 60) * 6)
-  clock.second.angle -= 90'f32
+  clock.second.angle -= 90
 
 # Draw clock
 proc drawClock(clock: Clock, centerPosition: Vector2) =
@@ -164,7 +164,7 @@ proc drawClock(clock: Clock, centerPosition: Vector2) =
     drawRectangle(
       Rectangle(x: centerPosition.x, y: centerPosition.y, 
                 width: float32(clock.second.length), height: float32(clock.second.thickness)),
-      Vector2(x: 0, y: float32(clock.second.thickness)/2'f32), 
+      Vector2(x: 0, y: float32(clock.second.thickness)/2), 
       clock.second.angle, 
       clock.second.color)
 
@@ -172,7 +172,7 @@ proc drawClock(clock: Clock, centerPosition: Vector2) =
     drawRectangle(
       Rectangle(x: centerPosition.x, y: centerPosition.y, 
                 width: float32(clock.minute.length), height: float32(clock.minute.thickness)),
-      Vector2(x: 0, y: float32(clock.minute.thickness)/2'f32), 
+      Vector2(x: 0, y: float32(clock.minute.thickness)/2), 
       clock.minute.angle, 
       clock.minute.color)
 
@@ -180,7 +180,7 @@ proc drawClock(clock: Clock, centerPosition: Vector2) =
     drawRectangle(
       Rectangle(x: centerPosition.x, y: centerPosition.y, 
                 width: float32(clock.hour.length), height: float32(clock.hour.thickness)),
-      Vector2(x: 0, y: float32(clock.hour.thickness)/2'f32), 
+      Vector2(x: 0, y: float32(clock.hour.thickness)/2), 
       clock.hour.angle, 
       clock.hour.color)
 
