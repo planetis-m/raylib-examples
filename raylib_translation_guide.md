@@ -106,13 +106,22 @@ let title: string = "Window Title"
 
 ### Numerical Literal Rules
 
-- **Explicit Type Declarations:** Prefer explicit type annotations (e.g., `let x: int32 = 10`) for clarity and consistency.
-  *Note: Inference (`let x = 10`) is fine only when the type is obvious and unambiguous. Literals are converted automatically when an explicit type is provided (e.g., `let y: int32 = 20`).*
-- **Whole Number Literals:** Use integer form (`45`) instead of decimal form (`45.0`).
-- **Division Suffix:** Always include the correct suffix for division results (e.g., `ScreenWidth/2'f32`).
-  *Note: This prevents unintended float widening or mismatches.*
-- **Decimal Point Suffix:** Add suffixes to floating-point literals in expressions (e.g., `lineThick*0.5'f32`) to ensure `float32` precision.
-- **Avoid C-Style Suffixes:** Do not use C-style suffixes (e.g., `0.0f`).
+* **Explicit Type Declarations**
+  Prefer explicit type annotations for clarity (e.g., `let x: int32 = 10`).
+  * When a type is explicitly declared, both integer and float literals are automatically converted to the target type.
+    * Examples:
+      * `let a: float32 = 45`   # int literal → converted to float32
+      * `let b: float32 = 22.5` # float64 literal → converted to float32
+  * Do **not** add `'f32` (or similar) suffixes in this context — they are redundant.
+* **Whole Number Literals**
+  * Write whole numbers without a decimal point (e.g., `45` instead of `45.0`).
+* **Floating-Point Literals in Expressions**
+  * Use suffixes (`'f32`) when a floating-point literal appears in an **expression** (e.g., `lineThick*0.5'f32`) to ensure float32 precision.
+  * This prevents unintended float widening or mismatches.
+* **Division Rule**
+  * Always suffix the numerical literal in division with the correct float suffix (e.g., `ScreenWidth/2'f32`).
+* **Avoid C-Style Suffixes**
+  * Do not use C-style suffixes like `0.0f`.
 
 ### Mapping C Types to Nim Types
 
