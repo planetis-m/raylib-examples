@@ -119,7 +119,7 @@ let title: string = "Window Title"
   * Use suffixes (`'f32`) when a floating-point literal appears in an **expression** (e.g., `lineThick*0.5'f32`) to ensure float32 precision.
   * This prevents unintended float widening or mismatches.
 * **Division Rule**
-  * Always suffix the numerical literal in division with the correct float suffix (e.g., `ScreenWidth/2'f32`).
+  * Always ensure at least one operand in division is a float type, either by using a float suffix (e.g., `ScreenWidth/2'f32`) or by casting (e.g., `float32(ScreenWidth)/2`).
 * **Avoid C-Style Suffixes**
   * Do not use C-style suffixes like `0.0f`.
 
