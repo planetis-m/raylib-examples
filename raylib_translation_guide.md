@@ -148,19 +148,19 @@ let title: string = "Window Title"
 ```nim
 # Good: This is the standard, clear way to create objects in Nim.
 var camera = Camera(
-  position: Vector3(x: 5.0, y: 5.0, z: 5.0),
-  target: Vector3(x: 0.0, y: 0.0, z: 0.0),
-  up: Vector3(x: 0.0, y: 1.0, z: 0.0),
-  fovy: 45.0,
+  position: Vector3(x: 5, y: 5, z: 5),
+  target: Vector3(x: 0, y: 0, z: 0),
+  up: Vector3(x: 0, y: 1, z: 0),
+  fovy: 45,
   projection: Perspective
 )
 
 # Also works, but is less ideal:
 var camera: Camera
-camera.position = Vector3(x: 5.0, y: 5.0, z: 5.0)
-camera.target = Vector3(x: 0.0, y: 0.0, z: 0.0)
-camera.up = Vector3(x: 0.0, y: 1.0, z: 0.0)
-camera.fovy = 45.0
+camera.position = Vector3(x: 5, y: 5, z: 5)
+camera.target = Vector3(x: 0, y: 0, z: 0)
+camera.up = Vector3(x: 0, y: 1, z: 0)
+camera.fovy = 45
 camera.projection = Perspective
 ```
 
@@ -321,14 +321,14 @@ Following raylib's coding style, omit spaces around * and /, but include spaces 
 
 ```nim
 # Good raylib style
-let centerX = screenWidth/2 - buttonWidth/2
-let centerY = screenHeight/2 - buttonHeight/2
-let scaledValue = baseValue*1.5
+let centerX = screenWidth/2'f32 - buttonWidth/2'f32
+let centerY = screenHeight/2'f32 - buttonHeight/2'f32
+let scaledValue = baseValue*1.5'f32
 
 # Less preferred
-let centerX = screenWidth / 2 - buttonWidth / 2
-let centerY = screenHeight / 2 - buttonHeight / 2
-let scaledValue = baseValue * 1.5
+let centerX = screenWidth / 2'f32 - buttonWidth / 2'f32
+let centerY = screenHeight / 2'f32 - buttonHeight / 2'f32
+let scaledValue = baseValue * 1.5'f32
 ```
 
 ### Splitting Long Expressions in Nim
@@ -404,7 +404,7 @@ when defined(GraphicsApiOpenGl33):
 else:
   const GlslVersion = 100
 
-let fragShaderFileName = "resources/shaders/glsl{GlslVersion}/reload.fs"
+let fragShaderFileName = &"resources/shaders/glsl{GlslVersion}/reload.fs"
 ```
 
 ## Shader Value Setting
@@ -419,7 +419,7 @@ SetShaderValue(shader, colorLoc, color, SHADER_UNIFORM_VEC4); // must pass the u
 ```nim
 # Nim
 let colorLoc = getShaderLocation(shader, "color")
-let color: array[4, float32] = [1.0, 0.0, 0.0, 1.0]
+let color: array[4, float32] = [1, 0, 0, 1]
 setShaderValue(shader, colorLoc, color) # uniform type inferred as Vec4
 ```
 
