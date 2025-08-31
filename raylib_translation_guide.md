@@ -294,11 +294,12 @@ Vector3 sum   = Vector3Add(a, b);
 Vector3 diff  = Vector3Subtract(a, b);
 Vector3 scale = Vector3Scale(a, factor);
 Vector3 mul   = Vector3Multiply(a, b);
-Vector3 div   = Vector3Divide(a, b);
+Vector3 `div` = Vector3Divide(a, b);
 Vector3 trans = Vector3Transform(a, matrix);
 float   dist  = Vector3Distance(a, b);
 Vector3 neg   = Vector3Negate(a);
 Quaternion q  = QuaternionMultiply(q1, q2);
+if (Vector3Equals(a, b));
 ```
 
 ```nim

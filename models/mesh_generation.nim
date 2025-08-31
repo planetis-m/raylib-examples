@@ -80,7 +80,7 @@ proc main =
   var checked = genImageChecked(2, 2, 1, 1, Red, Green)
   let texture = loadTextureFromImage(checked)
   reset(checked)
-  var models: array[NumModels, Model]
+  var models: array[NumModels, ModelFromMesh]
   models[0] = loadModelFromMesh(genMeshPlane(2, 2, 5, 5))
   models[1] = loadModelFromMesh(genMeshCube(2, 1, 2))
   models[2] = loadModelFromMesh(genMeshSphere(2, 32, 32))
@@ -102,7 +102,7 @@ proc main =
   # discard exportMesh(models[8].meshes[0], "custom.obj")
   # Set checked texture as default diffuse component for all models material
   for i in 0..<NumModels:
-    models[i].materials[0].maps[MaterialMapIndex.Diffuse].texture = texture
+    Model(models[i]).materials[0].maps[MaterialMapIndex.Diffuse].texture = texture
   # Define the camera to look into our 3d world
   var camera = Camera(
     position: Vector3(x: 5, y: 5, z: 5),  # Camera position
@@ -139,7 +139,7 @@ proc main =
     beginDrawing()
     clearBackground(RayWhite)
     beginMode3D(camera)
-    drawModel(models[currentModel], position, 1, White)
+    drawModel(Model(models[currentModel]), position, 1, White)
     drawGrid(10, 1)
     endMode3D()
     drawRectangle(30, 400, 310, 30, fade(SkyBlue, 0.5))

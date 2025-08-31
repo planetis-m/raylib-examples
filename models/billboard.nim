@@ -33,9 +33,9 @@ proc main() =
     projection: Perspective                 # Camera projection type
   )
 
-  let bill = loadTexture("resources/billboard.png")    # Our billboard texture
-  let billPositionStatic = Vector3(x: 0, y: 2, z: 0)          # Position of static billboard
-  let billPositionRotating = Vector3(x: 1, y: 2, z: 1)        # Position of rotating billboard
+  let bill = loadTexture("resources/billboard.png")     # Our billboard texture
+  let billPositionStatic = Vector3(x: 0, y: 2, z: 0)    # Position of static billboard
+  let billPositionRotating = Vector3(x: 1, y: 2, z: 1)  # Position of rotating billboard
 
   # Entire billboard texture, source is used to take a segment from a larger texture
   let source = Rectangle(x: 0, y: 0, width: float32(bill.width), height: float32(bill.height))

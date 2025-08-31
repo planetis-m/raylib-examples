@@ -41,7 +41,7 @@ proc main =
   let texture = loadTextureFromImage(image) # Convert image to texture (VRAM)
   let mesh = genMeshHeightmap(image, Vector3(x: 16, y: 8, z: 16)) # Generate heightmap mesh (RAM and VRAM)
   var model = loadModelFromMesh(mesh) # Load model from generated mesh
-  model.materials[0].maps[MaterialMapIndex.Diffuse].texture = texture # Set map diffuse texture
+  Model(model).materials[0].maps[MaterialMapIndex.Diffuse].texture = texture # Set map diffuse texture
 
   let mapPosition = Vector3(x: -8, y: 0, z: -8) # Define model position
   reset(image) # Unload heightmap image from RAM, already uploaded to VRAM
@@ -60,7 +60,7 @@ proc main =
     clearBackground(RayWhite)
 
     beginMode3D(camera)
-    drawModel(model, mapPosition, 1, Red)
+    drawModel(Model(model), mapPosition, 1, Red)
     drawGrid(20, 1)
     endMode3D()
 
