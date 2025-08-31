@@ -81,15 +81,28 @@ proc main =
   let texture = loadTextureFromImage(checked)
   reset(checked)
   var models: array[NumModels, ModelFromMesh]
-  models[0] = loadModelFromMesh(genMeshPlane(2, 2, 5, 5))
-  models[1] = loadModelFromMesh(genMeshCube(2, 1, 2))
-  models[2] = loadModelFromMesh(genMeshSphere(2, 32, 32))
-  models[3] = loadModelFromMesh(genMeshHemiSphere(2, 16, 16))
-  models[4] = loadModelFromMesh(genMeshCylinder(1, 2, 16))
-  models[5] = loadModelFromMesh(genMeshTorus(0.25, 4, 16, 32))
-  models[6] = loadModelFromMesh(genMeshKnot(1, 2, 16, 128))
-  models[7] = loadModelFromMesh(genMeshPoly(5, 2))
-  models[8] = loadModelFromMesh(genMeshCustom())
+  # Generate meshes
+  let meshPlane      = genMeshPlane(2, 2, 5, 5)
+  let meshCube       = genMeshCube(2, 1, 2)
+  let meshSphere     = genMeshSphere(2, 32, 32)
+  let meshHemiSphere = genMeshHemiSphere(2, 16, 16)
+  let meshCylinder   = genMeshCylinder(1, 2, 16)
+  let meshTorus      = genMeshTorus(0.25, 4, 16, 32)
+  let meshKnot       = genMeshKnot(1, 2, 16, 128)
+  let meshPoly       = genMeshPoly(5, 2)
+  let meshCustom     = genMeshCustom()
+
+  # Load models from meshes
+  models[0] = loadModelFromMesh(meshPlane)
+  models[1] = loadModelFromMesh(meshCube)
+  models[2] = loadModelFromMesh(meshSphere)
+  models[3] = loadModelFromMesh(meshHemiSphere)
+  models[4] = loadModelFromMesh(meshCylinder)
+  models[5] = loadModelFromMesh(meshTorus)
+  models[6] = loadModelFromMesh(meshKnot)
+  models[7] = loadModelFromMesh(meshPoly)
+  models[8] = loadModelFromMesh(meshCustom)
+
   # Generated meshes could be exported as .obj files
   # discard exportMesh(models[0].meshes[0], "plane.obj")
   # discard exportMesh(models[1].meshes[0], "cube.obj")
