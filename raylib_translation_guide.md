@@ -98,19 +98,19 @@ let counter: int32 = 0
 let flags: uint32 = 0
 ```
 
-Nim Defaults:
+**Nim Defaults:**
 - Float literals like `2.0` are float64. Integer literals are polymorphic.
 - `float64` and `float32` are implicitly convertible both ways; int literals convert to many numeric types.
 
-Rules:
+**Rules:**
 1. **No suffixes needed for simple literals**
    If you specify the type (e.g., `: float32`), don't add `'f32` or similar suffixes — they are redundant.
 
 2. **Use whole numbers when possible**
-   For whole number values, write `170` instead of `170.0`, even if the target type is a float.
+   Write whole numbers without a decimal point (e.g., `45` instead of `45.0`), even if the target type is a float.
 
-3. **Prevent unintended type mismatches**
-   Use literal suffixes (`'f32`) or explicit conversion (`float32(value)`), (e.g., `lineThick*0.5'f32`, `float32(screenWidth)/2`) to ensure float32 precision. This prevents unintended float widening or mismatches.
+3. **Prevent unintended float widening or mismatches**
+   Use literal suffixes (`'f32`) or explicit conversion (`float32(value)`), (e.g., `lineThick*0.5'f32`, `float32(screenWidth)/2`) to ensure float32 precision.
 
 4. **Avoid C-Style Suffixes**
    Do not use C-style suffixes like `0.0f`.
@@ -189,20 +189,34 @@ camera.projection = Perspective
 ## 4. Function Call Patterns
 
 ### Simple Function Calls
-Direct translation with camelCase:
+
+Translate C functions directly by converting names from `PascalCase` to `camelCase`:
 
 ```c
 // C
-InitWindow(ScreenWidth, ScreenHeight, "Title");
+InitWindow(screenWidth, screenHeight, "Title");
 ```
 
 ```nim
 # Nim
-initWindow(ScreenWidth, ScreenHeight, "Title")
+initWindow(screenWidth, screenHeight, "Title")
 ```
 
-### Function Overloading
-In C, similar functions have different names. In Nim, these are combined into one function name with multiple parameter sets.
+### Function Overloading and Suffix Removal
+
+Raylib uses *different function names* for similar operations (e.g. `DrawTexture`, `DrawTextureV`, `DrawTextureEx`, `DrawTextureRec`, `DrawTexturePro`).
+
+In Nim, these are unified into **one base name** with multiple overloads.
+
+#### Transformation Rules
+
+1. Convert function names from `PascalCase` to `camelCase`.
+2. **Always strip raylib suffixes** (`V`, `Ex`, `Rec`, `Pro`, etc.).
+3. Keep only the base function name.
+4. Arguments remain the same; Nim resolves the correct overload automatically.
+5. If the suffix is kept, the Nim code is **wrong**.
+
+#### Examples
 
 ```c
 // C
@@ -214,18 +228,13 @@ DrawTexturePro(texture, sourceRec, destRec, origin, rotation, WHITE);
 ```
 
 ```nim
-# Nim (naylib) - overloaded procedures
+# Nim
 drawTexture(texture, posX, posY, White)
 drawTexture(texture, position, White)
 drawTexture(texture, position, rotation, scale, White)
 drawTexture(texture, sourceRec, position, White)
 drawTexture(texture, sourceRec, destRec, origin, rotation, White)
 ```
-
-**Reminder:**
-
-- Remove raylib function suffixes (`V`, `Ex`, `Rec`, `Pro`, etc) in Nim.
-- Just call the base name (e.g., `drawCircle`, `drawTexture`, `drawLine`), and the correct overload will be resolved based on the parameters.
 
 ## 5. Control Flow Patterns
 
