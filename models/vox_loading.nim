@@ -49,7 +49,7 @@ proc main =
   )
 
   # Load MagicaVoxel files
-  var models: array[MaxVoxFiles, Model]
+  var models = default array[MaxVoxFiles, Model]
 
   for i in 0..<MaxVoxFiles:
     # Load VOX file and measure time
@@ -94,7 +94,7 @@ proc main =
       models[i].materials[j].shader = shader
 
   # Create lights
-  var lights: array[MaxLights, Light]
+  var lights = default array[MaxLights, Light]
   lights[0] = createLight(Point, Vector3(x: -20, y: 20, z: -20), Vector3(), Gray, shader)
   lights[1] = createLight(Point, Vector3(x: 20, y: -20, z: 20), Vector3(), Gray, shader)
   lights[2] = createLight(Point, Vector3(x: -20, y: 20, z: 20), Vector3(), Gray, shader)
@@ -110,22 +110,22 @@ proc main =
     # Update
     if isMouseButtonDown(Middle):
       let mouseDelta = getMouseDelta()
-      camerarot.x = mouseDelta.x * 0.05'f32
-      camerarot.y = mouseDelta.y * 0.05'f32
+      camerarot.x = mouseDelta.x*0.05'f32
+      camerarot.y = mouseDelta.y*0.05'f32
     else:
       camerarot.x = 0
       camerarot.y = 0
 
     updateCamera(camera,
       Vector3(
-        x: int32(isKeyDown(W) or isKeyDown(Up)) * 0.1'f32 -      # Move forward-backward
-            int32(isKeyDown(S) or isKeyDown(Down)) * 0.1'f32,
-        y: int32(isKeyDown(D) or isKeyDown(Right)) * 0.1'f32 -   # Move right-left
-            int32(isKeyDown(A) or isKeyDown(Left)) * 0.1'f32,
+        x: int32(isKeyDown(W) or isKeyDown(Up))*0.1'f32 -      # Move forward-backward
+            int32(isKeyDown(S) or isKeyDown(Down))*0.1'f32,
+        y: int32(isKeyDown(D) or isKeyDown(Right))*0.1'f32 -   # Move right-left
+            int32(isKeyDown(A) or isKeyDown(Left))*0.1'f32,
         z: 0                                              # Move up-down
       ),
       camerarot,
-      getMouseWheelMove() * -2'f32                            # Move to target (zoom)
+      getMouseWheelMove()*-2'f32                            # Move to target (zoom)
     )
 
     # Cycle between models on mouse click

@@ -45,15 +45,16 @@ proc main =
 main()
 ```
 
-### Key Structural Elements
+### Key Points
 1. **Standard Header Comment**: Always include the **full original raylib header**, adapted to Nim's comment syntax
-2. **Import Section**: Include only the necessary naylib (`raylib`, `raymath`, etc.) and nim standard library modules used in the code
-3. **Constants Section**: Screen dimensions and other constants at the top
-4. **Main Procedure**: All logic encapsulated in a `main()` procedure
-5. **Initialization Block**: Window initialization with `defer` for cleanup
-6. **Game Loop**: Standard while loop with update/draw sections
-7. **Resource Management**: Rely on automatic destructors for naylib objects like `Texture` or `Font`
-8. **Function Overloading**: Use the base function names without suffixes like `V`, `Ex`, `Rec`, `Pro`, etc.
+2. **Import Section**: Include only the necessary naylib (`raylib`, `raymath`, etc.) and Nim standard library modules used in the code
+3. **Nim Alternatives**: Use Nim standard library or packages for text, file, compression, and encoding utilities.
+4. **Function Overloading**: Remove any raylib suffixes (`V`, `Ex`, `Rec`, `Pro`, etc.) and rely on Nim's overload resolution.
+5. **Constants Section**: Screen dimensions and other constants at the top
+6. **Main Procedure**: All logic encapsulated in a `main()` procedure
+7. **Initialization Block**: Window initialization with `defer` for cleanup
+8. **Game Loop**: Standard while loop with update/draw sections
+9. **Resource Management**: Rely on automatic destructors for naylib objects like `Texture` or `Font`
 
 ## 2. Naming Conventions
 
@@ -89,13 +90,13 @@ C numeric types are mapped to Nim types following these patterns:
 
 ```nim
 # C: float -> Nim: float32
-let posX: float32 = 22.5 # Preferred format with an explicit type
+let posX: float32 = 22.5   # Explicit type required
 
 # C: int -> Nim: int32
-let counter: int32 = 0
+let counter: int32 = 0     # Explicit type required
 
 # C: unsigned int -> Nim: uint32
-let flags: uint32 = 0
+let flags: uint32 = 0      # Explicit type required
 ```
 
 **Nim Defaults:**
@@ -188,52 +189,42 @@ camera.projection = Perspective
 
 ## 4. Function Call Patterns
 
-### Simple Function Calls
+## Function Calls
 
-Translate C functions directly by converting names from `PascalCase` to `camelCase`:
+Translate raylib C functions to Nim by removing any raylib suffix (`V`, `Ex`, `Rec`, `Pro`, etc.) if present; leave functions without suffixes unchanged. Leaving a suffix on an overloaded function will produce **incorrect Nim code**.
 
 ```c
-// C
 InitWindow(screenWidth, screenHeight, "Title");
+DrawSphereEx(centerPos, radius, rings, slices, RED);
+DrawRectanglePro(sourceRec, destRec, origin, 45.0f, GREEN);
+DrawCircleLinesV(center, 30, BLUE);
+DrawTextureRec(texture, sourceRec, position, WHITE);
 ```
 
 ```nim
-# Nim
 initWindow(screenWidth, screenHeight, "Title")
+drawSphere(centerPos, radius, rings, slices, Red)
+drawRectangle(sourceRec, destRec, origin, 45'f32, Green)
+drawCircleLines(center, 30, Blue)
+drawTexture(texture, sourceRec, position, White)
 ```
 
-### Function Overloading and Suffix Removal
+### Nim Alternatives
 
-Raylib uses *different function names* for similar operations (e.g. `DrawTexture`, `DrawTextureV`, `DrawTextureEx`, `DrawTextureRec`, `DrawTexturePro`).
-
-In Nim, these are unified into **one base name** with multiple overloads.
-
-#### Transformation Rules
-
-1. Convert function names from `PascalCase` to `camelCase`.
-2. **Always strip raylib suffixes** (`V`, `Ex`, `Rec`, `Pro`, etc.).
-3. Keep only the base function name.
-4. Arguments remain the same; Nim resolves the correct overload automatically.
-5. If the suffix is kept, the Nim code is **wrong**.
-
-#### Examples
+For raylib functions not wrapped in naylib (text handling, file I/O, compression, encoding, etc.), prefer **Nim standard library functions** or recommended external packages. A complete reference is available in `naylib/manual/alternatives_table.rst`.
 
 ```c
-// C
-DrawTexture(texture, posX, posY, WHITE);
-DrawTextureV(texture, position, WHITE);
-DrawTextureEx(texture, position, rotation, scale, WHITE);
-DrawTextureRec(texture, sourceRec, position, WHITE);
-DrawTexturePro(texture, sourceRec, destRec, origin, rotation, WHITE);
+GetRandomValue(0, 10);
+float angle = DEG2RAD * 90.0f;
+if (FileExists("data.txt")) { ... }
+int n = TextLength("hello");
 ```
 
 ```nim
-# Nim
-drawTexture(texture, posX, posY, White)
-drawTexture(texture, position, White)
-drawTexture(texture, position, rotation, scale, White)
-drawTexture(texture, sourceRec, position, White)
-drawTexture(texture, sourceRec, destRec, origin, rotation, White)
+let value = rand(0..10)
+let angle = degToRad(90'f32)
+if fileExists("data.txt"): ...
+let n = "hello".len
 ```
 
 ## 5. Control Flow Patterns
@@ -303,7 +294,7 @@ Vector3 sum   = Vector3Add(a, b);
 Vector3 diff  = Vector3Subtract(a, b);
 Vector3 scale = Vector3Scale(a, factor);
 Vector3 mul   = Vector3Multiply(a, b);
-Vector3 `div` = Vector3Divide(a, b);
+Vector3 div   = Vector3Divide(a, b);
 Vector3 trans = Vector3Transform(a, matrix);
 float   dist  = Vector3Distance(a, b);
 Vector3 neg   = Vector3Negate(a);
@@ -315,13 +306,13 @@ if (Vector3Equals(a, b));
 # Nim
 let sum   = a + b
 let diff  = a - b
-let scale = a * factor
-let mul   = a * b
-let div   = a / b
-let trans = a * matrix
+let scale = a*factor
+let mul   = a*b
+let `div` = a/b
+let trans = a*matrix
 let dist  = distance(a, b)
 let neg   = -a
-let q     = q1 * q2
+let q     = q1*q2
 if a =~ b: discard  # approximate equality
 ```
 
@@ -409,12 +400,10 @@ assert(windowIsReady(), "Window should be initialized")
 Use Nim string interpolation:
 
 ```c
-// C
 DrawText(TextFormat("TARGET FPS: %i", targetFPS), x, y, fontSize, color);
 ```
 
 ```nim
-# Nim
 import std/strformat
 drawText(&"TARGET FPS: {targetFPS}", x, y, fontSize, color)
 ```
@@ -442,14 +431,12 @@ let fragShaderFileName = &"resources/shaders/glsl{GlslVersion}/reload.fs"
 ## Shader Value Setting
 
 ```c
-// C
 int colorLoc = GetShaderLocation(shader, "color");
 float color[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
 SetShaderValue(shader, colorLoc, color, SHADER_UNIFORM_VEC4); // must pass the uniform type explicitly
 ```
 
 ```nim
-# Nim
 let colorLoc = getShaderLocation(shader, "color")
 let color: array[4, float32] = [1, 0, 0, 1]
 setShaderValue(shader, colorLoc, color) # uniform type inferred as Vec4
@@ -463,12 +450,10 @@ setShaderValue(shader, colorLoc, color) # uniform type inferred as Vec4
 Use the `flags` procedure to work with bitflags like `ConfigFlags`:
 
 ```c
-// C
 SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_WINDOW_HIGHDPI)
 ```
 
 ```nim
-# Nim
 setConfigFlags(flags(Msaa4xHint, WindowHighdpi))
 initWindow(screenWidth, screenHeight, "Window title")
 ```

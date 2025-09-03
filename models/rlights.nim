@@ -39,7 +39,7 @@ type
   LightType* = enum
     Directional = 0,     # LIGHT_DIRECTIONAL
     Point                # LIGHT_POINT
-  
+
   Light* = object
     typ*: LightType      # type is a reserved word in Nim
     enabled*: bool
@@ -47,7 +47,7 @@ type
     target*: Vector3
     color*: Color
     attenuation*: float32
-    
+
     # Shader locations
     enabledLoc*: ShaderLocation
     typeLoc*: ShaderLocation
@@ -64,6 +64,7 @@ proc updateLightValues*(shader: Shader, light: Light)
 var lightsCount: int32 = 0    # Current amount of created lights
 
 proc createLight*(typ: LightType, position, target: Vector3, color: Color, shader: Shader): Light =
+  result = Light()
   if lightsCount < MaxLights:
     result.enabled = true
     result.typ = typ
@@ -71,7 +72,7 @@ proc createLight*(typ: LightType, position, target: Vector3, color: Color, shade
     result.target = target
     result.color = color
     result.attenuation = 1
-    
+
     # NOTE: Lighting shader naming must be the provided ones
     result.enabledLoc = getShaderLocation(shader, &"lights[{lightsCount}].enabled")
     result.typeLoc = getShaderLocation(shader, &"lights[{lightsCount}].type")
@@ -79,7 +80,7 @@ proc createLight*(typ: LightType, position, target: Vector3, color: Color, shade
     result.targetLoc = getShaderLocation(shader, &"lights[{lightsCount}].target")
     result.colorLoc = getShaderLocation(shader, &"lights[{lightsCount}].color")
     result.attenuationLoc = getShaderLocation(shader, &"lights[{lightsCount}].attenuation")
-    
+
     updateLightValues(shader, result)
     inc(lightsCount)
 
@@ -87,15 +88,15 @@ proc updateLightValues*(shader: Shader, light: Light) =
   # Send to shader light enabled state and type
   setShaderValue(shader, light.enabledLoc, int32(light.enabled))
   setShaderValue(shader, light.typeLoc, int32(light.typ))
-  
+
   # Send to shader light position values
   let position: array[3, float32] = [light.position.x, light.position.y, light.position.z]
   setShaderValue(shader, light.positionLoc, position)
-  
+
   # Send to shader light target position values
   let target: array[3, float32] = [light.target.x, light.target.y, light.target.z]
   setShaderValue(shader, light.targetLoc, target)
-  
+
   # Send to shader light color values
   let color: array[4, float32] = [
     float32(light.color.r) / 255,
@@ -104,6 +105,6 @@ proc updateLightValues*(shader: Shader, light: Light) =
     float32(light.color.a) / 255
   ]
   setShaderValue(shader, light.colorLoc, color)
-  
+
   # Send to shader light attenuation
   setShaderValue(shader, light.attenuationLoc, light.attenuation)
