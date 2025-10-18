@@ -20,9 +20,8 @@ const
   CellSize = 20 # Width and height of each cell in pixels
   WallChance = 4 # Percentage of cells that are walls
 
-const
-  screenWidth = Rows*CellSize
-  screenHeight = Cols*CellSize
+  ScreenWidth = Rows*CellSize
+  ScreenHeight = Cols*CellSize
 
 type
   SpotIdx = distinct int32 # Index type of a spot in the grid
@@ -102,7 +101,7 @@ proc main =
   # --------------------------------------------------------------------------------------
   # Set up the raylib window
   setConfigFlags(flags(Msaa4xHint))
-  initWindow(screenWidth, screenHeight, "raylib example - IDA* path finding")
+  initWindow(ScreenWidth, ScreenHeight, "raylib example - IDA* path finding")
   randomize()
   # If reached fail the search to prevent memory problems
   const MemoryLimit = 420

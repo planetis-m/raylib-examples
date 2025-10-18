@@ -17,7 +17,6 @@ const
   screenWidth = 600
   screenHeight = 600
 
-const
   shaderCode = """
 #version 330
 
@@ -74,6 +73,7 @@ proc main =
   let secondsLoc = getShaderLocation(shader, "seconds")
 
   var seconds: float32 = 0
+  setShaderValue(shader, secondsLoc, seconds)
   setTargetFPS(60) # Set our game to run at 60 frames-per-second
   # Main game loop
   # --------------------------------------------------------------------------------------
@@ -87,15 +87,16 @@ proc main =
     # ------------------------------------------------------------------------------------
     # Using a render texture to draw
     beginTextureMode(target) # Enable drawing to texture
-    clearBackground(Black) # Clear the render texture
     # Draw a rectangle in shader mode to be used as shader canvas
     drawRectangle(0, 0, getScreenWidth(), getScreenHeight(), Black)
     endTextureMode()
+
     beginDrawing()
-    clearBackground(Black)
     # Begin shader mode
     beginShaderMode(shader)
-    drawTexture(target.texture, Vector2(x: 0, y: 0), White)
+    let src = Rectangle(x: 0, y: 0, width: target.texture.width.float32,
+        height: -target.texture.height.float32)
+    drawTexture(target.texture, src, Vector2(x: 0, y: 0), White)
     endShaderMode()
     endDrawing()
     # ------------------------------------------------------------------------------------

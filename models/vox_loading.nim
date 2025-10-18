@@ -86,7 +86,7 @@ proc main =
 
   # Ambient light level (some basic lighting)
   let ambientLoc = getShaderLocation(shader, "ambient")
-  setShaderValue(shader, ambientLoc, [0.1'f32, 0.1'f32, 0.1'f32, 1])
+  setShaderValue(shader, ambientLoc, [0.1'f32, 0.1, 0.1, 1])
 
   # Assign out lighting shader to model
   for i in 0..<MaxVoxFiles:

@@ -202,11 +202,11 @@ DrawTextureRec(texture, sourceRec, position, WHITE);
 ```
 
 ```nim
-initWindow(screenWidth, screenHeight, "Title")
-drawSphere(centerPos, radius, rings, slices, Red)
-drawRectangle(sourceRec, destRec, origin, 45'f32, Green)
-drawCircleLines(center, 30, Blue)
-drawTexture(texture, sourceRec, position, White)
+initWindow(screenWidth, screenHeight, "Title") # Unchanged, no suffix to remove
+drawSphere(centerPos, radius, rings, slices, Red) # Removed the "Ex" suffix
+drawRectangle(sourceRec, destRec, origin, 45'f32, Green) # Removed the "Pro" suffix
+drawCircleLines(center, 30, Blue) # Removed the "V" suffix
+drawTexture(texture, sourceRec, position, White) # Removed the "Rec" suffix
 ```
 
 ### Nim Alternatives
@@ -233,7 +233,6 @@ let n = "hello".len
 Use direct translations of input functions with camelCase naming and Nim's boolean expressions:
 
 ```c
-// C
 if (IsKeyPressed(KEY_SPACE))
     // Handle space key press
 
@@ -245,7 +244,6 @@ if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 ```
 
 ```nim
-# Nim
 if isKeyPressed(Space):
   # Handle space key press
 
@@ -289,7 +287,6 @@ reset(image) # Unload image from RAM, already uploaded to VRAM
 When translating raymath functions from C to Nim, use operators where available and drop the type prefixes from function names.
 
 ```c
-// C
 Vector3 sum   = Vector3Add(a, b);
 Vector3 diff  = Vector3Subtract(a, b);
 Vector3 scale = Vector3Scale(a, factor);
@@ -303,7 +300,6 @@ if (Vector3Equals(a, b));
 ```
 
 ```nim
-# Nim
 let sum   = a + b
 let diff  = a - b
 let scale = a*factor
@@ -455,6 +451,5 @@ SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_WINDOW_HIGHDPI)
 
 ```nim
 setConfigFlags(flags(Msaa4xHint, WindowHighdpi))
-initWindow(screenWidth, screenHeight, "Window title")
 ```
 

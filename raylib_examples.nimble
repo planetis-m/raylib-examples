@@ -18,5 +18,5 @@ task test, "Runs the test suite":
       if f.endsWith(".nim"):
         echo "Compiling example: ", f
         exec "nim c -d:release --verbosity:0 --hints:off " & quoteShell(f)
-requires "https://github.com/planetis-m/mimalloc_nim"
+#requires "https://github.com/planetis-m/mimalloc_nim"
 
