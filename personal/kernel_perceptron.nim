@@ -39,18 +39,18 @@ proc rbfKernel(x1, x2: array[3, float32], params: RBFParams): float32 =
   # RBF/Gaussian Kernel: K(x, y) = exp(-||x-y||^2 * gamma)
   var sum: float32 = 0.0
   for i in 0 ..< NumFeatures:
-    sum += (x1[i] - x2[i]) * (x1[i] - x2[i])
-  result = exp(-sum * params.gamma)
+    sum += (x1[i] - x2[i])*(x1[i] - x2[i])
+  result = exp(-sum*params.gamma)
 
 proc predict(p: Perceptron, input: array[3, float32]): float32 =
   var y: float32 = 0.0
   # Use existing support vectors for prediction
   for sv in p.supportVectors:
-    y += sv[NumFeatures] * rbfKernel(sv, input, p.params)
+    y += sv[NumFeatures]*rbfKernel(sv, input, p.params)
   result = y
 
 proc isMisclassified(p: Perceptron, input: array[3, float32]): bool =
-  result = p.predict(input) * input[NumFeatures] <= 0
+  result = p.predict(input)*input[NumFeatures] <= 0
 
 proc train(p: var Perceptron, input: array[3, float32]) =
   # If prediction is wrong, add this vector as a support vector
@@ -67,11 +67,11 @@ proc accuracy(p: Perceptron; data: openarray[array[3, float32]]): float32 =
       inc numWrong
     else:
       inc numCorrect
-  result = (1 * numCorrect) / (numCorrect + numWrong)
+  result = (1*numCorrect)/(numCorrect + numWrong)
 
 func f(x: float32): float32 =
   # The formula for a quadratic curve
-  0.001'f32 * x * x + 0.05'f32 * x + 1
+  0.001'f32*x*x + 0.05'f32*x + 1
 
 # ----------------------------------------------------------------------------------------
 # Program main entry point
@@ -101,9 +101,9 @@ proc main =
 
   # Generate points for the spline
   var points = newSeq[Vector2](SplineSampleCount)
-  let xStep = screenWidth.float32 / (SplineSampleCount.float32 - 1)
+  let xStep = screenWidth.float32/(SplineSampleCount.float32 - 1)
   for i in 0 ..< SplineSampleCount:
-    let x = (i.float32 * xStep) - screenWidth.float32/2 # Centered x coordinates
+    let x = (i.float32*xStep) - screenWidth.float32/2 # Centered x coordinates
     points[i] = Vector2(x: x, y: f(x))
 
   setTargetFPS(25) # Set our game to run at 25 frames-per-second

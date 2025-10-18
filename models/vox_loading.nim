@@ -122,10 +122,10 @@ proc main =
             int32(isKeyDown(S) or isKeyDown(Down))*0.1'f32,
         y: int32(isKeyDown(D) or isKeyDown(Right))*0.1'f32 -   # Move right-left
             int32(isKeyDown(A) or isKeyDown(Left))*0.1'f32,
-        z: 0                                              # Move up-down
+        z: 0                                                   # Move up-down
       ),
       camerarot,
-      getMouseWheelMove()*-2'f32                            # Move to target (zoom)
+      getMouseWheelMove() * -2'f32                             # Move to target (zoom)
     )
 
     # Cycle between models on mouse click
