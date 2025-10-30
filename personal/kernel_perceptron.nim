@@ -17,8 +17,8 @@
 import raylib, rlgl, std/[random, math, strformat]
 
 const
-  screenWidth = 800
-  screenHeight = 450
+  ScreenWidth = 800
+  ScreenHeight = 450
 
   NumPoints = 2000
   SplineSampleCount = 15 # Number of points to generate for the spline
@@ -37,13 +37,13 @@ type
 
 proc rbfKernel(x1, x2: array[3, float32], params: RBFParams): float32 =
   # RBF/Gaussian Kernel: K(x, y) = exp(-||x-y||^2 * gamma)
-  var sum: float32 = 0.0
+  var sum: float32 = 0
   for i in 0 ..< NumFeatures:
     sum += (x1[i] - x2[i])*(x1[i] - x2[i])
   result = exp(-sum*params.gamma)
 
 proc predict(p: Perceptron, input: array[3, float32]): float32 =
-  var y: float32 = 0.0
+  var y: float32 = 0
   # Use existing support vectors for prediction
   for sv in p.supportVectors:
     y += sv[NumFeatures]*rbfKernel(sv, input, p.params)
@@ -82,7 +82,7 @@ proc main =
   # --------------------------------------------------------------------------------------
   # Set up the raylib window
   setConfigFlags(flags(Msaa4xHint))
-  initWindow(screenWidth, screenHeight, "raylib example - kernel perceptron")
+  initWindow(ScreenWidth, ScreenHeight, "raylib example - kernel perceptron")
   let camera = Camera2D(zoom: 1)
   randomize()
 
@@ -95,15 +95,15 @@ proc main =
 
   # Make 2,000 training data points
   for i in 0 ..< NumPoints:
-    let x = rand(-screenWidth/2'f32..screenWidth/2'f32)
-    let y = rand(-screenHeight/2'f32..screenHeight/2'f32)
+    let x = rand(-ScreenWidth/2'f32..ScreenWidth/2'f32)
+    let y = rand(-ScreenHeight/2'f32..ScreenHeight/2'f32)
     training[i] = [x, y, if y > f(x): 1 else: -1]
 
   # Generate points for the spline
   var points = newSeq[Vector2](SplineSampleCount)
-  let xStep = screenWidth.float32/(SplineSampleCount.float32 - 1)
+  let xStep = ScreenWidth.float32/(SplineSampleCount.float32 - 1)
   for i in 0 ..< SplineSampleCount:
-    let x = (i.float32*xStep) - screenWidth.float32/2 # Centered x coordinates
+    let x = (i.float32*xStep) - ScreenWidth.float32/2 # Centered x coordinates
     points[i] = Vector2(x: x, y: f(x))
 
   setTargetFPS(25) # Set our game to run at 25 frames-per-second
@@ -127,7 +127,7 @@ proc main =
       mode2D(camera):
         setCullFace(FaceFront)
         pushMatrix()
-        translatef(screenWidth/2'f32, screenHeight/2'f32, 0)
+        translatef(ScreenWidth/2'f32, ScreenHeight/2'f32, 0)
         scalef(1, -1, 1)
 
         # Draw the quadratic curve
