@@ -1,5 +1,4 @@
-# ttt.nim
-# Nim + raylib Tic-Tac-Toe (single file, minimal, with a worker AI thread)
+# Nim + raylib Tic-Tac-Toe
 # - Main thread: rendering + player input
 # - Worker thread: computes AI move when signaled (mutex + condition variable)
 # - Only the main thread touches raylib drawing calls (BeginDrawing/EndDrawing)
@@ -11,14 +10,23 @@ import std/locks
 # Small helpers and game model
 # ----------------------------
 type
-  Board = array[9, int] # 0 empty, 1 = X (human), 2 = O (AI)
+  Cell = enum
+    Empty, # 0
+    X,     # 1 (human)
+    O      # 2 (AI)
+  Board = array[9, Cell]
+  GameState = enum
+    None,    # Game ongoing
+    XWins,   # X wins
+    OWins,   # O wins
+    Draw     # Draw
 
 const
-  W = 480
-  H = 520
+  ScreenWidth: int32 = 480
+  ScreenHeight: int32 = 520
   Margin = 30
   TopBar = 60
-  CellSize = (W - Margin * 2) div 3
+  CellSize = (ScreenWidth - Margin * 2) div 3
   GridSize = CellSize * 3
   GridX = Margin
   GridY = TopBar
@@ -33,43 +41,66 @@ const
 func vec2(x, y: float32): Vector2 =
   Vector2(x: x, y: y)
 
-proc checkWinner(b: Board): int =
+proc checkWinner(b: Board): GameState =
   # Returns: 0 = none, 1 = X, 2 = O, 3 = draw
   for line in Wins:
     let a = b[line[0]]
-    if a != 0 and b[line[1]] == a and b[line[2]] == a:
-      return a
+    if a != Empty and b[line[1]] == a and b[line[2]] == a:
+      if a == X: return XWins
+      else: return OWins
   for i in 0..8:
-    if b[i] == 0: return 0
-  return 3
+    if b[i] == Empty: return None
+  return Draw
 
-proc findWinningMove(b: Board, p: int): int =
-  for i in 0..8:
-    if b[i] == 0:
-      var tmp = b
-      tmp[i] = p
-      if checkWinner(tmp) == p:
-        return i
-  return -1
+# ----------
+# Minimax AI
+# ----------
+proc scoreState(b: Board, depth: int): int =
+  # Favor quick wins (10 - depth) and delay losses (-10 + depth)
+  case checkWinner(b)
+  of OWins: 10 - depth   # O (AI) wins
+  of XWins: depth - 10   # X (human) wins
+  of Draw: 0             # draw
+  of None: 0             # non-terminal; not used directly
+
+proc minimax(b: var Board, player: Cell, depth: int): int =
+  let state = checkWinner(b)
+  if state != GameState.None:
+    return scoreState(b, depth)
+
+  if player == O: # AI's turn: maximize
+    var best = -1_000
+    for i in 0..8:
+      if b[i] == Empty:
+        b[i] = O
+        let val = minimax(b, X, depth + 1)
+        b[i] = Empty
+        if val > best: best = val
+    return best
+  else:           # Human's turn: minimize
+    var best = 1_000
+    for i in 0..8:
+      if b[i] == Empty:
+        b[i] = X
+        let val = minimax(b, O, depth + 1)
+        b[i] = Empty
+        if val < best: best = val
+    return best
 
 proc aiChooseMove(b: Board): int =
-  # Simple rule-based AI: win -> block -> center -> corners -> sides
-  let mine = 2
-  let opp = 1
-
-  var m = findWinningMove(b, mine)
-  if m != -1: return m
-
-  m = findWinningMove(b, opp)
-  if m != -1: return m
-
-  let order = [4, 0, 2, 6, 8, 1, 3, 5, 7]
-  for idx in order:
-    if b[idx] == 0: return idx
-
+  # Pick the move with the best Minimax score for O (AI)
+  var work = b
+  var bestScore = -1_000
+  var bestMove = -1
   for i in 0..8:
-    if b[i] == 0: return i
-  return -1
+    if work[i] == Empty:
+      work[i] = O
+      let sc = minimax(work, X, 1)
+      work[i] = Empty
+      if sc > bestScore:
+        bestScore = sc
+        bestMove = i
+  return bestMove
 
 # ----------------------------
 # Shared state for AI thread
@@ -83,7 +114,7 @@ var
   aiOutput: int = -1
   quitting = false
 
-proc aiWorker() {.thread.} =
+proc aiWorker() {.nimcall.} =
   # Worker AI thread:
   # - Sleeps on condition var
   # - Wakes only when main thread posts a job
@@ -99,7 +130,7 @@ proc aiWorker() {.thread.} =
     aiHasJob = false
     release(gLock)
 
-    let move = aiChooseMove(b)    # compute AI move (no drawing here)
+    let move = aiChooseMove(b)    # compute AI move
 
     acquire(gLock)
     aiOutput = move
@@ -114,11 +145,11 @@ proc drawGrid() =
   for i in 1..2:
     let x = (GridX + i * CellSize).float32
     let y = (GridY + i * CellSize).float32
-    drawLine(vec2(x, GridY), vec2(x, GridY + GridSize), t, DarkGray)   # vertical
-    drawLine(vec2(GridX, y), vec2(GridX + GridSize, y), t, DarkGray)   # horizontal
+    drawLine(vec2(x, GridY.float32), vec2(x, (GridY + GridSize).float32), t, DarkGray)   # vertical
+    drawLine(vec2(GridX.float32, y), vec2((GridX + GridSize).float32, y), t, DarkGray)   # horizontal
 
 proc drawX(cx, cy: float32, size: float32, thick: float32) =
-  let h = size * 0.45
+  let h = size * 0.45'f32
   drawLine(vec2(cx - h, cy - h), vec2(cx + h, cy + h), thick, Black)
   drawLine(vec2(cx - h, cy + h), vec2(cx + h, cy - h), thick, Black)
 
@@ -134,10 +165,10 @@ proc drawBoard(b: Board) =
     let c = i mod 3
     let cx = (GridX + c * CellSize + CellSize div 2).float32
     let cy = (GridY + r * CellSize + CellSize div 2).float32
-    if b[i] == 1:
-      drawX(cx, cy, CellSize, 8.0)
-    elif b[i] == 2:
-      drawO(cx, cy, CellSize.float32 * 0.40, 8.0)
+    if b[i] == X:
+      drawX(cx, cy, CellSize.float32, 8.0'f32)
+    elif b[i] == O:
+      drawO(cx, cy, CellSize.float32 * 0.40'f32, 8.0'f32)
 
 proc idxFromMouse(mx, my: float32): int =
   if mx < GridX.float32 or mx >= (GridX + GridSize).float32: return -1
@@ -146,58 +177,50 @@ proc idxFromMouse(mx, my: float32): int =
   let row = int((my - GridY.float32) / CellSize.float32)
   return row * 3 + col
 
-# ----------------------------
-# Main program
-# ----------------------------
-proc main =
-  initLock(gLock)
-  initCond(gCond)
+# ------------------
+# Game loop function
+# ------------------
+proc runGameLoop =
+  var board = default(Board)
+  var current = X # X = player, O = AI
 
-  var worker: Thread[void]
-  createThread(worker, aiWorker)
-
-  var board: Board
-  var current = 1 # 1 = player(X), 2 = AI(O)
-
-  initWindow(W, H, "Nim + raylib: Tic-Tac-Toe")
   setTargetFPS(60)
-
   while not windowShouldClose():
     # Input (main thread only)
     let state = checkWinner(board)
-    if state == 0 and current == 1:
+    if state == None and current == X:
       if isMouseButtonPressed(Left):
         let pos = getMousePosition()
         let idx = idxFromMouse(pos.x, pos.y)
-        if idx >= 0 and board[idx] == 0:
-          board[idx] = 1
+        if idx >= 0 and board[idx] == Empty:
+          board[idx] = X
           # If game isn't over, ask AI to move (wake worker thread)
-          if checkWinner(board) == 0:
+          if checkWinner(board) == None:
             acquire(gLock)
             aiInput = board
             aiHasJob = true
             aiHasResult = false
             signal(gCond)   # wake the worker
             release(gLock)
-            current = 2
+            current = O
 
     # Collect AI result (non-blocking; main loop keeps rendering)
-    if current == 2:
+    if current == O:
       acquire(gLock)
       if aiHasResult:
         let move = aiOutput
         aiHasResult = false
         release(gLock)
-        if move >= 0 and board[move] == 0:
-          board[move] = 2
-        current = 1
+        if move >= 0 and board[move] == Empty:
+          board[move] = O
+        current = X
       else:
         release(gLock)
 
     # (Optional) restart with R
     if isKeyPressed(R):
-      board = [0,0,0,0,0,0,0,0,0]
-      current = 1
+      board = default(Board)
+      current = X
       acquire(gLock)
       aiHasJob = false
       aiHasResult = false
@@ -212,18 +235,37 @@ proc main =
     var msg = ""
     let s = checkWinner(board)
     case s
-    of 1: msg = "X wins! Press R to restart."
-    of 2: msg = "O wins! Press R to restart."
-    of 3: msg = "Draw! Press R to restart."
-    else:
-      if current == 1: msg = "Your turn (X)."
+    of XWins: msg = "X wins! Press R to restart."
+    of OWins: msg = "O wins! Press R to restart."
+    of Draw: msg = "Draw! Press R to restart."
+    of None:
+      if current == X: msg = "Your turn (X)."
       else: msg = "AI is thinking..."
 
     let fontSize: int32 = 24
     let tw = measureText(msg, fontSize)
-    drawText(msg, (W - tw) div 2, 16, fontSize, Black)
+    drawText(msg, (ScreenWidth - tw) div 2, 16, fontSize, Black)
 
     endDrawing()
+
+# ----------------------------
+# Main program
+# ----------------------------
+proc main =
+  initLock(gLock)
+  initCond(gCond)
+
+  var worker: Thread[void]
+  try: createThread(worker, aiWorker)
+  except: quit("Failed to start AI thread")
+
+  #setConfigFlags(flags(Msaa4xHint))
+  initWindow(ScreenWidth, ScreenHeight, "Tic-Tac-Toe")
+  try:
+    runGameLoop()
+  finally:
+    closeWindow()
+
   # Cleanup
   acquire(gLock)
   quitting = true
@@ -233,7 +275,6 @@ proc main =
 
   deinitCond(gCond)
   deinitLock(gLock)
-  closeWindow()
 
 main()
 
