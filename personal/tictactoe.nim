@@ -145,8 +145,8 @@ proc drawGrid() =
   for i in 1..2:
     let x = (GridX + i * CellSize).float32
     let y = (GridY + i * CellSize).float32
-    drawLine(vec2(x, GridY.float32), vec2(x, (GridY + GridSize).float32), t, DarkGray)   # vertical
-    drawLine(vec2(GridX.float32, y), vec2((GridX + GridSize).float32, y), t, DarkGray)   # horizontal
+    drawLine(vec2(x, GridY.float32), vec2(x, float32(GridY + GridSize)), t, DarkGray)   # vertical
+    drawLine(vec2(GridX.float32, y), vec2(float32(GridX + GridSize), y), t, DarkGray)   # horizontal
 
 proc drawX(cx, cy: float32, size: float32, thick: float32) =
   let h = size * 0.45'f32
@@ -259,7 +259,7 @@ proc main =
   try: createThread(worker, aiWorker)
   except: quit("Failed to start AI thread")
 
-  #setConfigFlags(flags(Msaa4xHint))
+  setConfigFlags(flags(WindowHighDPI))
   initWindow(ScreenWidth, ScreenHeight, "Tic-Tac-Toe")
   try:
     runGameLoop()
