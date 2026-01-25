@@ -211,7 +211,7 @@ drawTexture(texture, sourceRec, position, White) # Removed the "Rec" suffix
 
 ### Nim Alternatives
 
-For raylib functions not wrapped in naylib (text handling, file I/O, compression, encoding, etc.), prefer **Nim standard library functions** or recommended external packages. A complete reference is available in `naylib/manual/alternatives_table.rst`.
+For raylib functions not wrapped in naylib (text handling, file I/O, compression, encoding, etc.), prefer **Nim standard library functions** or recommended external packages. A complete reference is available in `https://github.com/planetis-m/naylib/blob/main/manual/alternatives_table.rst`.
 
 ```c
 GetRandomValue(0, 10);
