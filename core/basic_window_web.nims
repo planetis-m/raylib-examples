@@ -24,3 +24,4 @@ when defined(emscripten):
   --passL:"-o public/index.html"
   # Use raylib/src/shell.html or raylib/src/minshell.html
   --passL:"--shell-file shell_minimal.html"
+  --passL:"-sEXPORTED_RUNTIME_METHODS=requestFullscreen"
