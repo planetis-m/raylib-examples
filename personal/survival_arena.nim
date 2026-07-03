@@ -89,10 +89,10 @@ type
     life: float32
     active: bool
 
-  # SoA particle system - narrow fields, tight batch loop
+  # SoA particle system - split by access group, not by field
   ParticleSystem = object
-    posX, posY: seq[float32]
-    velX, velY: seq[float32]
+    pos: seq[Vector2]
+    vel: seq[Vector2]
     life: seq[float32]
     color: seq[Color]
     count: int32
@@ -119,22 +119,20 @@ type
 
 func initParticles(cap: int32): ParticleSystem =
   ParticleSystem(
-    posX: newSeq[float32](cap), posY: newSeq[float32](cap),
-    velX: newSeq[float32](cap), velY: newSeq[float32](cap),
+    pos: newSeq[Vector2](cap),
+    vel: newSeq[Vector2](cap),
     life: newSeq[float32](cap),
     color: newSeq[Color](cap))
 
 proc spawn(ps: var ParticleSystem, pos: Vector2, count: int32, color: Color) =
   for i in 0..<count:
-    if ps.count >= ps.posX.len: return
+    if ps.count >= ps.pos.len: return
     let idx = ps.count
     inc ps.count
     let angle = rand(0'f32 .. TAU.float32)
     let speed = rand(40'f32 .. 120'f32)
-    ps.posX[idx] = pos.x
-    ps.posY[idx] = pos.y
-    ps.velX[idx] = cos(angle)*speed
-    ps.velY[idx] = sin(angle)*speed
+    ps.pos[idx] = pos
+    ps.vel[idx] = Vector2(x: cos(angle)*speed, y: sin(angle)*speed)
     ps.life[idx] = rand(0.3'f32 .. 0.7'f32)
     ps.color[idx] = color
 
@@ -144,20 +142,20 @@ proc update(ps: var ParticleSystem, dt: float32) =
     ps.life[i] -= dt
     if ps.life[i] > 0:
       if w != i:
-        ps.posX[w] = ps.posX[i]; ps.posY[w] = ps.posY[i]
-        ps.velX[w] = ps.velX[i]; ps.velY[w] = ps.velY[i]
+        ps.pos[w] = ps.pos[i]
+        ps.vel[w] = ps.vel[i]
         ps.life[w] = ps.life[i]
         ps.color[w] = ps.color[i]
-      ps.posX[w] += ps.velX[w]*dt
-      ps.posY[w] += ps.velY[w]*dt
-      ps.velX[w] *= 0.94
-      ps.velY[w] *= 0.94
+      ps.pos[w].x += ps.vel[w].x*dt
+      ps.pos[w].y += ps.vel[w].y*dt
+      ps.vel[w].x *= 0.94
+      ps.vel[w].y *= 0.94
       inc w
   ps.count = w
 
 proc draw(ps: ParticleSystem) =
   for i in 0..<ps.count:
-    drawCircle(Vector2(x: ps.posX[i], y: ps.posY[i]), 2, fade(ps.color[i], ps.life[i]))
+    drawCircle(ps.pos[i], 2, fade(ps.color[i], ps.life[i]))
 
 # ----------------------------------------------------------------------------------------
 # Spatial Hash Grid
