@@ -42,18 +42,18 @@ const
   PlayerSpeed = 200
   PlayerHp = 300
   PlayerRadius = 14
-  FireRate = 0.2 # seconds between shots
+  FireRate: float32 = 0.2 # seconds between shots
   ProjSpeed = 450
   ProjDamage = 35
-  ProjLife = 1.5
+  ProjLife: float32 = 1.5
 
   # Enemies
   EnemyRadius = 10
   EnemyHp = 50
   EnemySpeed = 55
   EnemyDamage = 8
-  EnemyTouchRate = 0.5
-  SpawnInterval = 0.8 # seconds between spawn waves
+  EnemyTouchRate: float32 = 0.5
+  SpawnInterval: float32 = 0.8 # seconds between spawn waves
   InitialSpawn = 40
   MaxEnemies = 300
 
@@ -95,7 +95,7 @@ type
     velX, velY: seq[float32]
     life: seq[float32]
     colR, colG, colB: seq[uint8]
-    count: int
+    count: int32
 
   # Spatial hash grid for O(1) neighbor lookups
   SpatialGrid = object
@@ -117,7 +117,7 @@ type
 # Particle System (SoA)
 # ----------------------------------------------------------------------------------------
 
-func initParticles(cap: int): ParticleSystem =
+func initParticles(cap: int32): ParticleSystem =
   ParticleSystem(
     posX: newSeq[float32](cap), posY: newSeq[float32](cap),
     velX: newSeq[float32](cap), velY: newSeq[float32](cap),
@@ -141,7 +141,7 @@ proc spawnParticles(ps: var ParticleSystem, pos: Vector2, count: int32, color: C
     ps.colB[idx] = color.b
 
 proc updateParticles(ps: var ParticleSystem, dt: float32) =
-  var w = 0
+  var w: int32 = 0
   for i in 0..<ps.count:
     ps.life[i] -= dt
     if ps.life[i] > 0:
@@ -172,20 +172,20 @@ proc clearGrid(grid: var SpatialGrid) =
     bucket.setLen(0)
 
 proc gridInsert(grid: var SpatialGrid, idx: int32, pos: Vector2, radius: float32) =
-  let minX = max(0, int((pos.x - radius)/CellSize))
-  let maxX = min(GridCols - 1, int((pos.x + radius)/CellSize))
-  let minY = max(0, int((pos.y - radius)/CellSize))
-  let maxY = min(GridRows - 1, int((pos.y + radius)/CellSize))
+  let minX = max(0'i32, int32((pos.x - radius)/CellSize))
+  let maxX = min(GridCols - 1, int32((pos.x + radius)/CellSize))
+  let minY = max(0'i32, int32((pos.y - radius)/CellSize))
+  let maxY = min(GridRows - 1, int32((pos.y + radius)/CellSize))
   for cy in minY..maxY:
     for cx in minX..maxX:
       grid.buckets[cy*GridCols + cx].add(idx)
 
 proc queryNearby(grid: SpatialGrid, pos: Vector2, radius: float32, result: var seq[int32]) =
   result.setLen(0)
-  let minX = max(0, int((pos.x - radius)/CellSize))
-  let maxX = min(GridCols - 1, int((pos.x + radius)/CellSize))
-  let minY = max(0, int((pos.y - radius)/CellSize))
-  let maxY = min(GridRows - 1, int((pos.y + radius)/CellSize))
+  let minX = max(0'i32, int32((pos.x - radius)/CellSize))
+  let maxX = min(GridCols - 1, int32((pos.x + radius)/CellSize))
+  let minY = max(0'i32, int32((pos.y - radius)/CellSize))
+  let maxY = min(GridRows - 1, int32((pos.y + radius)/CellSize))
   for cy in minY..maxY:
     for cx in minX..maxX:
       for agentIdx in grid.buckets[cy*GridCols + cx]:
@@ -352,7 +352,7 @@ proc resolveCollisions(g: var Game) =
   for i in 0..<g.agents.len:
     template a: Agent = g.agents[i]
     if a.alive:
-      g.grid.queryNearby(a.pos, a.radius*2'f32, g.queryResult)
+      g.grid.queryNearby(a.pos, a.radius*2, g.queryResult)
       for j in g.queryResult:
         if j > int32(i):
           template b: Agent = g.agents[j]
