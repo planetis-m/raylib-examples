@@ -35,17 +35,18 @@ const
   WorldWidth = 4000
   WorldHeight = 3000
 
-  MaxParticles = 3000
-  MaxProjectiles = 500
+  MaxParticles = 4000
+  MaxProjectiles = 800
 
   # Player
   PlayerSpeed = 200
   PlayerHp = 300
   PlayerRadius = 14
-  FireRate: float32 = 0.2 # seconds between shots
+  FireRate: float32 = 0.12 # seconds between shots
   ProjSpeed = 450
-  ProjDamage = 35
+  ProjDamage = 28
   ProjLife: float32 = 1.5
+  ProjRadius = 6
 
   # Enemies
   EnemyRadius = 10
@@ -53,9 +54,9 @@ const
   EnemySpeed = 55
   EnemyDamage = 8
   EnemyTouchRate: float32 = 0.5
-  SpawnInterval: float32 = 0.8 # seconds between spawn waves
-  InitialSpawn = 40
-  MaxEnemies = 300
+  SpawnInterval: float32 = 0.5 # seconds between spawn waves
+  InitialSpawn = 60
+  MaxEnemies = 500
 
   # Spatial grid
   CellSize = 48
@@ -157,7 +158,7 @@ proc update(ps: var ParticleSystem, dt: float32) =
 
 proc draw(ps: ParticleSystem) =
   for i in 0..<ps.count:
-    drawCircle(ps.bodies[i].pos, 2, fade(ps.color[i], ps.life[i]))
+    drawCircle(ps.bodies[i].pos, 4, fade(ps.color[i], ps.life[i]))
 
 # ----------------------------------------------------------------------------------------
 # Spatial Hash Grid
@@ -415,7 +416,7 @@ proc drawWorld(g: Game) =
       if a.alive: drawAgent(a)
     # Projectiles
     for pr in g.projectiles:
-      drawCircle(pr.pos, 3, Gold)
+      drawCircle(pr.pos, ProjRadius, Gold)
     # Particles
     g.particles.draw()
 
