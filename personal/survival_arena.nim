@@ -25,7 +25,7 @@
 #
 # ****************************************************************************************
 
-import raylib, raymath, std/[math, random, setutils, strformat]
+import raylib, raymath, rlgl, std/[math, random, setutils, strformat]
 
 const
   screenWidth = 800
@@ -408,13 +408,12 @@ proc drawAgent(a: Agent) =
 proc drawWorld(g: Game) =
   mode2D(g.camera):
     clearBackground(RayWhite)
-    # Arena bounds
-    drawRectangleLines(0, 0, WorldWidth, WorldHeight, Gray)
     # Background grid
-    for x in countup(0'i32, WorldWidth, 80):
-      drawLine(x, 0, x, WorldHeight, LightGray)
-    for y in countup(0'i32, WorldHeight, 80):
-      drawLine(0, y, WorldWidth, y, LightGray)
+    pushMatrix()
+    translatef(WorldWidth/2'f32, WorldHeight, 0)
+    rotatef(90, 1, 0, 0)
+    drawGrid(80, 80)
+    popMatrix()
     # Agents
     for a in g.agents:
       if a.alive: drawAgent(a)
