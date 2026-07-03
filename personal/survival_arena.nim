@@ -113,8 +113,6 @@ type
     spawnTimer: float32
     camera: Camera2D
 
-template player(g: Game): Agent = g.agents[g.playerIdx]
-
 # ----------------------------------------------------------------------------------------
 # Particle System (SoA)
 # ----------------------------------------------------------------------------------------
@@ -230,13 +228,13 @@ proc resetGame(g: var Game) =
 
 proc spawnEnemy(g: var Game) =
   if g.countEnemies() >= MaxEnemies: return
-  let ppos = g.player.pos
+  template p: Agent = g.agents[g.playerIdx]
   let angle = rand(0'f32 .. TAU.float32)
   let dist = 350'f32 + rand(0'f32 .. 150'f32)
   g.agents.add(Agent(
     pos: Vector2(
-      x: clamp(ppos.x + cos(angle)*dist, 0'f32, WorldWidth.float32),
-      y: clamp(ppos.y + sin(angle)*dist, 0'f32, WorldHeight.float32)),
+      x: clamp(p.pos.x + cos(angle)*dist, 0'f32, WorldWidth.float32),
+      y: clamp(p.pos.y + sin(angle)*dist, 0'f32, WorldHeight.float32)),
     radius: EnemyRadius,
     hp: EnemyHp, maxHp: EnemyHp,
     cooldown: 0,
@@ -284,13 +282,12 @@ proc updatePlayer(g: var Game, dt: float32) =
       p.cooldown = FireRate
 
 proc updateEnemies(g: var Game, dt: float32) =
-  let ppos = g.player.pos
-  let pradius = g.player.radius
+  template p: Agent = g.agents[g.playerIdx]
   for i in 0..<g.agents.len:
     template a: Agent = g.agents[i]
     if a.alive and a.kind == agEnemy:
       # Seek the player
-      let toPlayer = ppos - a.pos
+      let toPlayer = p.pos - a.pos
       let dist = length(toPlayer)
       if dist > 0.01'f32:
         a.vel.x = toPlayer.x/dist*EnemySpeed
@@ -300,16 +297,16 @@ proc updateEnemies(g: var Game, dt: float32) =
       # Touch damage
       a.cooldown -= dt
       if a.cooldown <= 0:
-        let dx = a.pos.x - ppos.x
-        let dy = a.pos.y - ppos.y
-        if dx*dx + dy*dy < (a.radius + pradius)*(a.radius + pradius):
-          g.agents[g.playerIdx].hp -= EnemyDamage
+        let dx = a.pos.x - p.pos.x
+        let dy = a.pos.y - p.pos.y
+        if dx*dx + dy*dy < (a.radius + p.radius)*(a.radius + p.radius):
+          p.hp -= EnemyDamage
           a.cooldown = EnemyTouchRate
-          if g.agents[g.playerIdx].hp <= 0:
-            g.agents[g.playerIdx].hp = 0
-            g.agents[g.playerIdx].alive = false
+          if p.hp <= 0:
+            p.hp = 0
+            p.alive = false
             g.flags.incl gfGameOver
-            g.particles.spawnParticles(ppos, 40, Blue)
+            g.particles.spawnParticles(p.pos, 40, Blue)
 
 proc updateProjectiles(g: var Game, dt: float32) =
   for i in 0..<g.projectiles.len:
@@ -391,7 +388,8 @@ proc updateSpawn(g: var Game, dt: float32) =
       g.spawnEnemy()
 
 proc updateCamera(g: var Game) =
-  g.camera.target = g.player.pos
+  template p: Agent = g.agents[g.playerIdx]
+  g.camera.target = p.pos
   g.camera.offset = Vector2(x: screenWidth/2'f32, y: screenHeight/2'f32)
   let wheel = getMouseWheelMove()
   if wheel != 0:
@@ -427,7 +425,7 @@ proc drawWorld(g: Game) =
     g.particles.drawParticles()
 
 proc drawHUD(g: Game) =
-  let p = g.player
+  template p: Agent = g.agents[g.playerIdx]
   # HP bar
   drawRectangle(10, 10, 200, 28, Gray)
   let hpW = 198*(p.hp/p.maxHp)
