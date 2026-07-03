@@ -60,7 +60,7 @@ An introduction to Shader Art Coding, based on the YouTube tutorial by @[kishimi
 ### Survival Arena
 **File:** [survival_arena.nim](personal/survival_arena.nim)
 
-A top-down survival shooter with hundreds of active entities, demonstrating a hybrid data architecture: fat struct agents (MI-AoS), SoA particle system, and a spatial hash grid for O(1) collision queries.
+A top-down survival shooter with hundreds of active entities, demonstrating a hybrid data architecture: fat struct agents (AoS), SoA particle system, and a spatial hash grid for O(1) collision queries.
 
 ![Survival Arena](media/survival_arena.png)
 

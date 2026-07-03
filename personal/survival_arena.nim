@@ -6,7 +6,7 @@
 #
 #   A top-down survival shooter with hundreds of active entities, demonstrating
 #   a hybrid data architecture for games:
-#     - Agents (player + enemies) as fat structs in a seq (MI-AoS)
+#     - Agents (player + enemies) as fat structs in a seq (AoS)
 #     - Particles as parallel SoA arrays for tight batch updates
 #     - Spatial hash grid for O(1) collision queries
 #
