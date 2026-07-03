@@ -309,7 +309,7 @@ proc updateEnemies(g: var Game, dt: float32) =
             g.agents[g.playerIdx].hp = 0
             g.agents[g.playerIdx].alive = false
             g.flags.incl gfGameOver
-            g.particles.spawnParticles(ppos, 40, SkyBlue)
+            g.particles.spawnParticles(ppos, 40, Blue)
 
 proc updateProjectiles(g: var Game, dt: float32) =
   for i in 0..<g.projectiles.len:
@@ -331,7 +331,7 @@ proc updateProjectiles(g: var Game, dt: float32) =
               g.particles.spawnParticles(pr.pos, 5, Gold)
               if a.hp <= 0:
                 a.alive = false
-                g.particles.spawnParticles(a.pos, 15, Maroon)
+                g.particles.spawnParticles(a.pos, 15, Red)
                 inc(g.score)
               break
       else:
@@ -403,20 +403,20 @@ proc updateCamera(g: var Game) =
 
 proc drawAgent(a: Agent) =
   if a.kind == agPlayer:
-    drawCircleGradient(a.pos.x.int32, a.pos.y.int32, a.radius, SkyBlue, DarkBlue)
+    drawCircleGradient(a.pos.x.int32, a.pos.y.int32, a.radius, Blue, DarkBlue)
   else:
-    drawCircle(a.pos, a.radius, Maroon)
+    drawCircle(a.pos, a.radius, Red)
 
 proc drawWorld(g: Game) =
   mode2D(g.camera):
-    clearBackground(Color(r: 26, g: 26, b: 36, a: 255))
+    clearBackground(RayWhite)
     # Arena bounds
-    drawRectangleLines(0, 0, WorldWidth, WorldHeight, Color(r: 60, g: 60, b: 80, a: 255))
+    drawRectangleLines(0, 0, WorldWidth, WorldHeight, Gray)
     # Background grid
     for x in countup(0'i32, WorldWidth, 80):
-      drawLine(x, 0, x, WorldHeight, Color(r: 36, g: 36, b: 46, a: 255))
+      drawLine(x, 0, x, WorldHeight, LightGray)
     for y in countup(0'i32, WorldHeight, 80):
-      drawLine(0, y, WorldWidth, y, Color(r: 36, g: 36, b: 46, a: 255))
+      drawLine(0, y, WorldWidth, y, LightGray)
     # Agents
     for a in g.agents:
       if a.alive: drawAgent(a)
@@ -429,27 +429,27 @@ proc drawWorld(g: Game) =
 proc drawHUD(g: Game) =
   let p = g.player
   # HP bar
-  drawRectangle(10, 10, 200, 28, Color(r: 40, g: 40, b: 40, a: 200))
+  drawRectangle(10, 10, 200, 28, Gray)
   let hpW = 198*(p.hp/p.maxHp)
   drawRectangle(Rectangle(x: 11, y: 11, width: hpW, height: 26),
-    if p.hp > p.maxHp*0.3'f32: DarkGreen else: Red)
+    if p.hp > p.maxHp*0.3'f32: Green else: Red)
   drawText(&"HP: {int32(p.hp)}/{int32(p.maxHp)}", 15, 13, 20, White)
   # Score
-  drawText(&"SCORE: {g.score:04d}", 10, 46, 20, Gold)
-  drawText(&"ENEMIES: {g.countEnemies()}", 10, 72, 20, Maroon)
+  drawText(&"SCORE: {g.score:04d}", 10, 46, 20, DarkGray)
+  drawText(&"ENEMIES: {g.countEnemies()}", 10, 72, 20, DarkGray)
   drawFPS(screenWidth - 80, 10)
   # Debug
   if gfShowDebug in g.flags:
     drawText(&"Agents: {g.agents.len}  Proj: {g.projectiles.len}  Parts: {g.particles.count}",
-             10, 98, 14, Lime)
+             10, 98, 14, DarkGray)
   # Paused overlay
   if gfPaused in g.flags:
     let text = "PAUSED"
     let w = measureText(text, 40)
-    drawText(text, screenWidth div 2 - w div 2, screenHeight div 2 - 20, 40, Yellow)
+    drawText(text, screenWidth div 2 - w div 2, screenHeight div 2 - 20, 40, DarkGray)
   # Game over overlay
   if gfGameOver in g.flags:
-    drawRectangle(0, 0, screenWidth, screenHeight, Color(r: 0, g: 0, b: 0, a: 160))
+    drawRectangle(0, 0, screenWidth, screenHeight, fade(White, 0.7))
     let t1 = "GAME OVER"
     let t2 = &"SCORE: {g.score}"
     let t3 = "PRESS [R] TO RESTART"
@@ -457,8 +457,8 @@ proc drawHUD(g: Game) =
     let w2 = measureText(t2, 20)
     let w3 = measureText(t3, 20)
     drawText(t1, screenWidth div 2 - w1 div 2, screenHeight div 2 - 60, 40, Red)
-    drawText(t2, screenWidth div 2 - w2 div 2, screenHeight div 2 - 10, 20, Gold)
-    drawText(t3, screenWidth div 2 - w3 div 2, screenHeight div 2 + 20, 20, LightGray)
+    drawText(t2, screenWidth div 2 - w2 div 2, screenHeight div 2 - 10, 20, DarkGray)
+    drawText(t3, screenWidth div 2 - w3 div 2, screenHeight div 2 + 20, 20, Gray)
 
 proc updateDrawFrame(g: var Game) =
   let dt = getFrameTime()
