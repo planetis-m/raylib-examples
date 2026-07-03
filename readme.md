@@ -57,6 +57,13 @@ An introduction to Shader Art Coding, based on the YouTube tutorial by @[kishimi
 
 [Tutorial Video](https://youtu.be/f4s1h2YETNY)
 
+### Survival Arena
+**File:** [survival_arena.nim](personal/survival_arena.nim)
+
+A top-down survival shooter with hundreds of active entities, demonstrating a hybrid data architecture: fat struct agents (MI-AoS), SoA particle system, and a spatial hash grid for O(1) collision queries.
+
+![Survival Arena](media/survival_arena.png)
+
 ### Target 9 Puzzle Game
 **File:** [target9.nim](personal/target9.nim)
 
