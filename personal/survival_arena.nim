@@ -94,7 +94,7 @@ type
     posX, posY: seq[float32]
     velX, velY: seq[float32]
     life: seq[float32]
-    colR, colG, colB: seq[uint8]
+    color: seq[Color]
     count: int32
 
   # Spatial hash grid for O(1) neighbor lookups
@@ -122,9 +122,9 @@ func initParticles(cap: int32): ParticleSystem =
     posX: newSeq[float32](cap), posY: newSeq[float32](cap),
     velX: newSeq[float32](cap), velY: newSeq[float32](cap),
     life: newSeq[float32](cap),
-    colR: newSeq[uint8](cap), colG: newSeq[uint8](cap), colB: newSeq[uint8](cap))
+    color: newSeq[Color](cap))
 
-proc spawnParticles(ps: var ParticleSystem, pos: Vector2, count: int32, color: Color) =
+proc spawn(ps: var ParticleSystem, pos: Vector2, count: int32, color: Color) =
   for i in 0..<count:
     if ps.count >= ps.posX.len: return
     let idx = ps.count
@@ -136,11 +136,9 @@ proc spawnParticles(ps: var ParticleSystem, pos: Vector2, count: int32, color: C
     ps.velX[idx] = cos(angle)*speed
     ps.velY[idx] = sin(angle)*speed
     ps.life[idx] = rand(0.3'f32 .. 0.7'f32)
-    ps.colR[idx] = color.r
-    ps.colG[idx] = color.g
-    ps.colB[idx] = color.b
+    ps.color[idx] = color
 
-proc updateParticles(ps: var ParticleSystem, dt: float32) =
+proc update(ps: var ParticleSystem, dt: float32) =
   var w: int32 = 0
   for i in 0..<ps.count:
     ps.life[i] -= dt
@@ -149,7 +147,7 @@ proc updateParticles(ps: var ParticleSystem, dt: float32) =
         ps.posX[w] = ps.posX[i]; ps.posY[w] = ps.posY[i]
         ps.velX[w] = ps.velX[i]; ps.velY[w] = ps.velY[i]
         ps.life[w] = ps.life[i]
-        ps.colR[w] = ps.colR[i]; ps.colG[w] = ps.colG[i]; ps.colB[w] = ps.colB[i]
+        ps.color[w] = ps.color[i]
       ps.posX[w] += ps.velX[w]*dt
       ps.posY[w] += ps.velY[w]*dt
       ps.velX[w] *= 0.94
@@ -157,11 +155,9 @@ proc updateParticles(ps: var ParticleSystem, dt: float32) =
       inc w
   ps.count = w
 
-proc drawParticles(ps: ParticleSystem) =
+proc draw(ps: ParticleSystem) =
   for i in 0..<ps.count:
-    let alpha = uint8(ps.life[i]*255)
-    drawCircle(Vector2(x: ps.posX[i], y: ps.posY[i]), 2,
-      Color(r: ps.colR[i], g: ps.colG[i], b: ps.colB[i], a: alpha))
+    drawCircle(Vector2(x: ps.posX[i], y: ps.posY[i]), 2, fade(ps.color[i], ps.life[i]))
 
 # ----------------------------------------------------------------------------------------
 # Spatial Hash Grid
@@ -212,7 +208,7 @@ func newGame(): Game =
     hp: PlayerHp, maxHp: PlayerHp,
     kind: agPlayer, alive: true))
 
-proc resetGame(g: var Game) =
+proc reset(g: var Game) =
   g.agents.setLen(0)
   g.projectiles.setLen(0)
   g.particles.count = 0
@@ -306,7 +302,7 @@ proc updateEnemies(g: var Game, dt: float32) =
             p.hp = 0
             p.alive = false
             g.flags.incl gfGameOver
-            g.particles.spawnParticles(p.pos, 40, Blue)
+            g.particles.spawn(p.pos, 40, Blue)
 
 proc updateProjectiles(g: var Game, dt: float32) =
   for i in 0..<g.projectiles.len:
@@ -325,10 +321,10 @@ proc updateProjectiles(g: var Game, dt: float32) =
             if dx*dx + dy*dy < a.radius*a.radius:
               a.hp -= ProjDamage
               pr.active = false
-              g.particles.spawnParticles(pr.pos, 5, Gold)
+              g.particles.spawn(pr.pos, 5, Gold)
               if a.hp <= 0:
                 a.alive = false
-                g.particles.spawnParticles(a.pos, 15, Red)
+                g.particles.spawn(a.pos, 15, Red)
                 inc(g.score)
               break
       else:
@@ -421,7 +417,7 @@ proc drawWorld(g: Game) =
     for pr in g.projectiles:
       drawCircle(pr.pos, 3, Gold)
     # Particles
-    g.particles.drawParticles()
+    g.particles.draw()
 
 proc drawHUD(g: Game) =
   template p: Agent = g.agents[g.playerIdx]
@@ -461,7 +457,7 @@ proc updateDrawFrame(g: var Game) =
   let dt = getFrameTime()
   if isKeyPressed(P):
     g.flags = symmetricDifference(g.flags, {gfPaused})
-  if isKeyPressed(R): g.resetGame()
+  if isKeyPressed(R): g.reset()
   if isKeyPressed(F1):
     g.flags = symmetricDifference(g.flags, {gfShowDebug})
   if gfPaused notin g.flags and gfGameOver notin g.flags:
@@ -470,7 +466,7 @@ proc updateDrawFrame(g: var Game) =
     g.resolveCollisions()
     g.updateProjectiles(dt)
     g.updateSpawn(dt)
-    g.particles.updateParticles(dt)
+    g.particles.update(dt)
     g.updateCamera()
   drawing():
     g.drawWorld()
