@@ -15,7 +15,7 @@
 #
 # ******************************************************************************************
 
-import raylib, std/[strformat, lenientops]
+import raylib, std/strformat
 
 const
   ScreenWidth = 800
@@ -23,7 +23,7 @@ const
 
 proc main =
   # Initialization
-  setConfigFlags(flags(WindowResizable, WindowHighdpi))
+  setConfigFlags(flags(WindowHighdpi, WindowResizable))
   initWindow(ScreenWidth, ScreenHeight, "raylib [core] example - highdpi testbed")
   defer: closeWindow()
 
@@ -73,9 +73,9 @@ proc main =
 
       # Draw mouse position
       drawCircle(getMousePosition(), 20, Maroon)
-      drawRectangle(int32(mousePos.x - 25), int32(mousePos.y), 50, 2, Black)
-      drawRectangle(int32(mousePos.x), int32(mousePos.y - 25), 2, 50, Black)
-      drawText(&"[{getMouseX()},{getMouseY()}]", int32(mousePos.x - 44),
-        int32(if mousePos.y > getScreenHeight() - 60: mousePos.y - 46 else: mousePos.y + 30), 20, Black)
+      drawRectangle(int32(mousePos.x) - 25, int32(mousePos.y), 50, 2, Black)
+      drawRectangle(int32(mousePos.x), int32(mousePos.y) - 25, 2, 50, Black)
+      drawText(&"[{getMouseX()},{getMouseY()}]", int32(mousePos.x) - 44,
+        (if int32(mousePos.y) > getScreenHeight() - 60: int32(mousePos.y) - 46 else: int32(mousePos.y) + 30), 20, Black)
 
 main()

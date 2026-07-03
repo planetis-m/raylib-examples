@@ -15,7 +15,7 @@
 #
 # ******************************************************************************************
 
-import raylib, std/[strformat, lenientops]
+import raylib, std/strformat
 
 const
   ScreenWidth = 800
@@ -35,15 +35,15 @@ proc main =
 
   var
     logicalGridDescY: int32 = 120
-    logicalGridLabelY: int32 = logicalGridDescY + 30
-    logicalGridTop: int32 = logicalGridLabelY + 30
-    logicalGridBottom: int32 = logicalGridTop + 80
-    pixelGridTop: int32 = logicalGridBottom - 20
-    pixelGridBottom: int32 = pixelGridTop + 80
-    pixelGridLabelY: int32 = pixelGridBottom + 30
-    pixelGridDescY: int32 = pixelGridLabelY + 30
+    logicalGridLabelY = logicalGridDescY + 30
+    logicalGridTop = logicalGridLabelY + 30
+    logicalGridBottom = logicalGridTop + 80
+    pixelGridTop = logicalGridBottom - 20
+    pixelGridBottom = pixelGridTop + 80
+    pixelGridLabelY = pixelGridBottom + 30
+    pixelGridDescY = pixelGridLabelY + 30
     cellSize: int32 = 50
-    cellSizePx: float32
+    cellSizePx: float32 = 0
 
   setTargetFPS(60)
 

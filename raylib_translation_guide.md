@@ -204,7 +204,7 @@ DrawTextureRec(texture, sourceRec, position, WHITE);
 ```nim
 initWindow(screenWidth, screenHeight, "Title") # Unchanged, no suffix to remove
 drawSphere(centerPos, radius, rings, slices, Red) # Removed the "Ex" suffix
-drawRectangle(sourceRec, destRec, origin, 45'f32, Green) # Removed the "Pro" suffix
+drawRectangle(sourceRec, destRec, origin, 45, Green) # Removed the "Pro" suffix
 drawCircleLines(center, 30, Blue) # Removed the "V" suffix
 drawTexture(texture, sourceRec, position, White) # Removed the "Rec" suffix
 ```
@@ -215,7 +215,7 @@ For raylib functions not wrapped in naylib (text handling, file I/O, compression
 
 ```c
 GetRandomValue(0, 10);
-float angle = DEG2RAD * 90.0f;
+float angle = DEG2RAD*90.0f;
 if (FileExists("data.txt")) { ... }
 int n = TextLength("hello");
 ```
@@ -326,11 +326,11 @@ var
   adjustment: float32 = 50.5
 
 # Without lenientops, you'd need explicit casts:
-let result1 = float32(count) * scaleFactor
+let result1 = float32(count)*scaleFactor
 let result2 = offset + int32(adjustment)
 
 # With lenientops, direct operations work:
-let result1 = count * scaleFactor    # Works directly
+let result1 = count*scaleFactor      # Works directly
 let result2 = offset + adjustment    # Works directly
 ```
 

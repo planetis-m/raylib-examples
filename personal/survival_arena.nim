@@ -67,9 +67,11 @@ const
 # ----------------------------------------------------------------------------------------
 
 type
-  AgentKind = enum agPlayer, agEnemy
+  AgentKind = enum
+    agPlayer, agEnemy
 
-  GameFlag = enum gfGameOver, gfPaused, gfShowDebug
+  GameFlag = enum
+    gfGameOver, gfPaused, gfShowDebug
 
   Agent = object
     pos: Vector2
@@ -207,7 +209,7 @@ func newGame(): Game =
     camera: Camera2D(zoom: 1),
     playerIdx: 0)
   result.agents.add(Agent(
-    pos: Vector2(x: WorldWidth/2, y: WorldHeight/2),
+    pos: Vector2(x: WorldWidth/2'f32, y: WorldHeight/2'f32),
     radius: PlayerRadius,
     hp: PlayerHp, maxHp: PlayerHp,
     kind: agPlayer, alive: true))
@@ -220,7 +222,7 @@ proc resetGame(g: var Game) =
   g.flags = {}
   g.spawnTimer = 0
   g.agents.add(Agent(
-    pos: Vector2(x: WorldWidth/2, y: WorldHeight/2),
+    pos: Vector2(x: WorldWidth/2'f32, y: WorldHeight/2'f32),
     radius: PlayerRadius,
     hp: PlayerHp, maxHp: PlayerHp,
     kind: agPlayer, alive: true))
@@ -244,7 +246,7 @@ func findNearestEnemy(g: Game, pos: Vector2): int32 =
   result = -1
   var bestDist = high(float32)
   for i in 0..<g.agents.len:
-    let a = g.agents[i]
+    template a: Agent = g.agents[i]
     if a.alive and a.kind == agEnemy:
       let dx = a.pos.x - pos.x
       let dy = a.pos.y - pos.y
@@ -263,7 +265,6 @@ proc fireAt(g: var Game, origin: Vector2, targetIdx: int32) =
       active: true))
 
 proc updatePlayer(g: var Game, dt: float32) =
-  if gfGameOver in g.flags: return
   template p: Agent = g.agents[g.playerIdx]
   var dir = Vector2()
   if isKeyDown(Right) or isKeyDown(D): dir.x += 1
@@ -348,7 +349,7 @@ proc updateProjectiles(g: var Game, dt: float32) =
 proc resolveCollisions(g: var Game) =
   g.grid.clearGrid()
   for i in 0..<g.agents.len:
-    let a = g.agents[i]
+    template a: Agent = g.agents[i]
     if a.alive:
       g.grid.gridInsert(int32(i), a.pos, a.radius)
   for i in 0..<g.agents.len:
@@ -382,7 +383,6 @@ proc resolveCollisions(g: var Game) =
   g.playerIdx = 0
 
 proc updateSpawn(g: var Game, dt: float32) =
-  if gfGameOver in g.flags: return
   g.spawnTimer += dt
   if g.spawnTimer >= SpawnInterval:
     g.spawnTimer = 0
