@@ -28,8 +28,8 @@
 import raylib, raymath, rlgl, std/[math, random, setutils, strformat]
 
 const
-  screenWidth = 800
-  screenHeight = 450
+  ScreenWidth = 800
+  ScreenHeight = 450
 
   # Arena is larger than the screen — camera follows the player
   WorldWidth = 4000
@@ -167,11 +167,11 @@ proc drawParticles(ps: ParticleSystem) =
 # Spatial Hash Grid
 # ----------------------------------------------------------------------------------------
 
-proc clearGrid(grid: var SpatialGrid) =
+proc clear(grid: var SpatialGrid) =
   for bucket in mitems(grid.buckets):
     bucket.setLen(0)
 
-proc gridInsert(grid: var SpatialGrid, idx: int32, pos: Vector2, radius: float32) =
+proc insert(grid: var SpatialGrid, idx: int32, pos: Vector2, radius: float32) =
   let minX = max(0'i32, int32((pos.x - radius)/CellSize))
   let maxX = min(GridCols - 1, int32((pos.x + radius)/CellSize))
   let minY = max(0'i32, int32((pos.y - radius)/CellSize))
@@ -189,7 +189,7 @@ proc queryNearby(grid: SpatialGrid, pos: Vector2, radius: float32, result: var s
   for cy in minY..maxY:
     for cx in minX..maxX:
       for agentIdx in grid.buckets[cy*GridCols + cx]:
-        if result.len == 0 or result[^1] != agentIdx:
+        if result.len == 0 or result[result.high] != agentIdx:
           result.add(agentIdx)
 
 # ----------------------------------------------------------------------------------------
@@ -344,11 +344,11 @@ proc updateProjectiles(g: var Game, dt: float32) =
   g.projectiles.setLen(w)
 
 proc resolveCollisions(g: var Game) =
-  g.grid.clearGrid()
+  g.grid.clear()
   for i in 0..<g.agents.len:
     template a: Agent = g.agents[i]
     if a.alive:
-      g.grid.gridInsert(int32(i), a.pos, a.radius)
+      g.grid.insert(int32(i), a.pos, a.radius)
   for i in 0..<g.agents.len:
     template a: Agent = g.agents[i]
     if a.alive:
@@ -390,7 +390,7 @@ proc updateSpawn(g: var Game, dt: float32) =
 proc updateCamera(g: var Game) =
   template p: Agent = g.agents[g.playerIdx]
   g.camera.target = p.pos
-  g.camera.offset = Vector2(x: screenWidth/2'f32, y: screenHeight/2'f32)
+  g.camera.offset = Vector2(x: ScreenWidth/2'f32, y: ScreenHeight/2'f32)
   let wheel = getMouseWheelMove()
   if wheel != 0:
     g.camera.zoom = clamp(g.camera.zoom + wheel*0.05'f32, 0.5, 2)
@@ -434,7 +434,7 @@ proc drawHUD(g: Game) =
   # Score
   drawText(&"SCORE: {g.score:04d}", 10, 46, 20, DarkGray)
   drawText(&"ENEMIES: {g.countEnemies()}", 10, 72, 20, DarkGray)
-  drawFPS(screenWidth - 80, 10)
+  drawFPS(ScreenWidth - 80, 10)
   # Debug
   if gfShowDebug in g.flags:
     drawText(&"Agents: {g.agents.len}  Proj: {g.projectiles.len}  Parts: {g.particles.count}",
@@ -443,19 +443,19 @@ proc drawHUD(g: Game) =
   if gfPaused in g.flags:
     let text = "PAUSED"
     let w = measureText(text, 40)
-    drawText(text, screenWidth div 2 - w div 2, screenHeight div 2 - 20, 40, DarkGray)
+    drawText(text, ScreenWidth div 2 - w div 2, ScreenHeight div 2 - 20, 40, DarkGray)
   # Game over overlay
   if gfGameOver in g.flags:
-    drawRectangle(0, 0, screenWidth, screenHeight, fade(White, 0.7))
+    drawRectangle(0, 0, ScreenWidth, ScreenHeight, fade(White, 0.7))
     let t1 = "GAME OVER"
     let t2 = &"SCORE: {g.score}"
     let t3 = "PRESS [R] TO RESTART"
     let w1 = measureText(t1, 40)
     let w2 = measureText(t2, 20)
     let w3 = measureText(t3, 20)
-    drawText(t1, screenWidth div 2 - w1 div 2, screenHeight div 2 - 60, 40, Red)
-    drawText(t2, screenWidth div 2 - w2 div 2, screenHeight div 2 - 10, 20, DarkGray)
-    drawText(t3, screenWidth div 2 - w3 div 2, screenHeight div 2 + 20, 20, Gray)
+    drawText(t1, ScreenWidth div 2 - w1 div 2, ScreenHeight div 2 - 60, 40, Red)
+    drawText(t2, ScreenWidth div 2 - w2 div 2, ScreenHeight div 2 - 10, 20, DarkGray)
+    drawText(t3, ScreenWidth div 2 - w3 div 2, ScreenHeight div 2 + 20, 20, Gray)
 
 proc updateDrawFrame(g: var Game) =
   let dt = getFrameTime()
@@ -481,7 +481,7 @@ proc updateDrawFrame(g: var Game) =
 # ----------------------------------------------------------------------------------------
 
 proc main =
-  initWindow(screenWidth, screenHeight, "raylib [shapes] example - survival arena")
+  initWindow(ScreenWidth, ScreenHeight, "raylib [shapes] example - survival arena")
   defer: closeWindow()
   setTargetFPS(60)
   randomize()
