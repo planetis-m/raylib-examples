@@ -90,9 +90,12 @@ type
     active: bool
 
   # SoA particle system - split by access group, not by field
+  ParticleBody = object
+    pos: Vector2
+    vel: Vector2
+
   ParticleSystem = object
-    pos: seq[Vector2]
-    vel: seq[Vector2]
+    bodies: seq[ParticleBody]
     life: seq[float32]
     color: seq[Color]
     count: int32
@@ -119,20 +122,20 @@ type
 
 func initParticles(cap: int32): ParticleSystem =
   ParticleSystem(
-    pos: newSeq[Vector2](cap),
-    vel: newSeq[Vector2](cap),
+    bodies: newSeq[ParticleBody](cap),
     life: newSeq[float32](cap),
     color: newSeq[Color](cap))
 
 proc spawn(ps: var ParticleSystem, pos: Vector2, count: int32, color: Color) =
   for i in 0..<count:
-    if ps.count >= ps.pos.len: return
+    if ps.count >= ps.bodies.len: return
     let idx = ps.count
     inc ps.count
     let angle = rand(0'f32 .. TAU.float32)
     let speed = rand(40'f32 .. 120'f32)
-    ps.pos[idx] = pos
-    ps.vel[idx] = Vector2(x: cos(angle)*speed, y: sin(angle)*speed)
+    ps.bodies[idx] = ParticleBody(
+      pos: pos,
+      vel: Vector2(x: cos(angle)*speed, y: sin(angle)*speed))
     ps.life[idx] = rand(0.3'f32 .. 0.7'f32)
     ps.color[idx] = color
 
@@ -142,20 +145,19 @@ proc update(ps: var ParticleSystem, dt: float32) =
     ps.life[i] -= dt
     if ps.life[i] > 0:
       if w != i:
-        ps.pos[w] = ps.pos[i]
-        ps.vel[w] = ps.vel[i]
+        ps.bodies[w] = ps.bodies[i]
         ps.life[w] = ps.life[i]
         ps.color[w] = ps.color[i]
-      ps.pos[w].x += ps.vel[w].x*dt
-      ps.pos[w].y += ps.vel[w].y*dt
-      ps.vel[w].x *= 0.94
-      ps.vel[w].y *= 0.94
+      ps.bodies[w].pos.x += ps.bodies[w].vel.x*dt
+      ps.bodies[w].pos.y += ps.bodies[w].vel.y*dt
+      ps.bodies[w].vel.x *= 0.94
+      ps.bodies[w].vel.y *= 0.94
       inc w
   ps.count = w
 
 proc draw(ps: ParticleSystem) =
   for i in 0..<ps.count:
-    drawCircle(ps.pos[i], 2, fade(ps.color[i], ps.life[i]))
+    drawCircle(ps.bodies[i].pos, 2, fade(ps.color[i], ps.life[i]))
 
 # ----------------------------------------------------------------------------------------
 # Spatial Hash Grid
