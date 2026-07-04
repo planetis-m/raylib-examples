@@ -18,9 +18,10 @@ when defined(emscripten):
     --clang.cpp.exe:emcc
     --clang.cpp.linkerexe:emcc
   # --mm:orc
-  --threads:on
+  --threads:off
   --panics:on
   --define:noSignalHandler
   --passL:"-o public/index.html"
   # Use raylib/src/shell.html or raylib/src/minshell.html
   --passL:"--shell-file shell_minimal.html"
+  --passL:"-sEXPORTED_RUNTIME_METHODS=requestFullscreen"
