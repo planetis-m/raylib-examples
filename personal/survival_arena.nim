@@ -27,6 +27,13 @@
 
 import raylib, raymath, rlgl, std/[math, random, setutils, strformat]
 
+# ----------------------------------------------------------------------------------------
+# Forward declarations
+# ----------------------------------------------------------------------------------------
+
+const
+  TrailInterval: float32 = 0.02 # seconds between trail particles
+
 const
   ScreenWidth = 800
   ScreenHeight = 450
@@ -35,7 +42,7 @@ const
   WorldWidth = 4000
   WorldHeight = 3000
 
-  MaxParticles = 4000
+  MaxParticles = 8000
   MaxProjectiles = 800
 
   # Player
@@ -63,6 +70,11 @@ const
   GridCols = WorldWidth div CellSize + 2
   GridRows = WorldHeight div CellSize + 2
 
+  # Physics
+  KnockbackForce = 80
+  KnockbackDecay: float32 = 0.70
+  SeparationStrength: float32 = 0.5
+
 # ----------------------------------------------------------------------------------------
 # Types and Structures Definition
 # ----------------------------------------------------------------------------------------
@@ -77,10 +89,12 @@ type
   Agent = object
     pos: Vector2
     vel: Vector2
+    knockback: Vector2
     radius: float32
     hp: float32
     maxHp: float32
     cooldown: float32
+    hitFlash: float32
     kind: AgentKind
     alive: bool
 
@@ -88,6 +102,7 @@ type
     pos: Vector2
     vel: Vector2
     life: float32
+    trailTimer: float32
     active: bool
 
   # SoA particle system - split by access group, not by field
@@ -95,15 +110,20 @@ type
     pos: Vector2
     vel: Vector2
 
+  ParticleAppearance = object
+    color: Color
+    size: float32
+
   ParticleSystem = object
     bodies: seq[ParticleBody]
     life: seq[float32]
-    color: seq[Color]
+    appearance: seq[ParticleAppearance]
     count: int32
 
   # Spatial hash grid for O(1) neighbor lookups
   SpatialGrid = object
     buckets: array[GridCols*GridRows, seq[int32]]
+    visited: array[2*MaxEnemies + 1, bool]
 
   Game = object
     agents: seq[Agent]
@@ -115,6 +135,7 @@ type
     score: int32
     flags: set[GameFlag]
     spawnTimer: float32
+    time: float32
     camera: Camera2D
 
 # ----------------------------------------------------------------------------------------
@@ -125,20 +146,25 @@ func initParticles(cap: int32): ParticleSystem =
   ParticleSystem(
     bodies: newSeq[ParticleBody](cap),
     life: newSeq[float32](cap),
-    color: newSeq[Color](cap))
+    appearance: newSeq[ParticleAppearance](cap))
 
-proc spawn(ps: var ParticleSystem, pos: Vector2, count: int32, color: Color) =
+proc spawn(ps: var ParticleSystem, pos: Vector2, count: int32, color: Color,
+           sizeRange: HSlice[float32, float32] = 3'f32 .. 5'f32,
+           lifeRange: HSlice[float32, float32] = 0.3'f32 .. 0.7'f32,
+           speedRange: HSlice[float32, float32] = 40'f32 .. 120'f32) =
   for i in 0..<count:
     if ps.count >= ps.bodies.len: return
     let idx = ps.count
     inc ps.count
     let angle = rand(0'f32 .. TAU.float32)
-    let speed = rand(40'f32 .. 120'f32)
+    let speed = rand(speedRange)
     ps.bodies[idx] = ParticleBody(
       pos: pos,
       vel: Vector2(x: cos(angle)*speed, y: sin(angle)*speed))
-    ps.life[idx] = rand(0.3'f32 .. 0.7'f32)
-    ps.color[idx] = color
+    ps.life[idx] = rand(lifeRange)
+    ps.appearance[idx] = ParticleAppearance(
+      color: color,
+      size: rand(sizeRange))
 
 proc update(ps: var ParticleSystem, dt: float32) =
   var w: int32 = 0
@@ -148,7 +174,7 @@ proc update(ps: var ParticleSystem, dt: float32) =
       if w != i:
         ps.bodies[w] = ps.bodies[i]
         ps.life[w] = ps.life[i]
-        ps.color[w] = ps.color[i]
+        ps.appearance[w] = ps.appearance[i]
       ps.bodies[w].pos.x += ps.bodies[w].vel.x*dt
       ps.bodies[w].pos.y += ps.bodies[w].vel.y*dt
       ps.bodies[w].vel.x *= 0.94
@@ -157,8 +183,11 @@ proc update(ps: var ParticleSystem, dt: float32) =
   ps.count = w
 
 proc draw(ps: ParticleSystem) =
-  for i in 0..<ps.count:
-    drawCircle(ps.bodies[i].pos, 4, fade(ps.color[i], ps.life[i]))
+  # Draw all particles with additive blending for a glow effect
+  blendMode(Additive):
+    for i in 0..<ps.count:
+      drawCircle(ps.bodies[i].pos, ps.appearance[i].size,
+        fade(ps.appearance[i].color, ps.life[i]))
 
 # ----------------------------------------------------------------------------------------
 # Spatial Hash Grid
@@ -177,7 +206,7 @@ proc insert(grid: var SpatialGrid, idx: int32, pos: Vector2, radius: float32) =
     for cx in minX..maxX:
       grid.buckets[cy*GridCols + cx].add(idx)
 
-proc queryNearby(grid: SpatialGrid, pos: Vector2, radius: float32, result: var seq[int32]) =
+proc queryNearby(grid: var SpatialGrid, pos: Vector2, radius: float32, result: var seq[int32]) =
   result.setLen(0)
   let minX = max(0'i32, int32((pos.x - radius)/CellSize))
   let maxX = min(GridCols - 1, int32((pos.x + radius)/CellSize))
@@ -186,8 +215,11 @@ proc queryNearby(grid: SpatialGrid, pos: Vector2, radius: float32, result: var s
   for cy in minY..maxY:
     for cx in minX..maxX:
       for agentIdx in grid.buckets[cy*GridCols + cx]:
-        if result.len == 0 or result[result.high] != agentIdx:
+        if not grid.visited[agentIdx]:
+          grid.visited[agentIdx] = true
           result.add(agentIdx)
+  for agentIdx in result:
+    grid.visited[agentIdx] = false
 
 # ----------------------------------------------------------------------------------------
 # Game Logic
@@ -243,9 +275,7 @@ func findNearestEnemy(g: Game, pos: Vector2): int32 =
   for i in 0..<g.agents.len:
     template a: Agent = g.agents[i]
     if a.alive and a.kind == agEnemy:
-      let dx = a.pos.x - pos.x
-      let dy = a.pos.y - pos.y
-      let d = dx*dx + dy*dy
+      let d = distanceSqr(a.pos, pos)
       if d < bestDist:
         bestDist = d
         result = int32(i)
@@ -257,6 +287,7 @@ proc fireAt(g: var Game, origin: Vector2, targetIdx: int32) =
       pos: Vector2(x: origin.x + dir.x*PlayerRadius, y: origin.y + dir.y*PlayerRadius),
       vel: Vector2(x: dir.x*ProjSpeed, y: dir.y*ProjSpeed),
       life: ProjLife,
+      trailTimer: 0,
       active: true))
 
 proc updatePlayer(g: var Game, dt: float32) =
@@ -283,27 +314,44 @@ proc updateEnemies(g: var Game, dt: float32) =
   for i in 0..<g.agents.len:
     template a: Agent = g.agents[i]
     if a.alive and a.kind == agEnemy:
-      # Seek the player
+      # Seek the player directly (swarming behavior)
       let toPlayer = p.pos - a.pos
       let dist = length(toPlayer)
       if dist > 0.01'f32:
         a.vel.x = toPlayer.x/dist*EnemySpeed
         a.vel.y = toPlayer.y/dist*EnemySpeed
-      a.pos.x += a.vel.x*dt
-      a.pos.y += a.vel.y*dt
+      # Decay hit flash
+      if a.hitFlash > 0:
+        a.hitFlash -= dt
+      # Apply movement + knockback
+      a.pos.x += (a.vel.x + a.knockback.x)*dt
+      a.pos.y += (a.vel.y + a.knockback.y)*dt
+      # Decay knockback
+      a.knockback.x *= KnockbackDecay
+      a.knockback.y *= KnockbackDecay
       # Touch damage
       a.cooldown -= dt
       if a.cooldown <= 0:
-        let dx = a.pos.x - p.pos.x
-        let dy = a.pos.y - p.pos.y
-        if dx*dx + dy*dy < (a.radius + p.radius)*(a.radius + p.radius):
+        if checkCollisionCircles(a.pos, a.radius, p.pos, p.radius):
           p.hp -= EnemyDamage
           a.cooldown = EnemyTouchRate
+          a.hitFlash = 0.15
+          g.particles.spawn(p.pos, 10, Orange,
+            sizeRange = 3'f32 .. 6'f32, lifeRange = 0.2'f32 .. 0.4'f32,
+            speedRange = 80'f32 .. 180'f32)
+          g.particles.spawn(p.pos, 6, Yellow,
+            sizeRange = 2'f32 .. 4'f32, lifeRange = 0.15'f32 .. 0.3'f32,
+            speedRange = 100'f32 .. 200'f32)
           if p.hp <= 0:
             p.hp = 0
             p.alive = false
             g.flags.incl gfGameOver
-            g.particles.spawn(p.pos, 40, Blue)
+            g.particles.spawn(p.pos, 50, Blue,
+              sizeRange = 4'f32 .. 10'f32, lifeRange = 0.6'f32 .. 1.0'f32,
+              speedRange = 60'f32 .. 220'f32)
+            g.particles.spawn(p.pos, 30, SkyBlue,
+              sizeRange = 3'f32 .. 7'f32, lifeRange = 0.5'f32 .. 1.0'f32,
+              speedRange = 100'f32 .. 280'f32)
 
 proc updateProjectiles(g: var Game, dt: float32) =
   for i in 0..<g.projectiles.len:
@@ -312,20 +360,46 @@ proc updateProjectiles(g: var Game, dt: float32) =
     if pr.life > 0:
       pr.pos.x += pr.vel.x*dt
       pr.pos.y += pr.vel.y*dt
+      # Spawn trail particles
+      pr.trailTimer -= dt
+      if pr.trailTimer <= 0:
+        pr.trailTimer = TrailInterval
+        g.particles.spawn(pr.pos, 1, Gold,
+          sizeRange = 2'f32 .. 4'f32, lifeRange = 0.15'f32 .. 0.35'f32,
+          speedRange = 5'f32 .. 20'f32)
       if pr.pos.x >= 0 and pr.pos.x <= WorldWidth and
          pr.pos.y >= 0 and pr.pos.y <= WorldHeight:
         for j in 0..<g.agents.len:
           template a: Agent = g.agents[j]
           if a.alive and a.kind == agEnemy:
-            let dx = pr.pos.x - a.pos.x
-            let dy = pr.pos.y - a.pos.y
-            if dx*dx + dy*dy < a.radius*a.radius:
+            if checkCollisionCircles(pr.pos, ProjRadius, a.pos, a.radius):
               a.hp -= ProjDamage
+              a.hitFlash = 0.1
               pr.active = false
-              g.particles.spawn(pr.pos, 5, Gold)
+              let kdir = normalize(pr.vel)
+              a.knockback.x += kdir.x*KnockbackForce
+              a.knockback.y += kdir.y*KnockbackForce
+              # Hit spark
+              g.particles.spawn(pr.pos, 8, Orange,
+                sizeRange = 3'f32 .. 6'f32, lifeRange = 0.2'f32 .. 0.4'f32,
+                speedRange = 80'f32 .. 180'f32)
+              g.particles.spawn(pr.pos, 5, Yellow,
+                sizeRange = 2'f32 .. 4'f32, lifeRange = 0.15'f32 .. 0.3'f32,
+                speedRange = 100'f32 .. 220'f32)
               if a.hp <= 0:
                 a.alive = false
-                g.particles.spawn(a.pos, 15, Red)
+                # Death explosion - additive glow
+                g.particles.spawn(a.pos, 25, Red,
+                  sizeRange = 4'f32 .. 9'f32, lifeRange = 0.4'f32 .. 0.8'f32,
+                  speedRange = 80'f32 .. 200'f32)
+                # Death explosion - bright core
+                g.particles.spawn(a.pos, 15, Orange,
+                  sizeRange = 3'f32 .. 6'f32, lifeRange = 0.3'f32 .. 0.6'f32,
+                  speedRange = 100'f32 .. 250'f32)
+                # Death explosion - yellow sparks
+                g.particles.spawn(a.pos, 10, Yellow,
+                  sizeRange = 2'f32 .. 4'f32, lifeRange = 0.2'f32 .. 0.5'f32,
+                  speedRange = 120'f32 .. 300'f32)
                 inc(g.score)
               break
       else:
@@ -354,23 +428,28 @@ proc resolveCollisions(g: var Game) =
         if j > int32(i):
           template b: Agent = g.agents[j]
           if b.alive:
-            let dx = b.pos.x - a.pos.x
-            let dy = b.pos.y - a.pos.y
-            let distSq = dx*dx + dy*dy
+            let distSq = distanceSqr(a.pos, b.pos)
             let minDist = a.radius + b.radius
-            if distSq < minDist*minDist and distSq > 0.01'f32:
+            if checkCollisionCircles(a.pos, a.radius, b.pos, b.radius) and
+               distSq > 0.01'f32:
               let dist = sqrt(distSq)
-              let overlap = (minDist - dist)*0.5'f32
-              let nx = dx/dist
-              let ny = dy/dist
-              a.pos.x -= nx*overlap
-              a.pos.y -= ny*overlap
-              b.pos.x += nx*overlap
-              b.pos.y += ny*overlap
-  # Compact dead enemies
+              let n = normalize(b.pos - a.pos)
+              let overlap = (minDist - dist) * SeparationStrength
+              a.pos.x -= n.x*overlap
+              a.pos.y -= n.y*overlap
+              b.pos.x += n.x*overlap
+              b.pos.y += n.y*overlap
+  # Boundary clamping (no bounce)
+  for i in 0..<g.agents.len:
+    template a: Agent = g.agents[i]
+    if a.alive:
+      a.pos.x = clamp(a.pos.x, a.radius, WorldWidth.float32 - a.radius)
+      a.pos.y = clamp(a.pos.y, a.radius, WorldHeight.float32 - a.radius)
+  # Compact dead enemies, but always keep the player (even when dead) so
+  # playerIdx stays valid through the game-over screen until reset().
   var w = 0
   for i in 0..<g.agents.len:
-    if g.agents[i].alive:
+    if g.agents[i].alive or g.agents[i].kind == agPlayer:
       if w != i: g.agents[w] = g.agents[i]
       inc w
   g.agents.setLen(w)
@@ -398,13 +477,15 @@ proc updateCamera(g: var Game) =
 
 proc drawAgent(a: Agent) =
   if a.kind == agPlayer:
-    drawCircleGradient(a.pos.x.int32, a.pos.y.int32, a.radius, Blue, DarkBlue)
+    drawCircleGradient(a.pos.x.int32, a.pos.y.int32, a.radius, SkyBlue, Blue)
   else:
-    drawCircle(a.pos, a.radius, Red)
+    drawCircleGradient(a.pos.x.int32, a.pos.y.int32, a.radius, Red, Maroon)
+    if a.hitFlash > 0:
+      drawCircle(a.pos, a.radius, Yellow)
 
 proc drawWorld(g: Game) =
   mode2D(g.camera):
-    clearBackground(RayWhite)
+    clearBackground(Black)
     # Background grid
     pushMatrix()
     translatef(WorldWidth/2'f32, WorldHeight, 0)
@@ -416,34 +497,40 @@ proc drawWorld(g: Game) =
       if a.alive: drawAgent(a)
     # Projectiles
     for pr in g.projectiles:
-      drawCircle(pr.pos, ProjRadius, Gold)
+      drawCircleGradient(pr.pos.x.int32, pr.pos.y.int32, ProjRadius, Gold, Orange)
     # Particles
     g.particles.draw()
 
 proc drawHUD(g: Game) =
   template p: Agent = g.agents[g.playerIdx]
   # HP bar
-  drawRectangle(10, 10, 200, 28, Gray)
+  drawRectangle(10, 10, 200, 28, DarkGray)
   let hpW = 198*(p.hp/p.maxHp)
-  drawRectangle(Rectangle(x: 11, y: 11, width: hpW, height: 26),
-    if p.hp > p.maxHp*0.3'f32: Green else: Red)
+  drawRectangleGradientH(11, 11, int32(hpW), 26,
+    if p.hp > p.maxHp*0.3'f32: Green else: Red,
+    if p.hp > p.maxHp*0.3'f32: Lime else: Maroon)
   drawText(&"HP: {int32(p.hp)}/{int32(p.maxHp)}", 15, 13, 20, White)
   # Score
-  drawText(&"SCORE: {g.score:04d}", 10, 46, 20, DarkGray)
-  drawText(&"ENEMIES: {g.countEnemies()}", 10, 72, 20, DarkGray)
+  drawText(&"SCORE: {g.score:04d}", 10, 46, 20, RayWhite)
+  drawText(&"ENEMIES: {g.countEnemies()}", 10, 72, 20, LightGray)
   drawFPS(ScreenWidth - 80, 10)
   # Debug
   if gfShowDebug in g.flags:
     drawText(&"Agents: {g.agents.len}  Proj: {g.projectiles.len}  Parts: {g.particles.count}",
-             10, 98, 14, DarkGray)
+             10, 98, 14, LightGray)
+  # Low HP danger vignette (pulsing red border, no screen flashing)
+  if p.hp > 0 and p.hp < p.maxHp*0.25'f32 and gfGameOver notin g.flags:
+    let pulse = 0.3'f32 + 0.2'f32 * sin(g.time * 8'f32)
+    drawRectangleLines(0, 0, ScreenWidth, ScreenHeight, fade(Red, pulse))
   # Paused overlay
   if gfPaused in g.flags:
+    drawRectangle(0, 0, ScreenWidth, ScreenHeight, fade(Black, 0.5))
     let text = "PAUSED"
     let w = measureText(text, 40)
-    drawText(text, ScreenWidth div 2 - w div 2, ScreenHeight div 2 - 20, 40, DarkGray)
+    drawText(text, ScreenWidth div 2 - w div 2, ScreenHeight div 2 - 20, 40, SkyBlue)
   # Game over overlay
   if gfGameOver in g.flags:
-    drawRectangle(0, 0, ScreenWidth, ScreenHeight, fade(White, 0.7))
+    drawRectangle(0, 0, ScreenWidth, ScreenHeight, fade(Black, 0.7))
     let t1 = "GAME OVER"
     let t2 = &"SCORE: {g.score}"
     let t3 = "PRESS [R] TO RESTART"
@@ -451,8 +538,8 @@ proc drawHUD(g: Game) =
     let w2 = measureText(t2, 20)
     let w3 = measureText(t3, 20)
     drawText(t1, ScreenWidth div 2 - w1 div 2, ScreenHeight div 2 - 60, 40, Red)
-    drawText(t2, ScreenWidth div 2 - w2 div 2, ScreenHeight div 2 - 10, 20, DarkGray)
-    drawText(t3, ScreenWidth div 2 - w3 div 2, ScreenHeight div 2 + 20, 20, Gray)
+    drawText(t2, ScreenWidth div 2 - w2 div 2, ScreenHeight div 2 - 10, 20, Gold)
+    drawText(t3, ScreenWidth div 2 - w3 div 2, ScreenHeight div 2 + 20, 20, SkyBlue)
 
 proc updateDrawFrame(g: var Game) =
   let dt = getFrameTime()
@@ -462,6 +549,7 @@ proc updateDrawFrame(g: var Game) =
   if isKeyPressed(F1):
     g.flags = symmetricDifference(g.flags, {gfShowDebug})
   if gfPaused notin g.flags and gfGameOver notin g.flags:
+    g.time += dt
     g.updatePlayer(dt)
     g.updateEnemies(dt)
     g.resolveCollisions()
